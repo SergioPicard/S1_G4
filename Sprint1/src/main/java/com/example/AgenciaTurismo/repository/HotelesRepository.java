@@ -44,7 +44,7 @@ public class HotelesRepository {
 
     public List<HotelAvailableDto> filterHotelsRep(LocalDate dateFrom, LocalDate dateTo, String destination){
 
-        return hotelsAvailable.stream().filter(hotel -> hotel.getLugar().equals(destination) &&
+        return hotelsAvailable.stream().filter(hotel -> hotel.getLugar().equalsIgnoreCase(destination) &&
                 !hotel.getDisponibleDesde().isAfter(dateFrom) &&
                 !hotel.getDisponibleHasta().isBefore(dateTo) &&
                 !hotel.getReservado()).collect(Collectors.toList());
