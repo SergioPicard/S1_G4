@@ -1,13 +1,12 @@
 package com.example.AgenciaTurismo.controller;
 
+import com.example.AgenciaTurismo.dto.request.BookingRequestDto;
+import com.example.AgenciaTurismo.dto.response.BookingResponseDto;
 import com.example.AgenciaTurismo.dto.response.HotelAvailableDto;
 import com.example.AgenciaTurismo.service.HotelesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -29,5 +28,11 @@ public class HotelesController {
                                                 @RequestParam("destination") String destination ){
 
         return hotelesService.filterHotels(dateFrom, dateTo, destination);
+    }
+
+    @PostMapping("/booking")
+    public BookingResponseDto booking(@RequestBody BookingRequestDto bookingRequest){
+
+        return hotelesService.bookingResponse(bookingRequest);
     }
 }

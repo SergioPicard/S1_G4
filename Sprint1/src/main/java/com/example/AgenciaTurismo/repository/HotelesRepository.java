@@ -50,4 +50,10 @@ public class HotelesRepository {
                 !hotel.getReservado()).collect(Collectors.toList());
     }
 
+    public HotelModel findHotel(String code){
+        return hotels.stream().filter(hotel -> hotel.getCodigoHotel().equalsIgnoreCase(code))
+                .findFirst().orElse(null);
+
+    }
+
 }
