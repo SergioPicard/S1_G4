@@ -8,9 +8,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class BookingFlightResponseDto {
+public class FlightResponseDto {
     private String userName;
     private Double total;
-    private FlightReservationDto booking;
+    private FlightReservationResDto flightReservation;
     private StatusCodeDto status;
 }

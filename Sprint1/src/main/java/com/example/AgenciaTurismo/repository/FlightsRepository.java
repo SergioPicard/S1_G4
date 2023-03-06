@@ -3,6 +3,7 @@ package com.example.AgenciaTurismo.repository;
 import com.example.AgenciaTurismo.dto.response.FlightsAvailableDto;
 import com.example.AgenciaTurismo.dto.response.HotelAvailableDto;
 import com.example.AgenciaTurismo.models.FlightModel;
+import com.example.AgenciaTurismo.models.HotelModel;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -48,5 +49,11 @@ public class FlightsRepository {
                 !flight.getFechaIda().isAfter(fechaIda) &&
                 !flight.getFechaVuelta().isBefore(fechaVuelta) &&
                 flight.getOrigen().equalsIgnoreCase(origen)).collect(Collectors.toList());
+    }
+
+    public FlightModel findFlight(String flightNumber, String seatType){
+        return flights.stream().filter(flight -> flight.getNroVuelo().equalsIgnoreCase(flightNumber) &&
+                flight.getTipoAsiento().equalsIgnoreCase(seatType)).findFirst().orElse(null);
+
     }
 }

@@ -1,5 +1,6 @@
 package com.example.AgenciaTurismo.dto.request;
 
+import com.example.AgenciaTurismo.dto.response.FlightReservationResDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,13 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 public class FlightReservationDto {
-    private LocalDate dateFrom;
-    private LocalDate datoTo;
-    private String origin;
-    private String destination;
-    private String flightNumber;
-    private Integer seats;
-    private String seatType;
-    private List<PeopleDto> people;
-    private PaymentMethodDto paymentMethod;
+    private String userName;
+    private FlightReservationResDto flightReservation;
+
 }
