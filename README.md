@@ -54,4 +54,42 @@ http://localhost:8080/api/v1/flights
 Links para testear filtro:
 http://localhost:8080/api/v1/flight?dateFrom=09/02/2022&dateTo=15/02/2022&origin=Buenos Aires&destination=Puerto Iguazú
 
+Link para la reserva del vuelo:
+http://localhost:8080/api/v1/flight-reservation
+
+JSON:
+{
+    "userName" : "luchofesta@gmail.com",
+    "flightReservation" : {
+        "dateFrom" : "2022-02-10",
+        "datoTo" : "2022-02-15",
+        "origin" : "Buenos Aires",
+        "destination" : "Puerto Iguazú",
+        "flightNumber" : "PIBA-1420",
+        "seats" : 2,
+        "seatType" : "BUSINESS",
+        "people" : [
+            {
+                "dni" : "36365939",
+                "name" : "Luciano",
+                "lastName" : "Festa",
+                "birthDate" : "1992-01-24",
+                "email" : "luchofesta@gmail.com"
+            },
+            {
+                "dni" : "38884160",
+                "name" : "Sofia",
+                "lastName" : "Ramos Dietmair",
+                "birthDate" : "1995-07-12",
+                "email" : "sofiramos@gmail.com"
+            }
+        ],
+        "paymentMethod" : {
+            "type" : "CreditCard",
+            "number" : "4545 8585 9696 6565",
+            "dues" : 6
+        }
+    }
+}
+
 
