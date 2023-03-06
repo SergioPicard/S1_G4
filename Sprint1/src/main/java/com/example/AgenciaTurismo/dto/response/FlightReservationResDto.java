@@ -20,4 +20,5 @@ public class FlightReservationResDto {
     private Integer seats;
     private String seatType;
     private List<PeopleDto> people;
+
 }
