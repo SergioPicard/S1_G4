@@ -35,25 +35,34 @@ public class HotelesService {
     }
 
     public BookingResponseDto bookingResponse(BookingRequestDto bookingRequest){
-        /*PROBAR EL BOOKINGREQUEST.
-        BookingRequestDto bookingRequestDto = new BookingRequestDto();
-        bookingRequestDto.setBooking(bookingRequest.getBooking());
-        bookingRequestDto.setUserName(bookingRequest.getUserName());*/
 
         BookingResponseDto response = new BookingResponseDto();
 
         //NUEVA RESPONSE RESERVA - DATOS SIN MEDIOS DE PAGO
         BookingResDto booking = new BookingResDto();
-        booking.setDateFrom(bookingRequest.getBooking().getDateFrom());
-        booking.setDatoTo(bookingRequest.getBooking().getDatoTo());
-        booking.setDestination(bookingRequest.getBooking().getDestination());
+
+        //BUSQUEDA DEL HOTEL POR CODIGO PASADO EN EL REQUEST.
+        HotelModel bookedHotel = hotelesRepository.findHotel(bookingRequest.getBooking().getHotelCode());
+
         booking.setHotelCode(bookingRequest.getBooking().getHotelCode());
         booking.setPeopleAmount(bookingRequest.getBooking().getPeopleAmount());
         booking.setRoomType(bookingRequest.getBooking().getRoomType());
         booking.setPeople(bookingRequest.getBooking().getPeople());
+        booking.setDateFrom(bookingRequest.getBooking().getDateFrom());
+        booking.setDatoTo(bookingRequest.getBooking().getDatoTo());
+        booking.setDestination(bookingRequest.getBooking().getDestination());
 
-        //BUSQUEDA DEL HOTEL POR CODIGO PASADO EN EL REQUEST.
-        HotelModel bookedHotel = hotelesRepository.findHotel(bookingRequest.getBooking().getHotelCode());
+       /*if(!bookedHotel.getDisponibleDesde().isAfter(bookingRequest.getBooking().getDateFrom()) &&
+            !bookedHotel.getDisponibleHasta().isBefore(bookingRequest.getBooking().getDatoTo())){
+
+            booking.setDateFrom(bookingRequest.getBooking().getDateFrom());
+            booking.setDatoTo(bookingRequest.getBooking().getDatoTo());
+
+        /*}
+
+        /*if(bookedHotel.getLugar().equalsIgnoreCase(bookingRequest.getBooking().getDestination())){
+            booking.setDestination(bookingRequest.getBooking().getDestination());
+        }*/
 
         //CALCULO DE CANTIDAD DE DIAS DE RESERVA
         Integer bookingDays = Period.between(bookingRequest.getBooking().getDateFrom(),

@@ -19,6 +19,7 @@ public class HotelesController {
 
     @GetMapping("/hotels")
     public List<HotelAvailableDto> searchAllHotels(){
+
         return hotelesService.searchAll();
     }
 
