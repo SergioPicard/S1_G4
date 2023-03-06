@@ -5,6 +5,7 @@ import com.example.AgenciaTurismo.dto.response.BookingResDto;
 import com.example.AgenciaTurismo.dto.response.BookingResponseDto;
 import com.example.AgenciaTurismo.dto.response.HotelAvailableDto;
 import com.example.AgenciaTurismo.dto.response.StatusCodeDto;
+import com.example.AgenciaTurismo.exceptions.SinHotelesException;
 import com.example.AgenciaTurismo.models.HotelModel;
 import com.example.AgenciaTurismo.repository.HotelesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +27,18 @@ public class HotelesService {
     public List<HotelAvailableDto> filterHotels(LocalDate dateFrom, LocalDate dateTo, String destination){
 
         List<HotelAvailableDto> hotelAvailable = hotelesRepository.filterHotelsRep(dateFrom, dateTo, destination);
+        BookingRequestDto habitacionCapacidad = new BookingRequestDto();
 
         if(hotelAvailable.isEmpty()){
-            throw new RuntimeException("No se encontraron hoteles disponibles en este periodo de tiempo y en el destino indicado :(.");
+            throw new SinHotelesException("No se encontraron hoteles disponibles en esta fecha.");
         }
+
+
+       /* for (HotelAvailableDto habitacion: hotelAvailable) {
+            if (habitacion.getTipoHabitacion().equalsIgnoreCase("Double")) {
+                if (habitacionCapacidad.getBooking().getPeopleAmount())
+            }
+        }*/
 
         return hotelAvailable;
     }
