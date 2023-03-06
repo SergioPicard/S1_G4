@@ -11,5 +11,6 @@ import lombok.NoArgsConstructor;
 public class FlightReservationReqDto {
     private String userName;
     private FlightReservationResDto flightReservation;
+    private PaymentMethodDto paymentMethodDto;
 
 }
