@@ -9,6 +9,8 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Data
 public class FlightsAvailableDto {
+    private String nroVuelo;
+
     private String origen;
     private String destino;
     private String tipoAsiento;

@@ -51,7 +51,13 @@ public class FlightsService {
 
 
         //CALCULO DEL TOTAL DE LA COMPRA
-        Double total = bookedFlight.getPrecioPersona() * flightReservationReqDto.getFlightReservation().getSeats();
+        int tiempo = flightReservationReqDto.getFlightReservation().getDatoTo().getDayOfYear() - flightReservationReqDto.getFlightReservation().getDateFrom().getDayOfYear();
+        System.out.println(tiempo);
+
+        Double total = bookedFlight.getPrecioPersona() * tiempo;
+        //Double total = bookedFlight.getPrecioPersona() * flightReservationReqDto.getFlightReservation().getSeats();
+
+
 
 
         //SETEO DEL RESPONSE

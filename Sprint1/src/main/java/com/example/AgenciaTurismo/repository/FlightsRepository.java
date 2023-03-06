@@ -33,7 +33,7 @@ public class FlightsRepository {
         flights.add(new FlightModel("MEPI-9986","Medellín","Puerto Iguazú","Business",41640.0, LocalDate.of(2022,04,17),LocalDate.of(2022,05,02)));
 
         for (FlightModel flight : flights) {
-            flightsAvailable.add(new FlightsAvailableDto(flight.getOrigen(),
+            flightsAvailable.add(new FlightsAvailableDto(flight.getNroVuelo(),flight.getOrigen(),
                     flight.getDestino(),flight.getTipoAsiento(),flight.getPrecioPersona(),flight.getFechaIda(),
                     flight.getFechaVuelta()));
         }
