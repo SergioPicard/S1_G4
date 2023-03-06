@@ -1,9 +1,8 @@
 package com.example.AgenciaTurismo.controller;
 
-import com.example.AgenciaTurismo.dto.request.BookingRequestDto;
-import com.example.AgenciaTurismo.dto.response.BookingResponseDto;
+import com.example.AgenciaTurismo.dto.request.FlightReservationDto;
+import com.example.AgenciaTurismo.dto.response.FlightResponseDto;
 import com.example.AgenciaTurismo.dto.response.FlightsAvailableDto;
-import com.example.AgenciaTurismo.dto.response.HotelAvailableDto;
 import com.example.AgenciaTurismo.service.FlightsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -33,9 +32,9 @@ public class FlightsController {
     }
 
     @PostMapping("/flight-reservation")
-    public BookingFlightResponseDto booking(@RequestBody BookingRequestDto bookingRequest){
+    public FlightResponseDto booking(@RequestBody FlightReservationDto flightReservationDto){
 
-        return hotelesService.bookingResponse(bookingRequest);
+        return flightsService.flightReservationResponse(flightReservationDto);
     }
 
 }
