@@ -31,7 +31,7 @@ public class HotelesRepository {
         hotels.add(new HotelModel("BG-0004", "Bocagrande", "Cartagena", "Múltiple", 9370.0, LocalDate.of(2022,4,17), LocalDate.of(2022,6,22), false));
 
         for (HotelModel hotel : hotels) {
-            hotelsAvailable.add(new HotelAvailableDto(hotel.getNombre(),hotel.getLugar(),hotel.getTipoHabitacion(),
+            hotelsAvailable.add(new HotelAvailableDto(hotel.getCodigoHotel(),hotel.getNombre(),hotel.getLugar(),hotel.getTipoHabitacion(),
                     hotel.getPrecioNoche(),hotel.getDisponibleDesde(),hotel.getDisponibleHasta(),
                     hotel.getReservado()));
         }
