@@ -10,6 +10,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Data
 public class HotelAvailableDto {
+    private String codigoHotel;
     private String nombre;
     private String lugar;
     private String tipoHabitacion;

@@ -1,24 +1,25 @@
 package com.example.AgenciaTurismo.service;
 
-import com.example.AgenciaTurismo.dto.request.FlightReservationDto;
+import com.example.AgenciaTurismo.dto.request.FlightReservationReqDto;
 import com.example.AgenciaTurismo.dto.response.*;
+import com.example.AgenciaTurismo.exceptions.SinHotelesException;
+import com.example.AgenciaTurismo.exceptions.VuelosException;
 import com.example.AgenciaTurismo.models.FlightModel;
-import com.example.AgenciaTurismo.models.HotelModel;
 import com.example.AgenciaTurismo.repository.FlightsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.Period;
 import java.util.List;
 
 @Service
-public class FlightsService {
+public class FlightsService implements IFlightsService {
 
     @Autowired
     FlightsRepository flightsRepository;
 
     public List<FlightsAvailableDto> searchAll(){
+
         return flightsRepository.findAll();
     }
 
@@ -33,32 +34,73 @@ public class FlightsService {
         return flightsAvailable;
     }
 
-    public FlightResponseDto flightReservationResponse(FlightReservationDto flightReservationDto){
+    public FlightResponseDto flightReservationResponse(FlightReservationReqDto flightReservationReqDto){
         FlightResponseDto response = new FlightResponseDto();
+
+        //BUSQUEDA DEL VUELO POR CODIGO PASADO EN EL REQUEST.
+        FlightsAvailableDto bookedFlight = flightsRepository.findFlight(flightReservationReqDto.getFlightReservation().getFlightNumber(), flightReservationReqDto.getFlightReservation().getSeatType());
 
         //NUEVA RESPONSE RESERVA - DATOS SIN MEDIOS DE PAGO
         FlightReservationResDto booking = new FlightReservationResDto();
+        System.out.println(flightReservationReqDto);
+        System.out.println(booking);
 
-        //BUSQUEDA DEL VUELO POR CODIGO PASADO EN EL REQUEST.
-        FlightModel bookedFlight = flightsRepository.findFlight(flightReservationDto.getFlightReservation().getFlightNumber(), flightReservationDto.getFlightReservation().getSeatType());
+        //  CANTIDAD DE PERSONAS
+        int peopleAmount = flightReservationReqDto.getFlightReservation().getSeats();
 
-        booking.setFlightNumber(flightReservationDto.getFlightReservation().getFlightNumber());
-        booking.setOrigin(flightReservationDto.getFlightReservation().getOrigin());
-        booking.setSeats(flightReservationDto.getFlightReservation().getSeats());
-        booking.setPeople(flightReservationDto.getFlightReservation().getPeople());
-        booking.setDateFrom(flightReservationDto.getFlightReservation().getDateFrom());
-        booking.setDatoTo(flightReservationDto.getFlightReservation().getDatoTo());
-        booking.setDestination(flightReservationDto.getFlightReservation().getDestination());
-        booking.setSeatType(flightReservationDto.getFlightReservation().getSeatType());
+        //IGUALDAD DE DESTINO
+        boolean destiny = flightReservationReqDto.getFlightReservation().getDestination().equalsIgnoreCase(bookedFlight.getDestino());
+        //IGUALDAD ORIGEN
+        boolean origin = flightReservationReqDto.getFlightReservation().getOrigin().equalsIgnoreCase(bookedFlight.getOrigen());
+
+        // IGUAL A LA FECHA DISPONIBLE
+        boolean dateFromEqual = bookedFlight.getFechaIda().isEqual(flightReservationReqDto.getFlightReservation().getDateFrom());
+        boolean dateToEqual = bookedFlight.getFechaVuelta().isEqual(flightReservationReqDto.getFlightReservation().getDatoTo());
+
+        // TIPO DE ASIENTO
+        String seatTypeAvailable = bookedFlight.getTipoAsiento().toUpperCase();
+        String seatTypeSelect = flightReservationReqDto.getFlightReservation().getSeatType().toUpperCase();
+
+        // PRECIO DE VUELO
+
+        double seatPrice = 0.0;
+
+        if (dateFromEqual && dateToEqual) {
+
+            String mensaje = "Todo bien";
+            if (destiny && origin){
+                if (seatTypeSelect.equalsIgnoreCase(seatTypeAvailable)){
+                    if (peopleAmount != 0 ) {
+
+                        booking.setFlightNumber(flightReservationReqDto.getFlightReservation().getFlightNumber());
+                        booking.setOrigin(flightReservationReqDto.getFlightReservation().getOrigin());
+                        booking.setSeats(flightReservationReqDto.getFlightReservation().getSeats());
+                        booking.setPeople(flightReservationReqDto.getFlightReservation().getPeople());
+                        booking.setDateFrom(flightReservationReqDto.getFlightReservation().getDateFrom());
+                        booking.setDatoTo(flightReservationReqDto.getFlightReservation().getDatoTo());
+                        booking.setDestination(bookedFlight.getDestino());
+                        booking.setSeatType(flightReservationReqDto.getFlightReservation().getSeatType());
+
+                } else {
+                    throw new VuelosException("Número de personas inválido.");}
+                } else {
+                    throw new VuelosException("No poseemos este tipo de asiento en el vuelo seleccionado. Le podemos ofrecer uno estilo "
+                            + seatTypeAvailable + ".");}
+                } else {
+                throw new VuelosException("El vuelo '" + bookedFlight.getNroVuelo() + "' se dirige desde "+ bookedFlight.getOrigen()+ " hacia " + bookedFlight.getDestino() + ", no desde " + flightReservationReqDto.getFlightReservation().getOrigin() + " hacia "
+                        + flightReservationReqDto.getFlightReservation().getDestination());}
+                } else {
+                 throw new VuelosException("El vuelo número '" + bookedFlight.getNroVuelo()+ "' se encuentra dispobile desde el " + bookedFlight.getFechaIda() + " hasta el "
+                    + bookedFlight.getFechaVuelta());}
 
 
         //CALCULO DEL TOTAL DE LA COMPRA
-        Double total = bookedFlight.getPrecioPersona() * flightReservationDto.getFlightReservation().getSeats();
+        Double total = bookedFlight.getPrecioPersona() * flightReservationReqDto.getFlightReservation().getSeats();
 
 
         //SETEO DEL RESPONSE
         response.setFlightReservation(booking);
-        response.setUserName(flightReservationDto.getUserName());
+        response.setUserName(flightReservationReqDto.getUserName());
         response.setStatus(new StatusCodeDto(200,"Reserva Satisfactoria"));
         response.setTotal(total);
 

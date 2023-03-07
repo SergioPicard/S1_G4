@@ -1,6 +1,6 @@
 package com.example.AgenciaTurismo.controller;
 
-import com.example.AgenciaTurismo.dto.request.FlightReservationDto;
+import com.example.AgenciaTurismo.dto.request.FlightReservationReqDto;
 import com.example.AgenciaTurismo.dto.response.FlightResponseDto;
 import com.example.AgenciaTurismo.dto.response.FlightsAvailableDto;
 import com.example.AgenciaTurismo.service.FlightsService;
@@ -32,9 +32,9 @@ public class FlightsController {
     }
 
     @PostMapping("/flight-reservation")
-    public FlightResponseDto booking(@RequestBody FlightReservationDto flightReservationDto){
+    public FlightResponseDto booking(@RequestBody FlightReservationReqDto flightReservationReqDto){
 
-        return flightsService.flightReservationResponse(flightReservationDto);
+        return flightsService.flightReservationResponse(flightReservationReqDto);
     }
 
 }
