@@ -17,7 +17,7 @@ import java.time.Period;
 import java.util.List;
 
 @Service
-public class HotelesService {
+public class HotelesService implements IHotelesService {
     @Autowired
     HotelesRepository hotelesRepository;
 

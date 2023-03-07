@@ -13,12 +13,13 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Service
-public class FlightsService {
+public class FlightsService implements IFlightsService {
 
     @Autowired
     FlightsRepository flightsRepository;
 
     public List<FlightsAvailableDto> searchAll(){
+
         return flightsRepository.findAll();
     }
 
