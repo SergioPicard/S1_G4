@@ -32,8 +32,7 @@ public class HotelesRepository {
 
         for (HotelModel hotel : hotels) {
             hotelsAvailable.add(new HotelAvailableDto(hotel.getCodigoHotel(),hotel.getNombre(),hotel.getLugar(),hotel.getTipoHabitacion(),
-                    hotel.getPrecioNoche(),hotel.getDisponibleDesde(),hotel.getDisponibleHasta(),
-                    hotel.getReservado()));
+                    hotel.getPrecioNoche(),hotel.getDisponibleDesde(),hotel.getDisponibleHasta(),hotel.getReservado()));
         }
     }
 
