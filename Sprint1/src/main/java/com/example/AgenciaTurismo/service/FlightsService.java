@@ -38,7 +38,7 @@ public class FlightsService implements IFlightsService {
         FlightResponseDto response = new FlightResponseDto();
 
         //BUSQUEDA DEL VUELO POR CODIGO PASADO EN EL REQUEST.
-        FlightModel bookedFlight = flightsRepository.findFlight(flightReservationReqDto.getFlightReservation().getFlightNumber(), flightReservationReqDto.getFlightReservation().getSeatType());
+        FlightsAvailableDto bookedFlight = flightsRepository.findFlight(flightReservationReqDto.getFlightReservation().getFlightNumber(), flightReservationReqDto.getFlightReservation().getSeatType());
 
         //NUEVA RESPONSE RESERVA - DATOS SIN MEDIOS DE PAGO
         FlightReservationResDto booking = new FlightReservationResDto();
