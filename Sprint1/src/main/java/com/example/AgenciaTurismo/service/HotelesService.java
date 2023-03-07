@@ -22,6 +22,7 @@ public class HotelesService implements IHotelesService {
     HotelesRepository hotelesRepository;
 
     public List<HotelAvailableDto> searchAll(){
+
         return hotelesRepository.findAll();
     }
 
@@ -53,7 +54,7 @@ public class HotelesService implements IHotelesService {
         BookingResDto booking = new BookingResDto();
 
         //BUSQUEDA DEL HOTEL POR CODIGO PASADO EN EL REQUEST.
-        HotelModel bookedHotel = hotelesRepository.findHotel(bookingRequest.getBooking().getHotelCode());
+        HotelAvailableDto bookedHotel = hotelesRepository.findHotel(bookingRequest.getBooking().getHotelCode());
 
 
         String roomAvailable = bookedHotel.getTipoHabitacion();
@@ -100,7 +101,7 @@ public class HotelesService implements IHotelesService {
             }
             case "MÚLTIPLE":{
                 if (peopleAmount > 4){
-                    throw new SinHotelesException("No puede ingresar " + peopleAmount + " personas en una habitación tipo Múltiple." );
+                    throw new SinHotelesException("No puede ingresar " + peopleAmount + " personas en una habitación tipo Múltiple (máximo 4)." );
                 }
                 break;
             }
