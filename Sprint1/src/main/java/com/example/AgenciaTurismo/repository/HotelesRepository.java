@@ -5,14 +5,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.google.gson.Gson;
-
-
 import com.example.AgenciaTurismo.dto.response.HotelAvailableDto;
 import com.example.AgenciaTurismo.models.HotelModel;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.ResourceUtils;
-
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -26,11 +22,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Repository
-public class HotelesRepository {
-
-    List<HotelModel> hotels = new ArrayList<>();
-
-    HotelModel hotelObject = new HotelModel();
+public class HotelesRepository implements IHotelesRepository{
     List<HotelAvailableDto> hotelsAvailable = new ArrayList<>();
 
 
@@ -62,8 +54,6 @@ public class HotelesRepository {
 
         return hoteles;
     }
-
-
 
     public List<HotelAvailableDto> findAll(){
         return hotelsAvailable;
