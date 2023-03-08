@@ -55,7 +55,7 @@ public class HotelesService implements IHotelesService {
         int peopleAmount = bookingRequest.getBooking().getPeopleAmount();
         int people = bookingRequest.getBooking().getPeople().size();
 
-        boolean destiny = bookedHotel.getLugar().equalsIgnoreCase(bookingRequest.getBooking().getDestination());
+        boolean destination = bookedHotel.getLugar().equalsIgnoreCase(bookingRequest.getBooking().getDestination());
 
         boolean dateFrom = bookedHotel.getDisponibleDesde().isAfter(bookingRequest.getBooking().getDateFrom());
         boolean dateTo = bookedHotel.getDisponibleHasta().isBefore(bookingRequest.getBooking().getDatoTo());
@@ -67,7 +67,7 @@ public class HotelesService implements IHotelesService {
         //VERIFICAMOS DISPONIBILIDAD EN ESAS FECHAS
         if (!dateFrom && !dateTo || dateEqualFrom && dateEqualTo){
             //VERIFICAMOS DE QUE EL DESTINO SOLICITADO ESTÉ EN EL MISMO LUGAR QUE EL HOTEL
-        if (destiny){
+        if (destination){
             //SI EL HOTEL POSEE EL TIPO DE HABITACIÓN SEGUIMOS
         if (roomSelect.equalsIgnoreCase(roomAvailable)){
         if (peopleAmount != 0 ){

@@ -51,7 +51,7 @@ public class FlightsService implements IFlightsService {
         int people = flightReservationReqDto.getFlightReservation().getPeople().size();
 
         //IGUALDAD DE DESTINO
-        boolean destiny = flightReservationReqDto.getFlightReservation().getDestination().equalsIgnoreCase(bookedFlight.getDestino());
+        boolean destination = flightReservationReqDto.getFlightReservation().getDestination().equalsIgnoreCase(bookedFlight.getDestino());
         //IGUALDAD ORIGEN
         boolean origin = flightReservationReqDto.getFlightReservation().getOrigin().equalsIgnoreCase(bookedFlight.getOrigen());
 
@@ -65,7 +65,7 @@ public class FlightsService implements IFlightsService {
 
         if (!flightReservationReqDto.getUserName().isEmpty()){
         if (dateFromEqual && dateToEqual) {
-            if (destiny && origin){
+            if (destination && origin){
                 if (seatTypeSelect.equalsIgnoreCase(seatTypeAvailable)){
                     if (peopleAmount != 0 ) {
                         if(peopleAmount == people){
