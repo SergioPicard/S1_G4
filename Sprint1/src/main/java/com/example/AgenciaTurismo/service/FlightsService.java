@@ -17,7 +17,7 @@ import java.util.List;
 public class FlightsService implements IFlightsService {
 
     @Autowired
-    FlightsRepository flightsRepository;
+    IFlightsRepository flightsRepository;
 
     public List<FlightsAvailableDto> searchAll(){
 

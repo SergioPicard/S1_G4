@@ -20,7 +20,7 @@ import java.util.List;
 @Service
 public class HotelesService implements IHotelesService {
     @Autowired
-    HotelesRepository hotelesRepository;
+    IHotelesRepository hotelesRepository;
 
     public List<HotelAvailableDto> searchAll(){
 
