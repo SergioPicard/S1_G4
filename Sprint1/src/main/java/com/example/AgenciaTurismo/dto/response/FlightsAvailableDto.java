@@ -10,7 +10,6 @@ import java.time.LocalDate;
 @Data
 public class FlightsAvailableDto {
     private String nroVuelo;
-
     private String origen;
     private String destino;
     private String tipoAsiento;

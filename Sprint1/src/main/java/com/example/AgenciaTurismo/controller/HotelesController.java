@@ -4,6 +4,7 @@ import com.example.AgenciaTurismo.dto.request.BookingRequestDto;
 import com.example.AgenciaTurismo.dto.response.BookingResponseDto;
 import com.example.AgenciaTurismo.dto.response.HotelAvailableDto;
 import com.example.AgenciaTurismo.service.HotelesService;
+import com.example.AgenciaTurismo.service.IHotelesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +16,7 @@ import java.util.List;
 @RequestMapping("/api/v1/")
 public class HotelesController {
     @Autowired
-    HotelesService hotelesService;
+    IHotelesService hotelesService;
 
     @GetMapping("/hotels")
     public List<HotelAvailableDto> searchAllHotels(){

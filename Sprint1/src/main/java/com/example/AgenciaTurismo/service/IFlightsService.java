@@ -9,12 +9,12 @@ import java.util.List;
 
 public interface IFlightsService {
 
-    public List<FlightsAvailableDto> searchAll();
+    List<FlightsAvailableDto> searchAll();
 
 
-    public List<FlightsAvailableDto> filterFlights(LocalDate fechaIda, LocalDate fechaVuelta, String origen, String destino);
+    List<FlightsAvailableDto> filterFlights(LocalDate fechaIda, LocalDate fechaVuelta, String origen, String destino);
 
 
-    public FlightResponseDto flightReservationResponse(FlightReservationReqDto flightReservationReqDto);
+    FlightResponseDto flightReservationResponse(FlightReservationReqDto flightReservationReqDto);
 
 }
