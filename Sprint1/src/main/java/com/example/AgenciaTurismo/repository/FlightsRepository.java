@@ -17,10 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Repository
-public class FlightsRepository {
-
-    List<FlightModel> flights = new ArrayList<>();
-
+public class FlightsRepository implements IFlightsRepository{
     List<FlightsAvailableDto> flightsAvailable = new ArrayList<>();
 
     public FlightsRepository(){

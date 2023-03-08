@@ -8,6 +8,7 @@ import com.example.AgenciaTurismo.dto.response.StatusCodeDto;
 import com.example.AgenciaTurismo.exceptions.SinHotelesException;
 import com.example.AgenciaTurismo.models.HotelModel;
 import com.example.AgenciaTurismo.repository.HotelesRepository;
+import com.example.AgenciaTurismo.repository.IHotelesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,18 +31,9 @@ public class HotelesService implements IHotelesService {
 
         List<HotelAvailableDto> hotelAvailable = hotelesRepository.filterHotelsRep(dateFrom, dateTo, destination);
 
-        BookingRequestDto habitacionCapacidad = new BookingRequestDto();
-
         if(hotelAvailable.isEmpty()){
             throw new SinHotelesException("No se encontraron hoteles disponibles en esta fecha.");
         }
-
-
-       /* for (HotelAvailableDto habitacion: hotelAvailable) {
-            if (habitacion.getTipoHabitacion().equalsIgnoreCase("Double")) {
-                if (habitacionCapacidad.getBooking().getPeopleAmount())
-            }
-        }*/
 
         return hotelAvailable;
     }
@@ -61,6 +53,7 @@ public class HotelesService implements IHotelesService {
         String roomSelect = bookingRequest.getBooking().getRoomType().toUpperCase();
 
         int peopleAmount = bookingRequest.getBooking().getPeopleAmount();
+        int people = bookingRequest.getBooking().getPeople().size();
 
         boolean destiny = bookedHotel.getLugar().equalsIgnoreCase(bookingRequest.getBooking().getDestination());
 
@@ -79,36 +72,52 @@ public class HotelesService implements IHotelesService {
         if (roomSelect.equalsIgnoreCase(roomAvailable)){
         if (peopleAmount != 0 ){
             // SI ES MÁS DE UNA PERSONA, SEGUIMOS
-        switch (roomSelect){
-            //INICIAMOS SWTICH PARA LOS 4 TIPO DE HABITACIONES EXISTENTES ENTRE TODOS LOS HOTELES
-            case "SINGLE":{
-                if (peopleAmount > 1){
-                    throw new SinHotelesException("No puede ingresar " + peopleAmount + " personas en una habitación tipo Single." );
+
+            switch (roomSelect){
+                //INICIAMOS SWTICH PARA LOS 4 TIPO DE HABITACIONES EXISTENTES ENTRE TODOS LOS HOTELES
+                case "SINGLE":{
+                    if (peopleAmount > 1){
+                        throw new SinHotelesException("No puede ingresar " + peopleAmount + " personas en una habitación tipo Single." );
+                    }
+                    break;
                 }
-                break;
-            }
-            case "DOBLE":{
-                if (peopleAmount > 2){
-                    throw new SinHotelesException("No puede ingresar " + peopleAmount + " personas en una habitación tipo Doble." );
+                case "DOBLE":{
+                    if (peopleAmount > 2){
+                        throw new SinHotelesException("No puede ingresar " + peopleAmount + " personas en una habitación tipo Doble." );
+                    }
+                    break;
                 }
-                break;
-            }
-            case "TRIPLE":{
-                if (peopleAmount > 3){
-                    throw new SinHotelesException("No puede ingresar " + peopleAmount + " personas en una habitación tipo Triple." );
+                case "TRIPLE":{
+                    if (peopleAmount > 3){
+                        throw new SinHotelesException("No puede ingresar " + peopleAmount + " personas en una habitación tipo Triple." );
+                    }
+                    break;
                 }
-                break;
-            }
-            case "MÚLTIPLE":{
-                if (peopleAmount > 4){
-                    throw new SinHotelesException("No puede ingresar " + peopleAmount + " personas en una habitación tipo Múltiple (máximo 4)." );
+                case "MÚLTIPLE":{
+                    if (peopleAmount > 4){
+                        throw new SinHotelesException("No puede ingresar " + peopleAmount + " personas en una habitación tipo Múltiple (máximo 4)." );
+                    }
+                    break;
                 }
-                break;
+                //UN DEFAULT AL QUE NUNCA VAMOS A LLEGAR
+                default: {
+                    throw new SinHotelesException("Si sale esto, rompí algo");
+                }
             }
-            //UN DEFAULT AL QUE NUNCA VAMOS A LLEGAR
-            default: {
-                throw new SinHotelesException("Si sale esto, rompí algo");
-            }
+        if (peopleAmount == people){
+            // SI CONICIDE LA CANTIDAD DE HUESPEDES CON LA CANTIDAD DE PERSONAS INGRESADA
+
+            booking.setHotelCode(bookingRequest.getBooking().getHotelCode());
+            booking.setPeopleAmount(bookingRequest.getBooking().getPeopleAmount());
+            booking.setRoomType(bookingRequest.getBooking().getRoomType().toUpperCase());
+            booking.setPeople(bookingRequest.getBooking().getPeople());
+            booking.setDateFrom(bookingRequest.getBooking().getDateFrom());
+            booking.setDatoTo(bookingRequest.getBooking().getDatoTo());
+            booking.setDestination(bookedHotel.getLugar());
+
+        // EN CASO QUE LA CANTIDAD DE PERSONAS NO COINCIDA CON EL DETALLE DE LAS PERSONAS.
+        }else {
+            throw new SinHotelesException("El número de huéspedes no coincide con la cantidad de personas ingresada.");
         }
         // EN CASO DE QUE SE COLOQUE 0 EN LAS PERSONAS TOTALES
          } else {
@@ -130,30 +139,18 @@ public class HotelesService implements IHotelesService {
                     + bookedHotel.getDisponibleHasta());
         }
 
-                booking.setHotelCode(bookingRequest.getBooking().getHotelCode());
-                booking.setPeopleAmount(bookingRequest.getBooking().getPeopleAmount());
-                booking.setRoomType(bookingRequest.getBooking().getRoomType().toUpperCase());
-                booking.setPeople(bookingRequest.getBooking().getPeople());
-                booking.setDateFrom(bookingRequest.getBooking().getDateFrom());
-                booking.setDatoTo(bookingRequest.getBooking().getDatoTo());
-                booking.setDestination(bookedHotel.getLugar());
+        //CALCULO DE CANTIDAD DE DIAS DE DIF
+        int bookingDays = bookingRequest.getBooking().getDatoTo().getDayOfYear() - bookingRequest.getBooking().getDateFrom().getDayOfYear();
 
 
-                //CALCULO DE CANTIDAD DE DIAS DE DIF
-                int bookingDays = bookingRequest.getBooking().getDatoTo().getDayOfYear() - bookingRequest.getBooking().getDateFrom().getDayOfYear();
-                /*Integer bookingDays = Period.between(bookingRequest.getBooking().getDateFrom(),
-                        bookingRequest.getBooking().getDatoTo()).getDays();*/
-
-                System.out.println(bookingDays);
-
-                //SETEO DEL RESPONSE
-                response.setBooking(booking);
-                response.setUserName(bookingRequest.getUserName());
-                response.setStatus(new StatusCodeDto(200,"Reserva Satisfactoria"));
-                response.setTotal(bookedHotel.getPrecioNoche() * bookingDays);
+        //SETEO DEL RESPONSE
+        response.setBooking(booking);
+        response.setUserName(bookingRequest.getUserName());
+        response.setStatus(new StatusCodeDto(200,"Reserva Satisfactoria"));
+        response.setTotal(bookedHotel.getPrecioNoche() * bookingDays);
 
 
-            return response;
+        return response;
     }
 
 }

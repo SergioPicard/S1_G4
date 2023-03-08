@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface IHotelesService {
 
-    List<HotelAvailableDto> searchAll();
+     List<HotelAvailableDto> searchAll();
 
      List<HotelAvailableDto> filterHotels(LocalDate dateFrom, LocalDate dateTo, String destination);
 
