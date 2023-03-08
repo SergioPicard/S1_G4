@@ -63,7 +63,7 @@ public class HotelesService implements IHotelesService {
         boolean dateEqualFrom = bookedHotel.getDisponibleDesde().isEqual(bookingRequest.getBooking().getDateFrom());
         boolean dateEqualTo = bookedHotel.getDisponibleHasta().isEqual(bookingRequest.getBooking().getDatoTo());
 
-        
+        if (!bookingRequest.getUserName().isEmpty()){
         //VERIFICAMOS DISPONIBILIDAD EN ESAS FECHAS
         if (!dateFrom && !dateTo || dateEqualFrom && dateEqualTo){
             //VERIFICAMOS DE QUE EL DESTINO SOLICITADO ESTÉ EN EL MISMO LUGAR QUE EL HOTEL
@@ -137,6 +137,9 @@ public class HotelesService implements IHotelesService {
         } else {
             throw new SinHotelesException("El Hotel '" + bookedHotel.getNombre() + "' se encuentra dispobile desde el " + bookedHotel.getDisponibleDesde() + " hasta el "
                     + bookedHotel.getDisponibleHasta());
+        }
+        } else{
+            throw new SinHotelesException("Debe ingresar un usuario.");
         }
 
         //CALCULO DE CANTIDAD DE DIAS DE DIF

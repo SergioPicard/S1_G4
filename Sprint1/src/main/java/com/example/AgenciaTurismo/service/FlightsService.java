@@ -63,10 +63,8 @@ public class FlightsService implements IFlightsService {
         String seatTypeAvailable = bookedFlight.getTipoAsiento().toUpperCase();
         String seatTypeSelect = flightReservationReqDto.getFlightReservation().getSeatType().toUpperCase();
 
-
+        if (!flightReservationReqDto.getUserName().isEmpty()){
         if (dateFromEqual && dateToEqual) {
-
-            String mensaje = "Todo bien";
             if (destiny && origin){
                 if (seatTypeSelect.equalsIgnoreCase(seatTypeAvailable)){
                     if (peopleAmount != 0 ) {
@@ -94,6 +92,9 @@ public class FlightsService implements IFlightsService {
                 } else {
                  throw new VuelosException("El vuelo número '" + bookedFlight.getNroVuelo()+ "' se encuentra dispobile desde el " + bookedFlight.getFechaIda() + " hasta el "
                     + bookedFlight.getFechaVuelta());}
+                } else {
+                    throw new VuelosException("Debe ingresar un nombre de usuario.");
+                }
 
 
         //CALCULO DEL TOTAL DE LA COMPRA
