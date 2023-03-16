@@ -18,5 +18,15 @@
     "disponibleDesde": "2022-02-10",
     "disponibleHasta": "2022-03-23",
     "reservado": false
+  },
+  {
+    "codigoHotel": "HB-0001",
+    "nombre": "Hotel Bristol",
+    "lugar": "Buenos Aires",
+    "tipoHabitacion": "Single",
+    "precioNoche": 5435.0,
+    "disponibleDesde": "2022-02-10",
+    "disponibleHasta": "2022-03-19",
+    "reservado": false
   }
 ]
