@@ -63,6 +63,8 @@ public class HotelesService implements IHotelesService {
         boolean dateEqualFrom = bookedHotel.getDisponibleDesde().isEqual(bookingRequest.getBooking().getDateFrom());
         boolean dateEqualTo = bookedHotel.getDisponibleHasta().isEqual(bookingRequest.getBooking().getDatoTo());
 
+
+
         if (!bookingRequest.getUserName().isEmpty()){
         //VERIFICAMOS DISPONIBILIDAD EN ESAS FECHAS
         if (!dateFrom && !dateTo || dateEqualFrom && dateEqualTo){

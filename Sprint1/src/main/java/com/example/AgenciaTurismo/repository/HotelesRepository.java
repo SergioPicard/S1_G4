@@ -1,5 +1,6 @@
 package com.example.AgenciaTurismo.repository;
 import com.example.AgenciaTurismo.dto.response.FlightsAvailableDto;
+import com.example.AgenciaTurismo.exceptions.SinHotelesException;
 import com.example.AgenciaTurismo.models.FlightModel;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -53,6 +54,7 @@ public class HotelesRepository implements IHotelesRepository{
         }
 
         return hoteles;
+
     }
 
     public List<HotelAvailableDto> findAll(){
