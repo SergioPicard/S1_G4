@@ -49,7 +49,7 @@
     "disponibleHasta": "2022-05-23",
     "reservado": false
   },
-{
+  {
     "codigoHotel": "SH-0001",
     "nombre": "Sheraton 2",
     "lugar": "Tucumán",
@@ -58,8 +58,8 @@
     "disponibleDesde": "2022-01-02",
     "disponibleHasta": "2022-02-19",
     "reservado": false
-},
-{
+  },
+  {
     "codigoHotel": "SE-0001",
     "nombre": "Selina",
     "lugar": "Bogotá",
@@ -68,8 +68,8 @@
     "disponibleDesde": "2022-01-23",
     "disponibleHasta": "2022-11-23",
     "reservado": false
-},
-{
+  },
+  {
     "codigoHotel": "SE-0002",
     "nombre": "Selina 2",
     "lugar": "Bogotá",
@@ -78,8 +78,8 @@
     "disponibleDesde": "2022-01-23",
     "disponibleHasta": "2022-10-15",
     "reservado": false
-},
-{
+  },
+  {
     "codigoHotel": "EC-0003",
     "nombre": "El Campín",
     "lugar": "Bogotá",
@@ -88,8 +88,8 @@
     "disponibleDesde": "2022-02-15",
     "disponibleHasta": "2022-03-27",
     "reservado": false
-},
-{
+  },
+  {
     "codigoHotel": "CP-0004",
     "nombre": "Central Plaza",
     "lugar": "Medellín",
@@ -98,8 +98,8 @@
     "disponibleDesde": "2022-03-01",
     "disponibleHasta": "2022-04-17",
     "reservado": false
-},
-{
+  },
+  {
     "codigoHotel": "CP-0002",
     "nombre": "Central Plaza 2",
     "lugar": "Medellín",
@@ -108,8 +108,8 @@
     "disponibleDesde": "2022-02-10",
     "disponibleHasta": "2022-03-20",
     "reservado": false
-},
-{
+  },
+  {
     "codigoHotel": "BG-0004",
     "nombre": "Bocagrande",
     "lugar": "Cartagena",
@@ -118,4 +118,4 @@
     "disponibleDesde": "2022-04-17",
     "disponibleHasta": "2022-06-22",
     "reservado": false
-}]
+  }]
