@@ -16,6 +16,8 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class HotelesService implements IHotelesService {
@@ -27,10 +29,17 @@ public class HotelesService implements IHotelesService {
         return hotelesRepository.findAll();
     }
 
+
     public List<HotelAvailableDto> filterHotels(LocalDate dateFrom, LocalDate dateTo, String destination){
 
-        List<HotelAvailableDto> hotelAvailable = hotelesRepository.filterHotelsRep(dateFrom, dateTo, destination);
+        List<HotelAvailableDto> allHotels = hotelesRepository.findAll();
+        List<HotelAvailableDto> destinationStatus = allHotels.stream().filter(hotel -> Objects.equals(hotel.getLugar(), destination)).collect(Collectors.toList());
 
+        if (destinationStatus.isEmpty()){
+            throw new SinHotelesException("No se encontraron hoteles disponibles en esta fecha por el destino.");
+        }
+
+        List<HotelAvailableDto> hotelAvailable = hotelesRepository.filterHotelsRep(dateFrom, dateTo, destination);
         if(hotelAvailable.isEmpty()){
             throw new SinHotelesException("No se encontraron hoteles disponibles en esta fecha.");
         }
@@ -66,6 +75,7 @@ public class HotelesService implements IHotelesService {
 
 
         if (!bookingRequest.getUserName().isEmpty()){
+
         //VERIFICAMOS DISPONIBILIDAD EN ESAS FECHAS
         if (!dateFrom && !dateTo || dateEqualFrom && dateEqualTo){
             //VERIFICAMOS DE QUE EL DESTINO SOLICITADO ESTÉ EN EL MISMO LUGAR QUE EL HOTEL
