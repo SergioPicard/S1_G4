@@ -12,7 +12,7 @@ public class HotelResponseDtoFactory {
 
         return BookingResponseDto.builder()
                 .userName("lucianoefesta@hotmail.com")
-                .total(239400.0)
+                .total(263340.0)
                 .status(getStatus())
                 .booking(getBookingHotel())
                 .build();

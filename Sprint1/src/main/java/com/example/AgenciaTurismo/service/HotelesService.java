@@ -25,6 +25,9 @@ public class HotelesService implements IHotelesService {
     @Autowired
     IHotelesRepository hotelesRepository;
 
+
+
+
     public List<HotelAvailableDto> searchAll(){
 
         return hotelesRepository.findAll();
@@ -32,6 +35,23 @@ public class HotelesService implements IHotelesService {
 
 
     public List<HotelAvailableDto> filterHotels(LocalDate dateFrom, LocalDate dateTo, String destination) {
+
+        List<HotelAvailableDto> allHotels = hotelesRepository.findAll();
+        List<HotelAvailableDto> destinationStatus = allHotels.stream().filter(hotel -> Objects.equals(hotel.getLugar(), destination)).collect(Collectors.toList());
+        List<HotelAvailableDto> dateFromStatus = destinationStatus.stream().filter(hotel -> hotel.getDisponibleDesde().isAfter(dateFrom)).collect(Collectors.toList());
+        List<HotelAvailableDto> dateToStatus = destinationStatus.stream().filter(hotel -> hotel.getDisponibleHasta().isBefore(dateTo)).collect(Collectors.toList());
+        List<HotelAvailableDto> dateEqualFromStatus = destinationStatus.stream().filter(hotel -> hotel.getDisponibleDesde().equals(dateFrom)).collect(Collectors.toList());
+        List<HotelAvailableDto> dateEqualToStatus = destinationStatus.stream().filter(hotel -> hotel.getDisponibleHasta().equals(dateTo)).collect(Collectors.toList());
+
+        // VALIDACION POR DESTINO
+        if (destinationStatus.isEmpty()){
+            throw new SinHotelesException("El destino elegido no existe.");
+        }
+
+        //VALIDACION POR FECHA
+        if (!dateFromStatus.isEmpty() && !dateToStatus.isEmpty() || dateEqualFromStatus.isEmpty() && dateEqualToStatus.isEmpty()) {
+            throw new SinHotelesException("No se encontraron hoteles disponibles en esta fecha.");
+        }
 
         List<HotelAvailableDto> hotelAvailable = hotelesRepository.filterHotelsRep(dateFrom, dateTo, destination);
 
@@ -105,7 +125,8 @@ public class HotelesService implements IHotelesService {
                 }
                 case "MÚLTIPLE":{
                     if (peopleAmount > 4){
-                        throw new SinHotelesException("No puede ingresar " + peopleAmount + " personas en una habitación tipo Múltiple (máximo 4)." );
+                        throw new SinHotelesException("El tipo de habitación seleccionada no coincide con la cantidad de personas que se alojarán en ella. " +
+                                "No puede ingresar " + peopleAmount + " personas en una habitación tipo Múltiple (máximo 4).");
                     }
                     break;
                 }
@@ -152,11 +173,29 @@ public class HotelesService implements IHotelesService {
             throw new SinHotelesException("Debe ingresar un usuario.");
         }
 
+
+
+
+
+        double bookingDays = bookingRequest.getBooking().getDatoTo().getDayOfYear() - bookingRequest.getBooking().getDateFrom().getDayOfYear();
         //CALCULO DE CANTIDAD DE DIAS DE DIF
-        int bookingDays = bookingRequest.getBooking().getDatoTo().getDayOfYear() - bookingRequest.getBooking().getDateFrom().getDayOfYear();
+
+        if (bookingRequest.getBooking().getPaymentMethod().getType().equalsIgnoreCase("debitcard")){
+            bookingDays = bookingRequest.getBooking().getDatoTo().getDayOfYear() - bookingRequest.getBooking().getDateFrom().getDayOfYear();
+        }
+        if (bookingRequest.getBooking().getPaymentMethod().getType().equalsIgnoreCase("creditcard")){
+            int cuotas = bookingRequest.getBooking().getPaymentMethod().getDues();
+            if (cuotas <= 3){
+                 bookingDays = bookingDays * 1.05;
+
+            } else{
+                 bookingDays = bookingDays * 1.10;
+            }
+        }
 
 
-        //SETEO DEL RESPONSE
+
+            //SETEO DEL RESPONSE
         response.setBooking(booking);
         response.setUserName(bookingRequest.getUserName());
         response.setStatus(new StatusCodeDto(200,"Reserva Satisfactoria"));
@@ -165,5 +204,4 @@ public class HotelesService implements IHotelesService {
 
         return response;
     }
-
 }

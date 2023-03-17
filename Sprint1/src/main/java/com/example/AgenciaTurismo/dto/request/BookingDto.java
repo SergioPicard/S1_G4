@@ -33,7 +33,7 @@ public class BookingDto {
     @NotEmpty(message = "El campo está vacio.")
     private String hotelCode;
 
-    @Positive(message = "Debe ingresar al menos 1 persona.")
+    @Positive(message = "La cantidad de personas debe ser un valor numérico.")
     private Integer peopleAmount;
 
     @NotBlank(message = "El campo está vacio.")
@@ -43,6 +43,6 @@ public class BookingDto {
     private List<@Valid PeopleDto> people;
 
     @NotNull//un objeto no puede estar vacio
-    private PaymentMethodDto paymentMethod;
+    private @Valid PaymentMethodDto paymentMethod;
 }
 
