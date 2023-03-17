@@ -56,7 +56,7 @@ public class FlightsControllerIntegrationTest {
         ResultMatcher bodyExpected = MockMvcResultMatchers.content().json(
                 writer.writeValueAsString(expected)
         );
-        
+
         //ContentTypeExpected
         ResultMatcher contentTypeExpected = MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON);
 
@@ -66,6 +66,85 @@ public class FlightsControllerIntegrationTest {
                 .andExpect(statusExpected)
                 .andExpect(bodyExpected)
                 .andExpect(contentTypeExpected);
+    }
+
+    @Test
+    public void filterFlights() throws Exception {
+
+        // arrange
+        List<FlightsAvailableDto> expected = List.of(FlightAvailableDtoFactory.getBapi());
+        String origin = FlightAvailableDtoFactory.getBapi().getOrigen();
+        String destin = FlightAvailableDtoFactory.getBapi().getDestino();
+        //LocalDate fechaIda = LocalDate.parse(FlightAvailableDtoFactory.getBapi().getFechaIda().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+        //LocalDate fechaVuelta = LocalDate.parse(FlightAvailableDtoFactory.getBapi().getFechaVuelta().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+
+        String fechaIda = "10/02/2022";
+        String fechaVuelta = "15/02/2022";
+
+        //REQUEST CON MockHttpServletRequestBuilder & MockMvcRequestBuilders (librerias)
+        //Declaramos la request que vamos a llamar o hacer
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get("/api/v1/flight")
+                .param("origin", origin)
+                .param("destination", destin)
+                .param("dateFrom", String.valueOf(fechaIda))
+                .param("dateTo", String.valueOf(fechaVuelta));
+
+
+        //Los 3 EXPECTED con ResultMatcher & MockMvcResultMatchers
+        //StatusExpected
+
+        ResultMatcher statusExpected = MockMvcResultMatchers.status().isOk();
+
+        //BodyExpected
+
+        ResultMatcher bodyExpected = MockMvcResultMatchers.content().json(
+                writer.writeValueAsString(expected)
+        );
+
+        System.out.println(bodyExpected);
+
+
+
+
+        //ContentTypeExpected
+
+        ResultMatcher contentTypeExpected = MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON);
+
+        // act & assert con mockmvc
+        mockMvc.perform(request)
+                .andDo(MockMvcResultHandlers.print()) //Devuelve el request de manera gráfica
+                .andExpect(statusExpected)
+                .andExpect(bodyExpected)
+                .andExpect(contentTypeExpected);
+    }
+
+    @Test
+    public void booking() throws Exception {
+        // arrange
+
+        FlightReservationReqDto flightReservationReqDto = FlightReservationReqFactory.getFlightReservationDto();
+
+        //response
+        FlightResponseDto expectedBody = FlightResponseDtoFactory.getResponse();
+
+        // request
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .post("/api/v1/flight-reservation/")
+                .content(writer.writeValueAsString(flightReservationReqDto))
+                .contentType(MediaType.APPLICATION_JSON);
+
+
+        // resultMatcher 3 expected bodyExpected - statusExpected - contentTypeExpected
+        ResultMatcher bodyExpected = MockMvcResultMatchers.content().json(writer.writeValueAsString(expectedBody));
+        ResultMatcher statusExpected = MockMvcResultMatchers.status().isOk();
+        ResultMatcher contentTypeExpected = MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON);
+
+        // act & assert whit mockMvc
+        mockMvc.perform(request)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpectAll(bodyExpected, statusExpected, contentTypeExpected);
+
     }
 
 }
