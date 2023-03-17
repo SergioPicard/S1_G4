@@ -47,8 +47,8 @@ public class HotelReservationReqFactory {
     public static PaymentMethodDto getPaymentMethod(){
         return PaymentMethodDto.builder()
                 .dues(6)
-                .type("Credit Card")
-                .number("4545 6565 9898 7878")
+                .type("creditcard")
+                .number("4545656598987878")
                 .build();
     }
 

@@ -25,6 +25,9 @@ public class HotelesService implements IHotelesService {
     @Autowired
     IHotelesRepository hotelesRepository;
 
+
+
+
     public List<HotelAvailableDto> searchAll(){
 
         return hotelesRepository.findAll();
@@ -32,6 +35,23 @@ public class HotelesService implements IHotelesService {
 
 
     public List<HotelAvailableDto> filterHotels(LocalDate dateFrom, LocalDate dateTo, String destination) {
+
+        List<HotelAvailableDto> allHotels = hotelesRepository.findAll();
+        List<HotelAvailableDto> destinationStatus = allHotels.stream().filter(hotel -> Objects.equals(hotel.getLugar(), destination)).collect(Collectors.toList());
+        List<HotelAvailableDto> dateFromStatus = destinationStatus.stream().filter(hotel -> hotel.getDisponibleDesde().isAfter(dateFrom)).collect(Collectors.toList());
+        List<HotelAvailableDto> dateToStatus = destinationStatus.stream().filter(hotel -> hotel.getDisponibleHasta().isBefore(dateTo)).collect(Collectors.toList());
+        List<HotelAvailableDto> dateEqualFromStatus = destinationStatus.stream().filter(hotel -> hotel.getDisponibleDesde().equals(dateFrom)).collect(Collectors.toList());
+        List<HotelAvailableDto> dateEqualToStatus = destinationStatus.stream().filter(hotel -> hotel.getDisponibleHasta().equals(dateTo)).collect(Collectors.toList());
+
+        // VALIDACION POR DESTINO
+        if (destinationStatus.isEmpty()){
+            throw new SinHotelesException("El destino elegido no existe.");
+        }
+
+        //VALIDACION POR FECHA
+        if (!dateFromStatus.isEmpty() && !dateToStatus.isEmpty() || dateEqualFromStatus.isEmpty() && dateEqualToStatus.isEmpty()) {
+            throw new SinHotelesException("No se encontraron hoteles disponibles en esta fecha.");
+        }
 
         List<HotelAvailableDto> hotelAvailable = hotelesRepository.filterHotelsRep(dateFrom, dateTo, destination);
 
@@ -153,20 +173,23 @@ public class HotelesService implements IHotelesService {
             throw new SinHotelesException("Debe ingresar un usuario.");
         }
 
-        double bookingDays = 0;
 
+
+
+
+        double bookingDays = bookingRequest.getBooking().getDatoTo().getDayOfYear() - bookingRequest.getBooking().getDateFrom().getDayOfYear();
         //CALCULO DE CANTIDAD DE DIAS DE DIF
-        if (bookingRequest.getBooking().getPaymentMethod().getType().equalsIgnoreCase("debitcard")){
 
-        bookingDays = bookingRequest.getBooking().getDatoTo().getDayOfYear() - bookingRequest.getBooking().getDateFrom().getDayOfYear();
+        if (bookingRequest.getBooking().getPaymentMethod().getType().equalsIgnoreCase("debitcard")){
+            bookingDays = bookingRequest.getBooking().getDatoTo().getDayOfYear() - bookingRequest.getBooking().getDateFrom().getDayOfYear();
         }
         if (bookingRequest.getBooking().getPaymentMethod().getType().equalsIgnoreCase("creditcard")){
             int cuotas = bookingRequest.getBooking().getPaymentMethod().getDues();
             if (cuotas <= 3){
-                bookingDays = (bookingRequest.getBooking().getDatoTo().getDayOfYear() - bookingRequest.getBooking().getDateFrom().getDayOfYear()) * 1.05;
+                 bookingDays = bookingDays * 1.05;
 
             } else{
-                bookingDays = (bookingRequest.getBooking().getDatoTo().getDayOfYear() - bookingRequest.getBooking().getDateFrom().getDayOfYear()) * 1.10;
+                 bookingDays = bookingDays * 1.10;
             }
         }
 
@@ -181,5 +204,4 @@ public class HotelesService implements IHotelesService {
 
         return response;
     }
-
 }

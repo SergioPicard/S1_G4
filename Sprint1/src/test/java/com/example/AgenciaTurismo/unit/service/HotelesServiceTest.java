@@ -6,6 +6,7 @@ import com.example.AgenciaTurismo.dto.response.BookingResponseDto;
 import com.example.AgenciaTurismo.dto.response.FlightResponseDto;
 import com.example.AgenciaTurismo.dto.response.FlightsAvailableDto;
 import com.example.AgenciaTurismo.dto.response.HotelAvailableDto;
+import com.example.AgenciaTurismo.exceptions.SinHotelesException;
 import com.example.AgenciaTurismo.repository.IFlightsRepository;
 import com.example.AgenciaTurismo.repository.IHotelesRepository;
 import com.example.AgenciaTurismo.service.FlightsService;
@@ -28,6 +29,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class HotelesServiceTest {
+
+
+
 
     @Mock
     IHotelesRepository hotelesRepository;
@@ -59,6 +63,8 @@ class HotelesServiceTest {
         System.out.println(expected);
 
         // act
+        Mockito.when(hotelesRepository.findAll())
+                .thenReturn(HotelAvailableDtoFactory.listHotels());
         Mockito.when(hotelesRepository.filterHotelsRep(fechaDesde,fechaHasta,destino))
                 .thenReturn(List.of(HotelAvailableDtoFactory.cataratasHotel()));
 
@@ -74,19 +80,18 @@ class HotelesServiceTest {
     public void filterHotelNotFound(){
         // arrange
         LocalDate desde = LocalDate.of(2022,02,10);
-        LocalDate hasta = LocalDate.of(2022,03,20);
+        LocalDate hasta = LocalDate.of(2022,03,19);
         String destino = "Córdoba";
 
-        Mockito.when(hotelesRepository.filterHotelsRep(desde,hasta,destino))
+        Mockito.when(hotelesRepository.findAll())
                 .thenReturn(List.of());
 
-
         // act && assert
-        Assertions.assertThrows(RuntimeException.class, ()-> hotelesService
+        Assertions.assertThrows(SinHotelesException.class, ()-> hotelesService
                 .filterHotels(desde,hasta,destino));
 
     }
-
+    
 
     @Test
     void bookingResponse() {
@@ -99,6 +104,9 @@ class HotelesServiceTest {
         // act
         Mockito.when(hotelesRepository.findHotel(hotel.getBooking().getHotelCode())).thenReturn(hotelAvailable);
         var result = hotelesService.bookingResponse(hotel);
+
+        System.out.println(result);
+        System.out.println(expected);
 
         // assert
         Assertions.assertEquals(expected,result);

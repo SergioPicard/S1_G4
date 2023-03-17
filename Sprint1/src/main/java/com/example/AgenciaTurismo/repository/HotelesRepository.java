@@ -64,23 +64,6 @@ public class HotelesRepository implements IHotelesRepository{
 
     public List<HotelAvailableDto> filterHotelsRep(LocalDate dateFrom, LocalDate dateTo, String destination){
 
-        List<HotelAvailableDto> allHotels = findAll();
-        List<HotelAvailableDto> destinationStatus = allHotels.stream().filter(hotel -> Objects.equals(hotel.getLugar(), destination)).collect(Collectors.toList());
-
-        List<HotelAvailableDto> dateFromStatus = destinationStatus.stream().filter(hotel -> hotel.getDisponibleDesde().isAfter(dateFrom)).collect(Collectors.toList());
-        List<HotelAvailableDto> dateToStatus = destinationStatus.stream().filter(hotel -> hotel.getDisponibleHasta().isBefore(dateTo)).collect(Collectors.toList());
-        List<HotelAvailableDto> dateEqualFromStatus = destinationStatus.stream().filter(hotel -> hotel.getDisponibleDesde().equals(dateFrom)).collect(Collectors.toList());
-        List<HotelAvailableDto> dateEqualToStatus = destinationStatus.stream().filter(hotel -> hotel.getDisponibleHasta().equals(dateTo)).collect(Collectors.toList());
-
-        // VALIDACION POR DESTINO
-        if (destinationStatus.isEmpty()){
-            throw new SinHotelesException("El destino elegido no existe.");
-        }
-        //VALIDACION POR FECHA
-        if (!dateFromStatus.isEmpty() && !dateToStatus.isEmpty() || dateEqualFromStatus.isEmpty() && dateEqualToStatus.isEmpty()) {
-            throw new SinHotelesException("No se encontraron hoteles disponibles en esta fecha.");
-        }
-
         return hotelsAvailable.stream().filter(hotel -> hotel.getLugar().equalsIgnoreCase(destination) &&
                 !hotel.getDisponibleDesde().isAfter(dateFrom) &&
                 !hotel.getDisponibleHasta().isBefore(dateTo) &&
@@ -88,6 +71,7 @@ public class HotelesRepository implements IHotelesRepository{
     }
 
     public HotelAvailableDto findHotel(String code){
+
         return hotelsAvailable.stream().filter(hotel -> hotel.getCodigoHotel().equalsIgnoreCase(code))
                 .findFirst().orElse(null);
 
