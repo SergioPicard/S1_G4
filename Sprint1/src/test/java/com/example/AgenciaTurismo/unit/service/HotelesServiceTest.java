@@ -89,9 +89,10 @@ class HotelesServiceTest {
         // act && assert
         Assertions.assertThrows(SinHotelesException.class, ()-> hotelesService
                 .filterHotels(desde,hasta,destino));
-
     }
-    
+
+
+
 
     @Test
     void bookingResponse() {
