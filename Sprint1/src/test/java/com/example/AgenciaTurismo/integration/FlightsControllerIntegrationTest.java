@@ -56,7 +56,7 @@ public class FlightsControllerIntegrationTest {
         ResultMatcher bodyExpected = MockMvcResultMatchers.content().json(
                 writer.writeValueAsString(expected)
         );
-        
+
         //ContentTypeExpected
         ResultMatcher contentTypeExpected = MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON);
 
@@ -146,8 +146,5 @@ public class FlightsControllerIntegrationTest {
                 .andExpectAll(bodyExpected, statusExpected, contentTypeExpected);
 
     }
-
-
-
 
 }
