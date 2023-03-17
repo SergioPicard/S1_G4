@@ -63,7 +63,7 @@ public class FlightsControllerIntegrationTest {
                 .andExpect(contentTypeExpected);
     }
 
-    /*@Test
+    @Test
     public void filterFlights() throws Exception {
 
         // arrange
@@ -99,6 +99,6 @@ public class FlightsControllerIntegrationTest {
                 .andExpect(statusExpected)
                 .andExpect(bodyExpected)
                 .andExpect(contentTypeExpected);
-    }*/
+    }
 
 }
