@@ -1,8 +1,11 @@
 package com.example.AgenciaTurismo.util;
 
+import com.example.AgenciaTurismo.dto.response.FlightsAvailableDto;
 import com.example.AgenciaTurismo.dto.response.HotelAvailableDto;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class HotelAvailableDtoFactory {
     public static HotelAvailableDto cataratasHotel(){
@@ -42,6 +45,15 @@ public class HotelAvailableDtoFactory {
                 .disponibleHasta(LocalDate.of(2022,03,19))
                 .reservado(false)
                 .build();
+    }
+
+    public static List<HotelAvailableDto> listHotels(){
+        List<HotelAvailableDto> list = new ArrayList<>();
+        list.add(cataratasHotel());
+        list.add(cataratasHotel2());
+        list.add(BristolHotel());
+
+        return list;
     }
 
 }

@@ -33,28 +33,8 @@ public class HotelesService implements IHotelesService {
 
     public List<HotelAvailableDto> filterHotels(LocalDate dateFrom, LocalDate dateTo, String destination) {
 
-        List<HotelAvailableDto> allHotels = hotelesRepository.findAll();
-        List<HotelAvailableDto> destinationStatus = allHotels.stream().filter(hotel -> Objects.equals(hotel.getLugar(), destination)).collect(Collectors.toList());
-
-        List<HotelAvailableDto> dateFromStatus = destinationStatus.stream().filter(hotel -> hotel.getDisponibleDesde().isAfter(dateFrom)).collect(Collectors.toList());
-        List<HotelAvailableDto> dateToStatus = destinationStatus.stream().filter(hotel -> hotel.getDisponibleHasta().isBefore(dateTo)).collect(Collectors.toList());
-        List<HotelAvailableDto> dateEqualFromStatus = destinationStatus.stream().filter(hotel -> hotel.getDisponibleDesde().equals(dateFrom)).collect(Collectors.toList());
-        List<HotelAvailableDto> dateEqualToStatus = destinationStatus.stream().filter(hotel -> hotel.getDisponibleHasta().equals(dateTo)).collect(Collectors.toList());
-
-
-        // VALIDACION POR DESTINO
-        if (destinationStatus.isEmpty()){
-            throw new SinHotelesException("No se encontraron hoteles disponibles en esta fecha por el destino.");
-        }
-        //VALIDACION POR FECHA
-        if (!dateFromStatus.isEmpty() && !dateToStatus.isEmpty() || dateEqualFromStatus.isEmpty() && dateEqualToStatus.isEmpty()) {
-            throw new SinHotelesException("No se encontraron hoteles disponibles en esta fecha.");
-        }
-        //TODO OK, CARGAMOS LA LISTA NUEVA
-
         List<HotelAvailableDto> hotelAvailable = hotelesRepository.filterHotelsRep(dateFrom, dateTo, destination);
 
-        // hay que borrar este isEmpty, ya que en teoría está validado arriba.
         if(hotelAvailable.isEmpty()){
             throw new SinHotelesException("No se encontraron hoteles disponibles en esta fecha.");
         }
