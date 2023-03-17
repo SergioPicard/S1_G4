@@ -12,7 +12,7 @@ import javax.validation.constraints.NotBlank;
 @Builder
 public class BookingRequestDto {
 
-    @Email(message = "Flaco, pone un email.")
+    @Email(message = "Por favor ingrese un e-mail válido.")
     private String userName;
     private @Valid BookingDto booking;
 

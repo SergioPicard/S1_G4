@@ -74,7 +74,7 @@ public class HotelesRepository implements IHotelesRepository{
 
         // VALIDACION POR DESTINO
         if (destinationStatus.isEmpty()){
-            throw new SinHotelesException("No se encontraron hoteles disponibles en esta fecha por el destino.");
+            throw new SinHotelesException("El destino elegido no existe.");
         }
         //VALIDACION POR FECHA
         if (!dateFromStatus.isEmpty() && !dateToStatus.isEmpty() || dateEqualFromStatus.isEmpty() && dateEqualToStatus.isEmpty()) {
