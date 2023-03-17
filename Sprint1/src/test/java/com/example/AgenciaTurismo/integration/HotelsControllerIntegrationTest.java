@@ -1,10 +1,15 @@
 package com.example.AgenciaTurismo.integration;
 
+import com.example.AgenciaTurismo.dto.request.BookingRequestDto;
+import com.example.AgenciaTurismo.dto.response.BookingResponseDto;
 import com.example.AgenciaTurismo.dto.response.FlightsAvailableDto;
 import com.example.AgenciaTurismo.dto.response.HotelAvailableDto;
 import com.example.AgenciaTurismo.repository.HotelesRepository;
 import com.example.AgenciaTurismo.util.FlightAvailableDtoFactory;
 import com.example.AgenciaTurismo.util.HotelAvailableDtoFactory;
+import com.example.AgenciaTurismo.util.HotelReservationReqFactory;
+import com.example.AgenciaTurismo.util.HotelResponseDtoFactory;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -101,6 +106,34 @@ public class HotelsControllerIntegrationTest {
         mockMvc.perform(request)
                 .andDo(MockMvcResultHandlers.print())
                 .andExpectAll(bodyExpected, statusExpected, contentTypeExpected);
+    }
+
+    @Test
+    public void booking() throws Exception {
+        // arrange
+
+        BookingRequestDto bookingRequest = HotelReservationReqFactory.getResponseReservationDto();
+
+        //response
+        BookingResponseDto expectedBody = HotelResponseDtoFactory.getResponse();
+
+        // request
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .post("/api/v1/booking/")
+                .content(writer.writeValueAsString(bookingRequest))
+                .contentType(MediaType.APPLICATION_JSON);
+
+
+        // resultMatcher 3 expected bodyExpected - statusExpected - contentTypeExpected
+        ResultMatcher bodyExpected = MockMvcResultMatchers.content().json(writer.writeValueAsString(expectedBody));
+        ResultMatcher statusExpected = MockMvcResultMatchers.status().isOk();
+        ResultMatcher contentTypeExpected = MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON);
+
+        // act & assert whit mockMvc
+        mockMvc.perform(request)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpectAll(bodyExpected, statusExpected, contentTypeExpected);
+
     }
 
 
