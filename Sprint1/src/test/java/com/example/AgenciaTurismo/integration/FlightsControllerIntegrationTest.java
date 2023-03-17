@@ -62,8 +62,7 @@ public class FlightsControllerIntegrationTest {
                 .andExpect(bodyExpected)
                 .andExpect(contentTypeExpected);
     }
-
-    /*@Test
+    /*/@Test
     public void filterFlights() throws Exception {
 
         // arrange
