@@ -1,5 +1,6 @@
 package com.example.AgenciaTurismo.service;
 
+import com.example.AgenciaTurismo.dto.request.BookingDto;
 import com.example.AgenciaTurismo.dto.request.BookingRequestDto;
 import com.example.AgenciaTurismo.dto.response.BookingResDto;
 import com.example.AgenciaTurismo.dto.response.BookingResponseDto;
@@ -16,6 +17,8 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class HotelesService implements IHotelesService {
@@ -27,7 +30,8 @@ public class HotelesService implements IHotelesService {
         return hotelesRepository.findAll();
     }
 
-    public List<HotelAvailableDto> filterHotels(LocalDate dateFrom, LocalDate dateTo, String destination){
+
+    public List<HotelAvailableDto> filterHotels(LocalDate dateFrom, LocalDate dateTo, String destination) {
 
         List<HotelAvailableDto> hotelAvailable = hotelesRepository.filterHotelsRep(dateFrom, dateTo, destination);
 
@@ -37,6 +41,9 @@ public class HotelesService implements IHotelesService {
 
         return hotelAvailable;
     }
+
+
+
 
     public BookingResponseDto bookingResponse(BookingRequestDto bookingRequest){
 
@@ -66,6 +73,7 @@ public class HotelesService implements IHotelesService {
 
 
         if (!bookingRequest.getUserName().isEmpty()){
+
         //VERIFICAMOS DISPONIBILIDAD EN ESAS FECHAS
         if (!dateFrom && !dateTo || dateEqualFrom && dateEqualTo){
             //VERIFICAMOS DE QUE EL DESTINO SOLICITADO ESTÉ EN EL MISMO LUGAR QUE EL HOTEL

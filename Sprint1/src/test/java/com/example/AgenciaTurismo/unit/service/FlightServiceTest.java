@@ -70,6 +70,9 @@ public class FlightServiceTest {
         String origen = "Buenos Aires";
         String destino = "Córdoba";
 
+        Mockito.when(flightsRepository.filterFlightRep(fechaIda,fechaVuelta,origen,destino))
+                .thenReturn(List.of());
+
         // act && assert
         Assertions.assertThrows(RuntimeException.class, ()-> flightsService
                 .filterFlights(fechaIda,fechaVuelta,origen,destino));

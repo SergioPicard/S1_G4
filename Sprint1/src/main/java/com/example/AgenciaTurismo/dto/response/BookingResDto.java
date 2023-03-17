@@ -2,6 +2,7 @@ package com.example.AgenciaTurismo.dto.response;
 
 import com.example.AgenciaTurismo.dto.request.PeopleDto;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +12,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Builder
+
 public class BookingResDto {
     private LocalDate dateFrom;
     private LocalDate datoTo;
