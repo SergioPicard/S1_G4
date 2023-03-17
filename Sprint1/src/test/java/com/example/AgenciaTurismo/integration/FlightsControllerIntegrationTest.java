@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cglib.core.Local;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -70,12 +71,15 @@ public class FlightsControllerIntegrationTest {
         List<FlightsAvailableDto> expected = List.of(FlightAvailableDtoFactory.getBapi());
         String origin = FlightAvailableDtoFactory.getBapi().getOrigen();
         String destin = FlightAvailableDtoFactory.getBapi().getDestino();
-        LocalDate fechaIda = FlightAvailableDtoFactory.getBapi().getFechaIda();
-        LocalDate fechaVuelta = FlightAvailableDtoFactory.getBapi().getFechaVuelta();
+        //LocalDate fechaIda = LocalDate.parse(FlightAvailableDtoFactory.getBapi().getFechaIda().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+        //LocalDate fechaVuelta = LocalDate.parse(FlightAvailableDtoFactory.getBapi().getFechaVuelta().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 
+        String fechaIda = "10/02/2022";
+        String fechaVuelta = "15/02/2022";
 
         //REQUEST CON MockHttpServletRequestBuilder & MockMvcRequestBuilders (librerias)
         //Declaramos la request que vamos a llamar o hacer
+
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get("/api/v1/flight")
                 .param("origin", origin)
                 .param("destination", destin)
@@ -85,12 +89,22 @@ public class FlightsControllerIntegrationTest {
 
         //Los 3 EXPECTED con ResultMatcher & MockMvcResultMatchers
         //StatusExpected
+
         ResultMatcher statusExpected = MockMvcResultMatchers.status().isOk();
+
         //BodyExpected
+
         ResultMatcher bodyExpected = MockMvcResultMatchers.content().json(
                 writer.writeValueAsString(expected)
         );
+
+        System.out.println(bodyExpected);
+
+
+
+
         //ContentTypeExpected
+
         ResultMatcher contentTypeExpected = MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON);
 
         // act & assert con mockmvc
