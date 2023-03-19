@@ -58,28 +58,6 @@ public class FlightsRepository implements IFlightsRepository{
     }
 
     public List<FlightsAvailableDto> filterFlightRep(LocalDate fechaIda, LocalDate fechaVuelta, String origen, String destino){
-        List<FlightsAvailableDto> allFlights = findAll();
-        List<FlightsAvailableDto> destinationStatus = allFlights.stream().filter(flight -> Objects.equals(flight.getDestino(), destino)).collect(Collectors.toList());
-        List<FlightsAvailableDto> originStatus = allFlights.stream().filter(flight -> Objects.equals(flight.getOrigen(), origen)).collect(Collectors.toList());
-        List<FlightsAvailableDto> dateEqualFromStatus = destinationStatus.stream().filter(flight -> flight.getFechaIda().equals(fechaIda)).collect(Collectors.toList());
-        List<FlightsAvailableDto> dateEqualToStatus = destinationStatus.stream().filter(flight -> flight.getFechaVuelta().equals(fechaVuelta)).collect(Collectors.toList());
-
-        // VALIDACION POR DESTINO
-        if (destinationStatus.isEmpty()){
-            throw new SinHotelesException("No se encontraron vuelos disponibles en esta fecha por el destino.");
-        }
-
-        // VALIDACION POR ORIGEN
-        if (originStatus.isEmpty()){
-            throw new SinHotelesException("No se encontraron vuelos disponibles en esta fecha por el origen.");
-        }
-
-
-        //VALIDACION POR FECHA
-        if ( dateEqualFromStatus.isEmpty() && dateEqualToStatus.isEmpty()) {
-            throw new SinHotelesException("No se encontraron vuelos disponibles en esta fecha.");
-        }
-
 
         return flightsAvailable.stream().filter(flight -> flight.getDestino().equalsIgnoreCase(destino) &&
                 !flight.getFechaIda().isAfter(fechaIda) &&
@@ -88,6 +66,7 @@ public class FlightsRepository implements IFlightsRepository{
     }
 
     public FlightsAvailableDto findFlight(String flightNumber, String seatType){
+
         return flightsAvailable.stream().filter(flight -> flight.getNroVuelo().equalsIgnoreCase(flightNumber) &&
                 flight.getTipoAsiento().equalsIgnoreCase(seatType)).findFirst().orElse(null);
 

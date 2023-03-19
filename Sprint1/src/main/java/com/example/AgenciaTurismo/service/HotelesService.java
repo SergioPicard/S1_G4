@@ -37,6 +37,7 @@ public class HotelesService implements IHotelesService {
     public List<HotelAvailableDto> filterHotels(LocalDate dateFrom, LocalDate dateTo, String destination) {
 
         List<HotelAvailableDto> allHotels = hotelesRepository.findAll();
+
         List<HotelAvailableDto> destinationStatus = allHotels.stream().filter(hotel -> Objects.equals(hotel.getLugar(), destination)).collect(Collectors.toList());
         List<HotelAvailableDto> dateFromStatus = destinationStatus.stream().filter(hotel -> hotel.getDisponibleDesde().isAfter(dateFrom)).collect(Collectors.toList());
         List<HotelAvailableDto> dateToStatus = destinationStatus.stream().filter(hotel -> hotel.getDisponibleHasta().isBefore(dateTo)).collect(Collectors.toList());
@@ -61,8 +62,6 @@ public class HotelesService implements IHotelesService {
 
         return hotelAvailable;
     }
-
-
 
 
     public BookingResponseDto bookingResponse(BookingRequestDto bookingRequest){
@@ -174,8 +173,7 @@ public class HotelesService implements IHotelesService {
         }
 
 
-
-
+        System.out.println(bookingRequest);
 
         double bookingDays = bookingRequest.getBooking().getDatoTo().getDayOfYear() - bookingRequest.getBooking().getDateFrom().getDayOfYear();
         //CALCULO DE CANTIDAD DE DIAS DE DIF
