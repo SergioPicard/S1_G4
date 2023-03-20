@@ -46,7 +46,7 @@ public class FlightResponseDtoFactory {
     public static StatusCodeDto getStatus(){
         return StatusCodeDto.builder()
                 .code(200)
-                .message("Reserva Satisfactoria")
+                .message("Reserva Satisfactoria. Por utilizar TC tiene un recargo del 10%. Su recargo es de: $650.0")
                 .build();
     }
 

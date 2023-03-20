@@ -17,7 +17,7 @@ public class PaymentMethodDto {
     @NotNull
     private String type;
     @Positive
-    @Size(max = 16, min = 16)
+    @Size(max = 19, min = 16)
     private String number;
     @Digits(integer = 1, fraction = 0, message = "Debe ser un número entero.")
     @Max(6)

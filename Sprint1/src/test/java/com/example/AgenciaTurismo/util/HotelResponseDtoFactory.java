@@ -43,7 +43,7 @@ public class HotelResponseDtoFactory {
     public static StatusCodeDto getStatus(){
         return StatusCodeDto.builder()
                 .code(200)
-                .message("Reserva Satisfactoria")
+                .message("Reserva Satisfactoria. Por utilizar TC tiene un recargo del 10%. Su recargo es de: $23940.0")
                 .build();
     }
 
