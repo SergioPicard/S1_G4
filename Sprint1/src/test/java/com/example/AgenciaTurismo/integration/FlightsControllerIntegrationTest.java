@@ -118,9 +118,6 @@ public class FlightsControllerIntegrationTest {
                 .andExpect(bodyExpected)
                 .andExpect(contentTypeExpected);
     }
-<<<<<<< HEAD
-=======
-
     @Test
     public void booking() throws Exception {
         // arrange
