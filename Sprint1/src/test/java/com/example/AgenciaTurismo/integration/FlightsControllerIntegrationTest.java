@@ -118,7 +118,6 @@ public class FlightsControllerIntegrationTest {
                 .andExpect(bodyExpected)
                 .andExpect(contentTypeExpected);
     }
-
     @Test
     public void booking() throws Exception {
         // arrange
@@ -146,5 +145,6 @@ public class FlightsControllerIntegrationTest {
                 .andExpectAll(bodyExpected, statusExpected, contentTypeExpected);
 
     }
+
 
 }
