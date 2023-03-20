@@ -32,30 +32,41 @@ public class FlightsService implements IFlightsService {
 
         List<FlightsAvailableDto> destinationStatus = allFlights.stream().filter(flight -> Objects.equals(flight.getDestino(), destino)).collect(Collectors.toList());
         List<FlightsAvailableDto> originStatus = allFlights.stream().filter(flight -> Objects.equals(flight.getOrigen(), origen)).collect(Collectors.toList());
-        List<FlightsAvailableDto> dateEqualFromStatus = destinationStatus.stream().filter(flight -> flight.getFechaIda().equals(fechaIda)).collect(Collectors.toList());
-        List<FlightsAvailableDto> dateEqualToStatus = destinationStatus.stream().filter(flight -> flight.getFechaVuelta().equals(fechaVuelta)).collect(Collectors.toList());
+        List<FlightsAvailableDto> dateEqualFromStatus = originStatus.stream().filter(flight -> flight.getFechaIda().equals(fechaIda)).collect(Collectors.toList());
+        List<FlightsAvailableDto> dateEqualToStatus = dateEqualFromStatus.stream().filter(flight -> flight.getFechaVuelta().equals(fechaVuelta)).collect(Collectors.toList());
 
         // VALIDACION POR DESTINO
         if (destinationStatus.isEmpty()){
-            throw new SinHotelesException("No se encontraron vuelos disponibles en esta fecha por el destino.");
+            throw new VuelosException("El destino elegido no existe.");
         }
 
         // VALIDACION POR ORIGEN
         if (originStatus.isEmpty()){
-            throw new SinHotelesException("No se encontraron vuelos disponibles en esta fecha por el origen.");
+            throw new VuelosException("El origen elegido no existe.");
         }
 
+        //VALIDACION FECHA ENTRADA MENOR A SALIDA
+        if(fechaIda.isAfter(fechaVuelta)){
+            throw new VuelosException("La fecha de ida debe ser menor a la de vuelta.");
+        }
+
+        //VALIDACION FECHA SALIDA MAYOR A ENTRADA
+        if(fechaIda.isEqual(fechaVuelta)){
+            throw new VuelosException("La fecha de vuelta debe ser mayor a la de ida");
+        }
 
         //VALIDACION POR FECHA
         if ( dateEqualFromStatus.isEmpty() && dateEqualToStatus.isEmpty()) {
-            throw new SinHotelesException("No se encontraron vuelos disponibles en esta fecha.");
+            throw new VuelosException("No se encontraron vuelos disponibles en esta fecha.");
         }
+
 
         List<FlightsAvailableDto> flightsAvailable = flightsRepository.filterFlightRep(fechaIda, fechaVuelta, origen, destino);
 
         if(flightsAvailable.isEmpty()){
-            throw new RuntimeException("No se encontraron vuelos disponibles en este periodo de tiempo y en el destino indicado :(.");
+            throw new VuelosException("No se encontraron vuelos disponibles en este periodo de tiempo y en el destino indicado :(.");
         }
+
 
         return flightsAvailable;
     }
@@ -89,35 +100,40 @@ public class FlightsService implements IFlightsService {
         String seatTypeAvailable = bookedFlight.getTipoAsiento().toUpperCase();
         String seatTypeSelect = flightReservationReqDto.getFlightReservation().getSeatType().toUpperCase();
 
-        if (!flightReservationReqDto.getUserName().isEmpty()){
-        if (dateFromEqual && dateToEqual) {
-            if (destination && origin){
-                if (seatTypeSelect.equalsIgnoreCase(seatTypeAvailable)){
-                    if (peopleAmount != 0 ) {
-                        if(peopleAmount == people){
+        if (!flightReservationReqDto.getUserName().isEmpty()) {
+            if (dateFromEqual && dateToEqual) {
+                if (destination && origin) {
+                    if (seatTypeSelect.equalsIgnoreCase(seatTypeAvailable)) {
+                        if (peopleAmount != 0) {
+                            if (peopleAmount == people) {
 
-                            booking.setFlightNumber(flightReservationReqDto.getFlightReservation().getFlightNumber());
-                            booking.setOrigin(flightReservationReqDto.getFlightReservation().getOrigin());
-                            booking.setSeats(flightReservationReqDto.getFlightReservation().getSeats());
-                            booking.setPeople(flightReservationReqDto.getFlightReservation().getPeople());
-                            booking.setDateFrom(flightReservationReqDto.getFlightReservation().getDateFrom());
-                            booking.setDatoTo(flightReservationReqDto.getFlightReservation().getDatoTo());
-                            booking.setDestination(bookedFlight.getDestino());
-                            booking.setSeatType(flightReservationReqDto.getFlightReservation().getSeatType());
+                                booking.setFlightNumber(flightReservationReqDto.getFlightReservation().getFlightNumber());
+                                booking.setOrigin(flightReservationReqDto.getFlightReservation().getOrigin());
+                                booking.setSeats(flightReservationReqDto.getFlightReservation().getSeats());
+                                booking.setPeople(flightReservationReqDto.getFlightReservation().getPeople());
+                                booking.setDateFrom(flightReservationReqDto.getFlightReservation().getDateFrom());
+                                booking.setDatoTo(flightReservationReqDto.getFlightReservation().getDatoTo());
+                                booking.setDestination(bookedFlight.getDestino());
+                                booking.setSeatType(flightReservationReqDto.getFlightReservation().getSeatType());
 
-                        }else{
-                            throw new VuelosException("La cantidad de pasajeros no coincide con la cantidad de personas ingresada.");}
+                            } else {
+                                throw new VuelosException("La cantidad de pasajeros no coincide con la cantidad de personas ingresada.");
+                            }
+                        } else {
+                            throw new VuelosException("Número de personas inválido.");
+                        }
                     } else {
-                        throw new VuelosException("Número de personas inválido.");}
+                        throw new VuelosException("No poseemos este tipo de asiento en el vuelo seleccionado. Le podemos ofrecer uno estilo "
+                                + seatTypeAvailable + ".");
+                    }
                 } else {
-                    throw new VuelosException("No poseemos este tipo de asiento en el vuelo seleccionado. Le podemos ofrecer uno estilo "
-                            + seatTypeAvailable + ".");}
+                    throw new VuelosException("El vuelo '" + bookedFlight.getNroVuelo() + "' se dirige desde " + bookedFlight.getOrigen() + " hacia " + bookedFlight.getDestino() + ", no desde " + flightReservationReqDto.getFlightReservation().getOrigin() + " hacia "
+                            + flightReservationReqDto.getFlightReservation().getDestination());
+                }
             } else {
-                throw new VuelosException("El vuelo '" + bookedFlight.getNroVuelo() + "' se dirige desde "+ bookedFlight.getOrigen()+ " hacia " + bookedFlight.getDestino() + ", no desde " + flightReservationReqDto.getFlightReservation().getOrigin() + " hacia "
-                            + flightReservationReqDto.getFlightReservation().getDestination());}
-        } else {
-            throw new VuelosException("El vuelo número '" + bookedFlight.getNroVuelo()+ "' se encuentra dispobile desde el " + bookedFlight.getFechaIda() + " hasta el "
-            + bookedFlight.getFechaVuelta());}
+                throw new VuelosException("El vuelo número '" + bookedFlight.getNroVuelo() + "' se encuentra dispobile desde el " + bookedFlight.getFechaIda() + " hasta el "
+                        + bookedFlight.getFechaVuelta());
+            }
         } else {
             throw new VuelosException("Debe ingresar un nombre de usuario.");
         }
@@ -126,20 +142,34 @@ public class FlightsService implements IFlightsService {
         //CALCULO DEL TOTAL SIN INTERESES
         Double total = bookedFlight.getPrecioPersona() * flightReservationReqDto.getFlightReservation().getSeats();
 
-        //CALCULO DEL TOTAL CON INTERESES
-       if(flightReservationReqDto.getPaymentMethodDto().getType().equalsIgnoreCase("creditcard")) {
-           int cuotas = flightReservationReqDto.getPaymentMethodDto().getDues();
-           if (cuotas <= 3) {
-               total = total * 1.05;
-           } else {
-               total = total * 1.10;
-           }
-       }
+        //VERIFICACION 1 SOLA CUOTA CON DEBITO
+        if(flightReservationReqDto.getPaymentMethodDto().getType().equalsIgnoreCase("debitcard")){
+            if(flightReservationReqDto.getPaymentMethodDto().getDues() > 1){
+                throw new SinHotelesException("El método de pago es Débito, solo puede elegir 1 cuota.");
+            }
+        }
+
+        String mensaje = "Reserva Satisfactoria";
+
+        if (flightReservationReqDto.getPaymentMethodDto().getType().equalsIgnoreCase("creditcard")){
+            int cuotas = flightReservationReqDto.getPaymentMethodDto().getDues();
+            if (cuotas <= 3){
+                mensaje = "Reserva Satisfactoria. Por utilizar TC tiene un recargo del 5%. Su recargo es de: $" + total * 0.05;
+
+                total *= 1.05;
+
+            } else{
+                mensaje = "Reserva Satisfactoria. Por utilizar TC tiene un recargo del 10%. Su recargo es de: $" + total * 0.10;
+
+                total *= 1.10;
+
+            }
+        }
 
         //SETEO DEL RESPONSE
         response.setFlightReservation(booking);
         response.setUserName(flightReservationReqDto.getUserName());
-        response.setStatus(new StatusCodeDto(200,"Reserva Satisfactoria"));
+        response.setStatus(new StatusCodeDto(200,mensaje));
         response.setTotal(total);
 
 

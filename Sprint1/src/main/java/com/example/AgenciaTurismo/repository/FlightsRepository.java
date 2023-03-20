@@ -60,8 +60,8 @@ public class FlightsRepository implements IFlightsRepository{
     public List<FlightsAvailableDto> filterFlightRep(LocalDate fechaIda, LocalDate fechaVuelta, String origen, String destino){
 
         return flightsAvailable.stream().filter(flight -> flight.getDestino().equalsIgnoreCase(destino) &&
-                !flight.getFechaIda().isAfter(fechaIda) &&
-                !flight.getFechaVuelta().isBefore(fechaVuelta) &&
+                flight.getFechaIda().isEqual(fechaIda) &&
+                flight.getFechaVuelta().isEqual(fechaVuelta) &&
                 flight.getOrigen().equalsIgnoreCase(origen)).collect(Collectors.toList());
     }
 
