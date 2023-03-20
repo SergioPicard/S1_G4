@@ -3,6 +3,7 @@ package com.example.AgenciaTurismo.unit.service;
 import com.example.AgenciaTurismo.dto.request.FlightReservationReqDto;
 import com.example.AgenciaTurismo.dto.response.FlightResponseDto;
 import com.example.AgenciaTurismo.dto.response.FlightsAvailableDto;
+import com.example.AgenciaTurismo.exceptions.VuelosException;
 import com.example.AgenciaTurismo.repository.IFlightsRepository;
 import com.example.AgenciaTurismo.service.FlightsService;
 import com.example.AgenciaTurismo.service.IFlightsService;
@@ -76,6 +77,23 @@ public class FlightServiceTest {
                 .filterFlights(fechaIda,fechaVuelta,origen,destino));
 
     }
+
+    @Test
+    public void filterFlightTestFlightException(){
+        // arrange
+        LocalDate fechaIda = LocalDate.of(2022,02,10);
+        LocalDate fechaVuelta = LocalDate.of(2022,02,15);
+        String origen = "Buenos Aires";
+        String destino = "Córdoba";
+
+        Mockito.when(flightsRepository.findAll()).thenReturn(List.of());
+
+        // act && assert
+        Assertions.assertThrows(VuelosException.class, ()-> flightsService
+                .filterFlights(fechaIda,fechaVuelta,origen,destino));
+
+    }
+
 
     @Test
     public void flightReservationResponseTest(){
