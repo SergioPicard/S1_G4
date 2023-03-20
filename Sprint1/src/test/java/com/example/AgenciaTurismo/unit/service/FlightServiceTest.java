@@ -52,6 +52,7 @@ public class FlightServiceTest {
         List<FlightsAvailableDto> expected = List.of(FlightAvailableDtoFactory.getBapi());
 
         // act
+        Mockito.when(flightsRepository.findAll()).thenReturn(FlightAvailableDtoFactory.listFlights());
         Mockito.when(flightsRepository.filterFlightRep(fechaIda,fechaVuelta,origen,destino))
                 .thenReturn(List.of(FlightAvailableDtoFactory.getBapi()));
 
@@ -69,9 +70,6 @@ public class FlightServiceTest {
         LocalDate fechaVuelta = LocalDate.of(2022,02,15);
         String origen = "Buenos Aires";
         String destino = "Córdoba";
-
-        Mockito.when(flightsRepository.filterFlightRep(fechaIda,fechaVuelta,origen,destino))
-                .thenReturn(List.of());
 
         // act && assert
         Assertions.assertThrows(RuntimeException.class, ()-> flightsService
@@ -94,8 +92,6 @@ public class FlightServiceTest {
         // assert
         Assertions.assertEquals(expected,result);
 
-
     }
-
 
 }

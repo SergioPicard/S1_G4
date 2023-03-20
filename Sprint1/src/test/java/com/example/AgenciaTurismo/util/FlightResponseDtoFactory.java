@@ -14,7 +14,7 @@ public class FlightResponseDtoFactory {
 
         return FlightResponseDto.builder()
                 .userName("lucianoefesta@hotmail.com")
-                .total(6500.0)
+                .total(7150.000000000001)
                 .status(getStatus())
                 .flightReservation(getFlightReservation())
                 .build();

@@ -26,16 +26,11 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
 @ExtendWith(MockitoExtension.class)
 class HotelesServiceTest {
 
-
-
-
     @Mock
     IHotelesRepository hotelesRepository;
-
 
     @InjectMocks
     HotelesService hotelesService;
@@ -90,9 +85,6 @@ class HotelesServiceTest {
         Assertions.assertThrows(SinHotelesException.class, ()-> hotelesService
                 .filterHotels(desde,hasta,destino));
     }
-
-
-
 
     @Test
     void bookingResponse() {
