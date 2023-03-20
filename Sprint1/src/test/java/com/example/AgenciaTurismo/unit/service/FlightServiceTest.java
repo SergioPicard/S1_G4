@@ -3,6 +3,7 @@ package com.example.AgenciaTurismo.unit.service;
 import com.example.AgenciaTurismo.dto.request.FlightReservationReqDto;
 import com.example.AgenciaTurismo.dto.response.FlightResponseDto;
 import com.example.AgenciaTurismo.dto.response.FlightsAvailableDto;
+import com.example.AgenciaTurismo.exceptions.VuelosException;
 import com.example.AgenciaTurismo.repository.IFlightsRepository;
 import com.example.AgenciaTurismo.service.FlightsService;
 import com.example.AgenciaTurismo.service.IFlightsService;
@@ -93,5 +94,217 @@ public class FlightServiceTest {
         Assertions.assertEquals(expected,result);
 
     }
+    @Test
+    public void filterFlightTestWrongDateException(){
+        // arrange
+        LocalDate fechaIda = LocalDate.of(2022,02,15);
+        LocalDate fechaVuelta = LocalDate.of(2022,02,10);
+        String origen = "Buenos Aires";
+        String destino = "Puerto Iguazú";
 
+        Mockito.when(flightsRepository.findAll()).thenReturn(FlightAvailableDtoFactory.listFlights());
+
+        // act && assert
+        Assertions.assertThrows(VuelosException.class, ()-> flightsService
+                .filterFlights(fechaIda,fechaVuelta,origen,destino));
+
+    }
+
+    @Test
+    public void filterFlightTestNotOriginException(){
+        // arrange
+        LocalDate fechaIda = LocalDate.of(2022,02,10);
+        LocalDate fechaVuelta = LocalDate.of(2022,02,15);
+        String origen = "Santa Fe";
+        String destino = "Puerto Iguazú";
+
+        Mockito.when(flightsRepository.findAll()).thenReturn(FlightAvailableDtoFactory.listFlights());
+
+        // act && assert
+        Assertions.assertThrows(VuelosException.class, ()-> flightsService
+                .filterFlights(fechaIda,fechaVuelta,origen,destino));
+
+    }
+
+    @Test
+    public void filterFlightTestEqualDateException(){
+        // arrange
+        LocalDate fechaIda = LocalDate.of(2022,02,10);
+        LocalDate fechaVuelta = LocalDate.of(2022,02,10);
+        String origen = "Buenos Aires";
+        String destino = "Puerto Iguazú";
+
+        Mockito.when(flightsRepository.findAll()).thenReturn(FlightAvailableDtoFactory.listFlights());
+
+        // act && assert
+        Assertions.assertThrows(VuelosException.class, ()-> flightsService
+                .filterFlights(fechaIda,fechaVuelta,origen,destino));
+
+    }
+
+    @Test
+    public void filterFlightTestNotDateAvailableException(){
+        // arrange
+        LocalDate fechaIda = LocalDate.of(2022,02,01);
+        LocalDate fechaVuelta = LocalDate.of(2022,02,05);
+        String origen = "Buenos Aires";
+        String destino = "Puerto Iguazú";
+
+        Mockito.when(flightsRepository.findAll()).thenReturn(FlightAvailableDtoFactory.listFlights());
+
+        // act && assert
+        Assertions.assertThrows(VuelosException.class, ()-> flightsService
+                .filterFlights(fechaIda,fechaVuelta,origen,destino));
+
+    }
+
+    @Test
+    public void filterFlightTestNonAvailableException(){
+        // arrange
+        LocalDate fechaIda = LocalDate.of(2022,02,10);
+        LocalDate fechaVuelta = LocalDate.of(2022,02,15);
+        String origen = "Buenos Aires";
+        String destino = "Puerto Iguazú";
+
+        Mockito.when(flightsRepository.findAll()).thenReturn(FlightAvailableDtoFactory.listFlights());
+        Mockito.when(flightsRepository.filterFlightRep(fechaIda, fechaVuelta, origen, destino)).thenReturn(List.of());
+
+        // act && assert
+        Assertions.assertThrows(VuelosException.class, ()-> flightsService
+                .filterFlights(fechaIda,fechaVuelta,origen,destino));
+
+    }
+
+    @Test
+    public void bookingFlightTestWrongAmountOfPeopleException(){
+        // arrange
+
+        FlightResponseDto expected = FlightResponseDtoFactory.getResponse();
+        FlightReservationReqDto param = FlightReservationReqFactory.getReservationWrong();
+        FlightsAvailableDto available = FlightAvailableDtoFactory.getBapi();
+
+
+        Mockito.when(flightsRepository.findFlight(param.getFlightReservation().getFlightNumber(),
+                param.getFlightReservation().getSeatType())).thenReturn(available);
+
+        // act && assert
+        Assertions.assertThrows(VuelosException.class, ()-> flightsService
+                .flightReservationResponse(param));
+
+    }
+
+
+    @Test
+    public void bookingFlightTest0PeopleException(){
+        // arrange
+
+        FlightResponseDto expected = FlightResponseDtoFactory.getResponse();
+        FlightReservationReqDto param = FlightReservationReqFactory.getFlightReservationDtoWrong();
+        FlightsAvailableDto available = FlightAvailableDtoFactory.getBapi();
+
+
+        Mockito.when(flightsRepository.findFlight(param.getFlightReservation().getFlightNumber(),
+                param.getFlightReservation().getSeatType())).thenReturn(available);
+
+        // act && assert
+        Assertions.assertThrows(VuelosException.class, ()-> flightsService
+                .flightReservationResponse(param));
+
+    }
+
+    @Test
+    public void bookingFlightTestWrongSeatTypeException(){
+        // arrange
+
+        FlightResponseDto expected = FlightResponseDtoFactory.getResponse();
+        FlightReservationReqDto param = FlightReservationReqFactory.getFlightReservationDtoWrong();
+        FlightsAvailableDto available = FlightAvailableDtoFactory.getBapi();
+        param.getFlightReservation().setSeatType("Business");
+
+
+        Mockito.when(flightsRepository.findFlight(param.getFlightReservation().getFlightNumber(),
+                param.getFlightReservation().getSeatType())).thenReturn(available);
+
+        // act && assert
+        Assertions.assertThrows(VuelosException.class, ()-> flightsService
+                .flightReservationResponse(param));
+
+    }
+
+    @Test
+    public void bookingFlightTestWrongOriginException(){
+        // arrange
+
+        FlightResponseDto expected = FlightResponseDtoFactory.getResponse();
+        FlightReservationReqDto param = FlightReservationReqFactory.getFlightReservationDtoWrong();
+        FlightsAvailableDto available = FlightAvailableDtoFactory.getBapi();
+        param.getFlightReservation().setOrigin("Santa Fe");
+
+
+        Mockito.when(flightsRepository.findFlight(param.getFlightReservation().getFlightNumber(),
+                param.getFlightReservation().getSeatType())).thenReturn(available);
+
+        // act && assert
+        Assertions.assertThrows(VuelosException.class, ()-> flightsService
+                .flightReservationResponse(param));
+
+    }
+
+    @Test
+    public void bookingFlightTestWrongDateException(){
+        // arrange
+
+        FlightResponseDto expected = FlightResponseDtoFactory.getResponse();
+        FlightReservationReqDto param = FlightReservationReqFactory.getFlightReservationDtoWrong();
+        FlightsAvailableDto available = FlightAvailableDtoFactory.getBapi();
+        param.getFlightReservation().setDateFrom(LocalDate.of(2022, 02, 9 ));
+
+
+        Mockito.when(flightsRepository.findFlight(param.getFlightReservation().getFlightNumber(),
+                param.getFlightReservation().getSeatType())).thenReturn(available);
+
+        // act && assert
+        Assertions.assertThrows(VuelosException.class, ()-> flightsService
+                .flightReservationResponse(param));
+
+    }
+
+    @Test
+    public void bookingFlightTestNonUserException(){
+        // arrange
+
+        FlightResponseDto expected = FlightResponseDtoFactory.getResponse();
+        FlightReservationReqDto param = FlightReservationReqFactory.getFlightReservationDtoWrong();
+        FlightsAvailableDto available = FlightAvailableDtoFactory.getBapi();
+        param.setUserName("");
+
+
+        Mockito.when(flightsRepository.findFlight(param.getFlightReservation().getFlightNumber(),
+                param.getFlightReservation().getSeatType())).thenReturn(available);
+
+        // act && assert
+        Assertions.assertThrows(VuelosException.class, ()-> flightsService
+                .flightReservationResponse(param));
+
+    }
+
+    @Test
+    public void bookingFlightWrongDuesException(){
+        // arrange
+
+        FlightResponseDto expected = FlightResponseDtoFactory.getResponse();
+        FlightReservationReqDto param = FlightReservationReqFactory.getFlightReservationDtoWrong();
+        FlightsAvailableDto available = FlightAvailableDtoFactory.getBapi();
+        param.getPaymentMethodDto().setType("debitcard");
+//        param.getPaymentMethodDto().setDues(3);
+
+
+        Mockito.when(flightsRepository.findFlight(param.getFlightReservation().getFlightNumber(),
+                param.getFlightReservation().getSeatType())).thenReturn(available);
+
+        // act && assert
+        Assertions.assertThrows(VuelosException.class, ()-> flightsService
+                .flightReservationResponse(param));
+
+    }
 }

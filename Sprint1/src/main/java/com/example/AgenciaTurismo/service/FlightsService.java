@@ -32,8 +32,6 @@ public class FlightsService implements IFlightsService {
 
         List<FlightsAvailableDto> destinationStatus = allFlights.stream().filter(flight -> Objects.equals(flight.getDestino(), destino)).collect(Collectors.toList());
         List<FlightsAvailableDto> originStatus = allFlights.stream().filter(flight -> Objects.equals(flight.getOrigen(), origen)).collect(Collectors.toList());
-        List<FlightsAvailableDto> dateEqualFromStatus = originStatus.stream().filter(flight -> flight.getFechaIda().equals(fechaIda)).collect(Collectors.toList());
-        List<FlightsAvailableDto> dateEqualToStatus = dateEqualFromStatus.stream().filter(flight -> flight.getFechaVuelta().equals(fechaVuelta)).collect(Collectors.toList());
 
         // VALIDACION POR DESTINO
         if (destinationStatus.isEmpty()){
@@ -53,11 +51,6 @@ public class FlightsService implements IFlightsService {
         //VALIDACION FECHA SALIDA MAYOR A ENTRADA
         if(fechaIda.isEqual(fechaVuelta)){
             throw new VuelosException("La fecha de vuelta debe ser mayor a la de ida");
-        }
-
-        //VALIDACION POR FECHA
-        if ( dateEqualFromStatus.isEmpty() && dateEqualToStatus.isEmpty()) {
-            throw new VuelosException("No se encontraron vuelos disponibles en esta fecha.");
         }
 
 
@@ -145,7 +138,7 @@ public class FlightsService implements IFlightsService {
         //VERIFICACION 1 SOLA CUOTA CON DEBITO
         if(flightReservationReqDto.getPaymentMethodDto().getType().equalsIgnoreCase("debitcard")){
             if(flightReservationReqDto.getPaymentMethodDto().getDues() > 1){
-                throw new SinHotelesException("El método de pago es Débito, solo puede elegir 1 cuota.");
+                throw new VuelosException("El método de pago es Débito, solo puede elegir 1 cuota.");
             }
         }
 

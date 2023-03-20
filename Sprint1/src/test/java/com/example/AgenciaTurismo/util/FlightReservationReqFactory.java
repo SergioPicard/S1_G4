@@ -51,4 +51,45 @@ public class FlightReservationReqFactory {
                 .build();
     }
 
+    public static FlightReservationResDto getFlightReservationWrongPeople(){
+        return FlightReservationResDto.builder()
+                .flightNumber("BAPI-1235")
+                .seats(1)
+                .dateFrom(LocalDate.of(2022, 02, 10))
+                .datoTo(LocalDate.of(2022,02,15))
+                .destination("Puerto Iguazú")
+                .origin("Buenos Aires")
+                .people(List.of())
+                .seatType("Economy")
+                .build();
+    }
+
+    public static FlightReservationReqDto getReservationWrong() {
+        return FlightReservationReqDto.builder()
+                .userName("lucianoefesta@hotmail.com")
+                .flightReservation(getFlightReservationWrongPeople())
+                .paymentMethodDto(getPaymentMethod())
+                .build();
+    }
+
+    public static FlightReservationReqDto getFlightReservationDtoWrong(){
+        return FlightReservationReqDto.builder()
+                .userName("lucianoefesta@hotmail.com")
+                .flightReservation(getFlightReservationWrong())
+                .paymentMethodDto(getPaymentMethod())
+                .build();
+    }
+
+    public static FlightReservationResDto getFlightReservationWrong(){
+        return FlightReservationResDto.builder()
+                .flightNumber("BAPI-1235")
+                .seats(0)
+                .dateFrom(LocalDate.of(2022, 02, 10))
+                .datoTo(LocalDate.of(2022,02,15))
+                .destination("Puerto Iguazú")
+                .origin("Buenos Aires")
+                .people(List.of(getPeople()))
+                .seatType("Economy")
+                .build();
+    }
 }
