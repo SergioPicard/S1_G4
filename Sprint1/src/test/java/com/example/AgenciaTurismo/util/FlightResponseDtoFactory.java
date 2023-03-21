@@ -20,6 +20,26 @@ public class FlightResponseDtoFactory {
                 .build();
     }
 
+    public static FlightResponseDto getResponseDebit(){
+
+        return FlightResponseDto.builder()
+                .userName("lucianoefesta@hotmail.com")
+                .total(6500.0)
+                .status(getStatus())
+                .flightReservation(getFlightReservation())
+                .build();
+    }
+
+    public static FlightResponseDto getResponseCredit3(){
+
+        return FlightResponseDto.builder()
+                .userName("lucianoefesta@hotmail.com")
+                .total(6825.0)
+                .status(getStatusCredit3())
+                .flightReservation(getFlightReservation())
+                .build();
+    }
+
     public static FlightReservationResDto getFlightReservation(){
         return FlightReservationResDto.builder()
                 .flightNumber("BAPI-1235")
@@ -47,6 +67,20 @@ public class FlightResponseDtoFactory {
         return StatusCodeDto.builder()
                 .code(200)
                 .message("Reserva Satisfactoria. Por utilizar TC tiene un recargo del 10%. Su recargo es de: $650.0")
+                .build();
+    }
+
+    public static StatusCodeDto getStatusDebit(){
+        return StatusCodeDto.builder()
+                .code(200)
+                .message("Reserva Satisfactoria.")
+                .build();
+    }
+
+    public static StatusCodeDto getStatusCredit3(){
+        return StatusCodeDto.builder()
+                .code(200)
+                .message("Reserva Satisfactoria. Por utilizar TC tiene un recargo del 5%. Su recargo es de: $325.0")
                 .build();
     }
 

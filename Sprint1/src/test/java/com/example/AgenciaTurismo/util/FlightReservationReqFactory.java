@@ -20,6 +20,22 @@ public class FlightReservationReqFactory {
                 .build();
     }
 
+    public static FlightReservationReqDto getFlightReservationDtoDebit(){
+        return FlightReservationReqDto.builder()
+                .userName("lucianoefesta@hotmail.com")
+                .flightReservation(getFlightReservation())
+                .paymentMethodDto(getPaymentMethodDebit())
+                .build();
+    }
+
+    public static FlightReservationReqDto getFlightReservationDtoCredit3(){
+        return FlightReservationReqDto.builder()
+                .userName("lucianoefesta@hotmail.com")
+                .flightReservation(getFlightReservation())
+                .paymentMethodDto(getPaymentMethodCredit3())
+                .build();
+    }
+
     public static FlightReservationResDto getFlightReservation(){
         return FlightReservationResDto.builder()
                 .flightNumber("BAPI-1235")
@@ -46,6 +62,22 @@ public class FlightReservationReqFactory {
     public static PaymentMethodDto getPaymentMethod(){
         return PaymentMethodDto.builder()
                 .dues(4)
+                .type("creditcard")
+                .number("4545656598987878")
+                .build();
+    }
+
+    public static PaymentMethodDto getPaymentMethodDebit(){
+        return PaymentMethodDto.builder()
+                .dues(1)
+                .type("debitcard")
+                .number("4545656598987878")
+                .build();
+    }
+
+    public static PaymentMethodDto getPaymentMethodCredit3(){
+        return PaymentMethodDto.builder()
+                .dues(3)
                 .type("creditcard")
                 .number("4545656598987878")
                 .build();

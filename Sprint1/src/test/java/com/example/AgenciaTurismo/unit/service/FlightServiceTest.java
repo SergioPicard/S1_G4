@@ -291,7 +291,7 @@ public class FlightServiceTest {
         // arrange
 
         FlightResponseDto expected = FlightResponseDtoFactory.getResponse();
-        FlightReservationReqDto param = FlightReservationReqFactory.getFlightReservationDtoWrong();
+        FlightReservationReqDto param = FlightReservationReqFactory.getFlightReservationDto();
         FlightsAvailableDto available = FlightAvailableDtoFactory.getBapi();
         param.getFlightReservation().setDatoTo(LocalDate.of(2022,2,9));
 
@@ -344,14 +344,32 @@ public class FlightServiceTest {
     }
 
     @Test
-    public void bookingFlightWrongDuesException(){
+    public void bookingFlightInterestCreditCard(){
         // arrange
 
-        FlightResponseDto expected = FlightResponseDtoFactory.getResponse();
-        FlightReservationReqDto param = FlightReservationReqFactory.getFlightReservationDtoWrong();
+        FlightResponseDto expected = FlightResponseDtoFactory.getResponseCredit3();
+        FlightReservationReqDto param = FlightReservationReqFactory.getFlightReservationDtoCredit3();
+        FlightsAvailableDto available = FlightAvailableDtoFactory.getBapi();
+        /*param.getPaymentMethodDto().setType("debitcard");
+        param.getPaymentMethodDto().setDues(1);
+        expected.setTotal(6500.0);*/
+//        param.getPaymentMethodDto().setDues(3);
+
+        Mockito.when(flightsRepository.findFlight(param.getFlightReservation().getFlightNumber(),
+                param.getFlightReservation().getSeatType())).thenReturn(available);
+        var result = flightsService.flightReservationResponse(param);
+
+        // act && assert
+        Assertions.assertEquals(expected, result);
+
+    }
+
+    @Test
+    public void bookingFlightTestWrongDuesDebitCardException(){
+        // arrange
+        FlightReservationReqDto param = FlightReservationReqFactory.getFlightReservationDto();
         FlightsAvailableDto available = FlightAvailableDtoFactory.getBapi();
         param.getPaymentMethodDto().setType("debitcard");
-//        param.getPaymentMethodDto().setDues(3);
 
 
         Mockito.when(flightsRepository.findFlight(param.getFlightReservation().getFlightNumber(),
