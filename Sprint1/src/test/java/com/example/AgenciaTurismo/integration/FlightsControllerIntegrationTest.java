@@ -123,9 +123,11 @@ public class FlightsControllerIntegrationTest {
         // arrange
 
         FlightReservationReqDto flightReservationReqDto = FlightReservationReqFactory.getFlightReservationDto();
+        System.out.println(flightReservationReqDto);
 
         //response
         FlightResponseDto expectedBody = FlightResponseDtoFactory.getResponse();
+        System.out.println(expectedBody);
 
         // request
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
@@ -142,7 +144,9 @@ public class FlightsControllerIntegrationTest {
         // act & assert whit mockMvc
         mockMvc.perform(request)
                 .andDo(MockMvcResultHandlers.print())
-                .andExpectAll(bodyExpected, statusExpected, contentTypeExpected);
+                .andExpect(bodyExpected)
+                .andExpect(statusExpected)
+                .andExpect(contentTypeExpected);
 
     }
 

@@ -93,39 +93,51 @@ public class FlightsService implements IFlightsService {
         String seatTypeAvailable = bookedFlight.getTipoAsiento().toUpperCase();
         String seatTypeSelect = flightReservationReqDto.getFlightReservation().getSeatType().toUpperCase();
 
+        //FECHAS
+        LocalDate dateFrom = flightReservationReqDto.getFlightReservation().getDateFrom();
+        LocalDate dateTo = flightReservationReqDto.getFlightReservation().getDatoTo();
+
         if (!flightReservationReqDto.getUserName().isEmpty()) {
-            if (dateFromEqual && dateToEqual) {
-                if (destination && origin) {
-                    if (seatTypeSelect.equalsIgnoreCase(seatTypeAvailable)) {
-                        if (peopleAmount != 0) {
-                            if (peopleAmount == people) {
+            if (!dateFrom.isAfter(dateTo)) {
+                if (!dateFrom.isEqual(dateTo)) {
+                    if (dateFromEqual && dateToEqual) {
+                        if (destination && origin) {
+                            if (seatTypeSelect.equalsIgnoreCase(seatTypeAvailable)) {
+                                if (peopleAmount != 0) {
+                                    if (peopleAmount == people) {
 
-                                booking.setFlightNumber(flightReservationReqDto.getFlightReservation().getFlightNumber());
-                                booking.setOrigin(flightReservationReqDto.getFlightReservation().getOrigin());
-                                booking.setSeats(flightReservationReqDto.getFlightReservation().getSeats());
-                                booking.setPeople(flightReservationReqDto.getFlightReservation().getPeople());
-                                booking.setDateFrom(flightReservationReqDto.getFlightReservation().getDateFrom());
-                                booking.setDatoTo(flightReservationReqDto.getFlightReservation().getDatoTo());
-                                booking.setDestination(bookedFlight.getDestino());
-                                booking.setSeatType(flightReservationReqDto.getFlightReservation().getSeatType());
+                                        booking.setFlightNumber(flightReservationReqDto.getFlightReservation().getFlightNumber());
+                                        booking.setOrigin(flightReservationReqDto.getFlightReservation().getOrigin());
+                                        booking.setSeats(flightReservationReqDto.getFlightReservation().getSeats());
+                                        booking.setPeople(flightReservationReqDto.getFlightReservation().getPeople());
+                                        booking.setDateFrom(flightReservationReqDto.getFlightReservation().getDateFrom());
+                                        booking.setDatoTo(flightReservationReqDto.getFlightReservation().getDatoTo());
+                                        booking.setDestination(bookedFlight.getDestino());
+                                        booking.setSeatType(flightReservationReqDto.getFlightReservation().getSeatType());
 
+                                    } else {
+                                        throw new VuelosException("La cantidad de pasajeros no coincide con la cantidad de personas ingresada.");
+                                    }
+                                } else {
+                                    throw new VuelosException("Número de personas inválido.");
+                                }
                             } else {
-                                throw new VuelosException("La cantidad de pasajeros no coincide con la cantidad de personas ingresada.");
+                                throw new VuelosException("No poseemos este tipo de asiento en el vuelo seleccionado. Le podemos ofrecer uno estilo "
+                                        + seatTypeAvailable + ".");
                             }
                         } else {
-                            throw new VuelosException("Número de personas inválido.");
+                            throw new VuelosException("El vuelo '" + bookedFlight.getNroVuelo() + "' se dirige desde " + bookedFlight.getOrigen() + " hacia " + bookedFlight.getDestino() + ", no desde " + flightReservationReqDto.getFlightReservation().getOrigin() + " hacia "
+                                    + flightReservationReqDto.getFlightReservation().getDestination());
                         }
                     } else {
-                        throw new VuelosException("No poseemos este tipo de asiento en el vuelo seleccionado. Le podemos ofrecer uno estilo "
-                                + seatTypeAvailable + ".");
+                        throw new VuelosException("El vuelo número '" + bookedFlight.getNroVuelo() + "' se encuentra dispobile desde el " + bookedFlight.getFechaIda() + " hasta el "
+                                + bookedFlight.getFechaVuelta());
                     }
                 } else {
-                    throw new VuelosException("El vuelo '" + bookedFlight.getNroVuelo() + "' se dirige desde " + bookedFlight.getOrigen() + " hacia " + bookedFlight.getDestino() + ", no desde " + flightReservationReqDto.getFlightReservation().getOrigin() + " hacia "
-                            + flightReservationReqDto.getFlightReservation().getDestination());
+                    throw new VuelosException("La fecha de vuelta debe ser mayor a la de ida.");
                 }
             } else {
-                throw new VuelosException("El vuelo número '" + bookedFlight.getNroVuelo() + "' se encuentra dispobile desde el " + bookedFlight.getFechaIda() + " hasta el "
-                        + bookedFlight.getFechaVuelta());
+                throw new VuelosException("La fecha de ida debe ser menor a la de vuelta.");
             }
         } else {
             throw new VuelosException("Debe ingresar un nombre de usuario.");

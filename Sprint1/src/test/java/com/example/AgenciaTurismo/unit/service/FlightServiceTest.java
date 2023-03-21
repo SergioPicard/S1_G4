@@ -287,6 +287,44 @@ public class FlightServiceTest {
     }
 
     @Test
+    public void bookingFlightDateFromIsAfterDatoToException(){
+        // arrange
+
+        FlightResponseDto expected = FlightResponseDtoFactory.getResponse();
+        FlightReservationReqDto param = FlightReservationReqFactory.getFlightReservationDtoWrong();
+        FlightsAvailableDto available = FlightAvailableDtoFactory.getBapi();
+        param.getFlightReservation().setDatoTo(LocalDate.of(2022,2,9));
+
+
+        Mockito.when(flightsRepository.findFlight(param.getFlightReservation().getFlightNumber(),
+                param.getFlightReservation().getSeatType())).thenReturn(available);
+
+        // act && assert
+        Assertions.assertThrows(VuelosException.class, ()-> flightsService
+                .flightReservationResponse(param));
+
+    }
+
+    @Test
+    public void bookingFlightDateFromIsEqualDatoToException(){
+        // arrange
+
+        FlightResponseDto expected = FlightResponseDtoFactory.getResponse();
+        FlightReservationReqDto param = FlightReservationReqFactory.getFlightReservationDtoWrong();
+        FlightsAvailableDto available = FlightAvailableDtoFactory.getBapi();
+        param.getFlightReservation().setDatoTo(LocalDate.of(2022,2,10));
+
+
+        Mockito.when(flightsRepository.findFlight(param.getFlightReservation().getFlightNumber(),
+                param.getFlightReservation().getSeatType())).thenReturn(available);
+
+        // act && assert
+        Assertions.assertThrows(VuelosException.class, ()-> flightsService
+                .flightReservationResponse(param));
+
+    }
+
+    @Test
     public void bookingFlightTestNonUserException(){
         // arrange
 

@@ -75,20 +75,6 @@ public class HotelesService implements IHotelesService {
 
     public BookingResponseDto bookingResponse(BookingRequestDto bookingRequest){
 
-        /*Pattern pattern = Pattern.compile("^(0?[1-9]|[12][0-9]|3[01])/(0?[1-9]|1[012])/\\d{4}$");
-
-        if(pattern.matcher(String.valueOf(bookingRequest.getBooking().getDatoTo())).matches()){
-            throw new FechasException("Formato invalido");
-        }*/
-
-/*        LocalDate date = bookingRequest.getBooking().getDateFrom();
-        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
-
-        if(formato.toPattern().equals(date)){
-            throw new FechasException("Claro bebe");
-        }*/
-
-
         BookingResponseDto response = new BookingResponseDto();
 
         //NUEVA RESPONSE RESERVA - DATOS SIN MEDIOS DE PAGO

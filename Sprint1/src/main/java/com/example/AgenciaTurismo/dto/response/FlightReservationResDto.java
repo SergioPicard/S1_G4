@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Positive;
 import java.time.LocalDate;
 import java.util.List;
 @AllArgsConstructor
@@ -28,7 +29,7 @@ public class FlightReservationResDto {
     private String destination;
     @NotBlank
     private String flightNumber;
-    @NotBlank
+    @Positive(message = "La cantidad de personas debe ser un valor numérico.")
     private Integer seats;
     @NotBlank
     private String seatType;
