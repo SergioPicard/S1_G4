@@ -1,15 +1,20 @@
 package com.example.AgenciaTurismo.dto.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import javax.validation.Valid;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Builder
 public class BookingRequestDto {
+
+    @Email(message = "Por favor ingrese un e-mail válido.")
     private String userName;
-    private BookingDto booking;
+    private @Valid BookingDto booking;
 
 }
 

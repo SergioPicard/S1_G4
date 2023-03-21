@@ -7,12 +7,15 @@ import com.example.AgenciaTurismo.service.FlightsService;
 import com.example.AgenciaTurismo.service.IFlightsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.List;
 
 @RestController
+@Validated
 @RequestMapping("/api/v1/")
 public class FlightsController {
     @Autowired
@@ -33,7 +36,7 @@ public class FlightsController {
     }
 
     @PostMapping("/flight-reservation")
-    public FlightResponseDto booking(@RequestBody FlightReservationReqDto flightReservationReqDto){
+    public FlightResponseDto booking(@RequestBody @Valid FlightReservationReqDto flightReservationReqDto){
 
         return flightsService.flightReservationResponse(flightReservationReqDto);
     }
