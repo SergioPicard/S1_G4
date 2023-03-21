@@ -20,7 +20,7 @@ class HotelesRepositoryTest {
     @Test
     void findAll() {
         // arrange
-        List<HotelAvailableDto> expected = List.of(HotelAvailableDtoFactory.cataratasHotel(), HotelAvailableDtoFactory.cataratasHotel2(), HotelAvailableDtoFactory.BristolHotel());
+        List<HotelAvailableDto> expected = List.of(HotelAvailableDtoFactory.cataratasHotel(), HotelAvailableDtoFactory.cataratasHotel2(), HotelAvailableDtoFactory.BristolHotel(), HotelAvailableDtoFactory.centralPlaza());
         // act
         var result = hotelesRepository.findAll();
         // assert

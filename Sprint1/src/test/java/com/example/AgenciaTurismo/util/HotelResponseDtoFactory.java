@@ -1,5 +1,7 @@
 package com.example.AgenciaTurismo.util;
 
+import com.example.AgenciaTurismo.dto.request.BookingDto;
+import com.example.AgenciaTurismo.dto.request.BookingRequestDto;
 import com.example.AgenciaTurismo.dto.request.PeopleDto;
 import com.example.AgenciaTurismo.dto.response.*;
 
@@ -29,6 +31,7 @@ public class HotelResponseDtoFactory {
                 .people(List.of(getPeople()))
                 .build();
     }
+
 
     public static PeopleDto getPeople(){
         return PeopleDto.builder()

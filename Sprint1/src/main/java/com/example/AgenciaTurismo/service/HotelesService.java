@@ -147,10 +147,6 @@ public class HotelesService implements IHotelesService {
                                             }
                                             break;
                                         }
-                                        //UN DEFAULT AL QUE NUNCA VAMOS A LLEGAR
-                                        default: {
-                                            throw new SinHotelesException("Si sale esto, rompí algo");
-                                        }
                                     }
 
                                     if (peopleAmount == people) {
