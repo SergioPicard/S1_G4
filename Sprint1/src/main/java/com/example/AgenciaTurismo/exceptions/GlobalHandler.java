@@ -1,6 +1,7 @@
 package com.example.AgenciaTurismo.exceptions;
 
 import com.example.AgenciaTurismo.dto.ErrorDTO;
+import com.example.AgenciaTurismo.dto.ErrorMessageDTO;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.core.convert.ConversionFailedException;
@@ -19,28 +20,23 @@ import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class GlobalHandler {
-/*    @ExceptionHandler(RuntimeException.class)
-    //Spring sabe que si sale una exception de este tipo, se ejecuta el metodo abajo.
-    public ResponseEntity<String> handlerRuntime(RuntimeException exception) {
-        return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
-    }*/
-
-/*    @ExceptionHandler(DateTimeParseException.class)
-    //Spring sabe que si sale una exception de este tipo, se ejecuta el metodo abajo.
-    public ResponseEntity<String> parametrosError(DateTimeParseException exception) {
-        return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
-    }*/
 
     @ExceptionHandler(InvalidFormatException.class)
     //Spring sabe que si sale una exception de este tipo, se ejecuta el metodo abajo.
-    public ResponseEntity<String> parametrosError(InvalidFormatException exception) {
-        return new ResponseEntity<>("Formato de fecha debe ser dd/mm/aaaa", HttpStatus.BAD_REQUEST);
+    public ResponseEntity<ErrorMessageDTO> parametrosError(InvalidFormatException e) {
+        ErrorMessageDTO errorMessageDTO = new ErrorMessageDTO();
+        errorMessageDTO.setName("Formato de fecha invalido");
+        errorMessageDTO.setMessage("Formato de fecha debe ser dd/mm/aaaa");
+        return new ResponseEntity<>(errorMessageDTO, HttpStatus.BAD_REQUEST);
     }
 
      @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     //Spring sabe que si sale una exception de este tipo, se ejecuta el metodo abajo.
-    public ResponseEntity<String> parametrosError(MethodArgumentTypeMismatchException exception) {
-        return new ResponseEntity<>("Formato de fecha debe ser dd/mm/aaaa", HttpStatus.BAD_REQUEST);
+    public ResponseEntity<ErrorMessageDTO> parametrosError(MethodArgumentTypeMismatchException e) {
+        ErrorMessageDTO errorMessageDTO = new ErrorMessageDTO();
+        errorMessageDTO.setName("Formato de fecha invalido");
+        errorMessageDTO.setMessage("Formato de fecha debe ser dd/mm/aaaa");
+        return new ResponseEntity<>(errorMessageDTO, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(FechasException.class)
@@ -51,24 +47,23 @@ public class GlobalHandler {
 
     @ExceptionHandler(SinHotelesException.class)
     //Spring sabe que si sale una exception de este tipo, se ejecuta el metodo abajo.
-    public ResponseEntity<String> SinHotelesException(SinHotelesException exception) {
-        return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
-
+    public ResponseEntity<ErrorMessageDTO> parametrosError(SinHotelesException e) {
+        ErrorMessageDTO errorMessageDTO = new ErrorMessageDTO();
+        errorMessageDTO.setName("Validación en hoteles.");
+        errorMessageDTO.setMessage(e.getMessage());
+        return new ResponseEntity<>(errorMessageDTO, HttpStatus.BAD_REQUEST);
     }
+
 
     @ExceptionHandler(VuelosException.class)
     //Spring sabe que si sale una exception de este tipo, se ejecuta el metodo abajo.
-    public ResponseEntity<String> VuelosException(VuelosException exception) {
-        return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
-
+    public ResponseEntity<ErrorMessageDTO> parametrosError(VuelosException e) {
+        ErrorMessageDTO errorMessageDTO = new ErrorMessageDTO();
+        errorMessageDTO.setName("Validación en vuelos.");
+        errorMessageDTO.setMessage(e.getMessage());
+        return new ResponseEntity<>(errorMessageDTO, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(CapacidadMaximaException.class)
-    //Spring sabe que si sale una exception de este tipo, se ejecuta el metodo abajo.
-    public ResponseEntity<String> CapacidadMaximaException(CapacidadMaximaException exception) {
-        return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
-
-    }
     // AMBOS METODOS SIRVEN PARA CONVERTIR LOS MENSAJES DE LAS VALIDACIONES EN UN ARRAY DE MENSAJES ENTENDIBLES.
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

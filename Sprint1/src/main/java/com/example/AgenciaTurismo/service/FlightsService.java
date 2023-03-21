@@ -57,7 +57,7 @@ public class FlightsService implements IFlightsService {
         List<FlightsAvailableDto> flightsAvailable = flightsRepository.filterFlightRep(fechaIda, fechaVuelta, origen, destino);
 
         if(flightsAvailable.isEmpty()){
-            throw new VuelosException("No se encontraron vuelos disponibles en este periodo de tiempo y en el destino indicado :(.");
+            throw new VuelosException("No se encontraron vuelos disponibles en este periodo de tiempo y en el destino indicado.");
         }
 
 

@@ -1,5 +1,6 @@
 package com.example.AgenciaTurismo.service;
 
+import com.example.AgenciaTurismo.dto.ErrorMessageDTO;
 import com.example.AgenciaTurismo.dto.request.BookingRequestDto;
 import com.example.AgenciaTurismo.dto.response.BookingResDto;
 import com.example.AgenciaTurismo.dto.response.BookingResponseDto;
