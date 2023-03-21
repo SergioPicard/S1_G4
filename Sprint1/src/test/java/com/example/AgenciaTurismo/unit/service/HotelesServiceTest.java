@@ -12,6 +12,7 @@ import com.example.AgenciaTurismo.service.FlightsService;
 import com.example.AgenciaTurismo.service.HotelesService;
 import com.example.AgenciaTurismo.util.*;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -35,6 +36,7 @@ class HotelesServiceTest {
     HotelesService hotelesService;
 
     @Test
+    @DisplayName("Se buscan todos los hoteles - SERVICE")
     void searchAll() {
         // arrange
         List<HotelAvailableDto> expected = HotelAvailableDtoFactory.listHotels();
@@ -48,6 +50,7 @@ class HotelesServiceTest {
     }
 
     @Test
+    @DisplayName("Se filtran los hoteles, con fechas y destino como parámetros - SERVICE")
     public void filterHotels() {
         // arrange
         LocalDate fechaDesde = LocalDate.of(2022,02,10);
@@ -71,6 +74,7 @@ class HotelesServiceTest {
     }
 
     @Test
+    @DisplayName("No hay hoteles disponibles excepción - SERVICE")
     public void filterHotelNotFound(){
         // arrange
         LocalDate desde = LocalDate.of(2022,02,10);
@@ -86,6 +90,7 @@ class HotelesServiceTest {
     }
 
     @Test
+    @DisplayName("Se reserva el hotel con DTO de booking como parámetro - SERVICE")
     void bookingResponse() {
 
         //  arrange
@@ -105,6 +110,7 @@ class HotelesServiceTest {
     }
 
     @Test
+    @DisplayName("Excepción por fecha de salida posterior a la de llegada - SERVICE")
     public void filterHotelTestBeforeDate(){
         // arrange
         LocalDate fechaIda = LocalDate.of(2022,02,10);
@@ -119,6 +125,7 @@ class HotelesServiceTest {
 
     }
     @Test
+    @DisplayName("Excepción de fecha de ingreso igual a la fecha de salida - SERVICE")
     public void filterHotelTestEqualDate(){
         // arrange
         LocalDate fechaIda = LocalDate.of(2022,02,10);
@@ -135,6 +142,7 @@ class HotelesServiceTest {
 
 
     @Test
+    @DisplayName("Excepción por no disponibilidad en la fecha establecida")
     public void filterFlightTestNonAvailableException(){
         // arrange
         LocalDate fechaIda = LocalDate.of(2022,02,10);
@@ -151,6 +159,7 @@ class HotelesServiceTest {
     }
 
     @Test
+    @DisplayName("Excepción cantidad incorrecta de huéspedes habitación SIMPLE - SERVICE")
     public void bookingHotelsTwoPeopleException(){
         // arrange
 
@@ -166,6 +175,7 @@ class HotelesServiceTest {
 
     }
     @Test
+    @DisplayName("Excepción cantidad incorrecta de huéspedes habitación DOBLE - SERVICE")
     public void bookingHotelsThreePeopleException(){
         // arrange
 
@@ -182,6 +192,7 @@ class HotelesServiceTest {
     }
 
     @Test
+    @DisplayName("Excepción cantidad incorrecta de huéspedes habitación TRIPLE - SERVICE")
     public void bookingHotelsFourPeopleException(){
         // arrange
 
@@ -198,6 +209,7 @@ class HotelesServiceTest {
     }
 
     @Test
+    @DisplayName("Excepción cantidad incorrecta de huéspedes habitación MÚLTIPLE - SERVICE")
     public void bookingHotelsFivePeopleException(){
         // arrange
 
@@ -214,6 +226,7 @@ class HotelesServiceTest {
     }
 
     @Test
+    @DisplayName("Excepción cantidad desigual de huéspedes y lista de personas - SERVICE")
     public void bookingHotelsNotEqualPeopleException(){
         // arrange
 
@@ -231,6 +244,7 @@ class HotelesServiceTest {
     }
 
     @Test
+    @DisplayName("Excepción por falta de personas en el booking - SERVICE")
     public void bookingHotels0PeopleException(){
         // arrange
 
@@ -248,6 +262,7 @@ class HotelesServiceTest {
     }
 
     @Test
+    @DisplayName("Excepción tipo de habitación incorrecta en booking - SERVICE")
     public void bookingHotelsNotEqualRoomTypeException(){
         // arrange
 
@@ -265,6 +280,7 @@ class HotelesServiceTest {
     }
 
     @Test
+    @DisplayName("Excepción destino incorrecto en el booking - SERVICE")
     public void bookingHotelsNotEqualDestinationException(){
         // arrange
 
@@ -282,6 +298,7 @@ class HotelesServiceTest {
     }
 
     @Test
+    @DisplayName("Excepción por fecha incorrecta en booking - SERVICE")
     public void bookingHotelsNotFindDateException(){
         // arrange
 
@@ -300,6 +317,7 @@ class HotelesServiceTest {
     }
 
     @Test
+    @DisplayName("Excepcion por fecha de ingreso posterior a la salida - SERVICE")
     public void bookingHotelsDateToException(){
         // arrange
 
@@ -318,6 +336,7 @@ class HotelesServiceTest {
     }
 
     @Test
+    @DisplayName("Excepcion por fecha de ingreso igual a la salida - SERVICE")
     public void bookingHotelsDateFromException(){
         // arrange
 
@@ -336,6 +355,7 @@ class HotelesServiceTest {
     }
 
     @Test
+    @DisplayName("Excepcion por usuario vacio en booking - SERVICE")
     public void bookingHotelsUserEmptyException(){
         // arrange
 
@@ -352,6 +372,7 @@ class HotelesServiceTest {
     }
 
     @Test
+    @DisplayName("Excepcion por cantidad cuotas incorrectas debit - SERVICE")
     public void bookingHotelsDebitCardException(){
         // arrange
 
@@ -368,7 +389,8 @@ class HotelesServiceTest {
     }
 
     @Test
-    public void bookingHotelsCreditCard3DuesException(){
+    @DisplayName("Intereses por coutas en tarjeta de credito - SERVICE")
+    public void bookingHotelsCreditCard3Dues(){
         // arrange
         BookingResponseDto expected = HotelResponseDtoFactory.getResponse();
         BookingRequestDto param = HotelReservationReqFactory.getResponseReservationDto();

@@ -9,6 +9,7 @@ import com.example.AgenciaTurismo.util.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -39,6 +40,7 @@ public class FlightsControllerIntegrationTest {
             .writer();
 
     @Test
+    @DisplayName("Busqueda de todos los vuelos")
     public void searchAllFlights() throws Exception {
 
         // arrange
@@ -69,6 +71,7 @@ public class FlightsControllerIntegrationTest {
     }
 
     @Test
+    @DisplayName("Se filtran los vuelos con las fechas y destino como parámetro")
     public void filterFlights() throws Exception {
 
         // arrange
@@ -102,11 +105,6 @@ public class FlightsControllerIntegrationTest {
                 writer.writeValueAsString(expected)
         );
 
-        System.out.println(bodyExpected);
-
-
-
-
         //ContentTypeExpected
 
         ResultMatcher contentTypeExpected = MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON);
@@ -119,6 +117,7 @@ public class FlightsControllerIntegrationTest {
                 .andExpect(contentTypeExpected);
     }
     @Test
+    @DisplayName("reserva de un vuelo con DTO de reserva como parámetro")
     public void booking() throws Exception {
         // arrange
 

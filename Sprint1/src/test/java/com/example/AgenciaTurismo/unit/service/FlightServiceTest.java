@@ -10,7 +10,9 @@ import com.example.AgenciaTurismo.service.IFlightsService;
 import com.example.AgenciaTurismo.util.FlightAvailableDtoFactory;
 import com.example.AgenciaTurismo.util.FlightReservationReqFactory;
 import com.example.AgenciaTurismo.util.FlightResponseDtoFactory;
+import net.bytebuddy.utility.nullability.NeverNull;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -31,6 +33,7 @@ public class FlightServiceTest {
     FlightsService flightsService;
 
     @Test
+    @DisplayName("Se buscan todos los vuelos - SERVICE")
     public void searchAllTest(){
         // arrange
         List<FlightsAvailableDto> expected = FlightAvailableDtoFactory.listFlights();
@@ -44,6 +47,7 @@ public class FlightServiceTest {
     }
 
     @Test
+    @DisplayName("Se filtran los vuelos, con fechas, destino y origen como parámetros - SERVICE")
     public void filterFlightsTest(){
         // arrange
         LocalDate fechaIda = LocalDate.of(2022,02,10);
@@ -65,7 +69,8 @@ public class FlightServiceTest {
     }
 
     @Test
-    public void filterFlightTestException(){
+    @DisplayName("Chequeo excepción no existe destino - SERVICE")
+    public void filterFlightTestNonDestinyException(){
         // arrange
         LocalDate fechaIda = LocalDate.of(2022,02,10);
         LocalDate fechaVuelta = LocalDate.of(2022,02,15);
@@ -79,6 +84,7 @@ public class FlightServiceTest {
     }
 
     @Test
+    @DisplayName("No hay vuelos disponibles excepción - SERVICE")
     public void filterFlightTestFlightException(){
         // arrange
         LocalDate fechaIda = LocalDate.of(2022,02,10);
@@ -96,6 +102,7 @@ public class FlightServiceTest {
 
 
     @Test
+    @DisplayName("Se reserva el vuelo con DTO de booking como parámetro - SERVICE")
     public void flightReservationResponseTest(){
         //  arrange
         FlightResponseDto expected = FlightResponseDtoFactory.getResponse();
@@ -112,6 +119,7 @@ public class FlightServiceTest {
 
     }
     @Test
+    @DisplayName("Excepción por fecha de salida posterior a la de llegada - SERVICE")
     public void filterFlightTestWrongDateException(){
         // arrange
         LocalDate fechaIda = LocalDate.of(2022,02,15);
@@ -128,6 +136,7 @@ public class FlightServiceTest {
     }
 
     @Test
+    @DisplayName("Excepción de origen inexistente - SERVICIO")
     public void filterFlightTestNotOriginException(){
         // arrange
         LocalDate fechaIda = LocalDate.of(2022,02,10);
@@ -144,6 +153,7 @@ public class FlightServiceTest {
     }
 
     @Test
+    @DisplayName("Excepción de fecha de ingreso igual a la fecha de salida - SERVICE")
     public void filterFlightTestEqualDateException(){
         // arrange
         LocalDate fechaIda = LocalDate.of(2022,02,10);
@@ -160,6 +170,7 @@ public class FlightServiceTest {
     }
 
     @Test
+    @DisplayName("Excepción por no disponibilidad en la fecha establecida")
     public void filterFlightTestNotDateAvailableException(){
         // arrange
         LocalDate fechaIda = LocalDate.of(2022,02,01);
@@ -175,7 +186,8 @@ public class FlightServiceTest {
 
     }
 
-    @Test
+   /* @Test
+    @DisplayName("")
     public void filterFlightTestNonAvailableException(){
         // arrange
         LocalDate fechaIda = LocalDate.of(2022,02,10);
@@ -190,9 +202,10 @@ public class FlightServiceTest {
         Assertions.assertThrows(VuelosException.class, ()-> flightsService
                 .filterFlights(fechaIda,fechaVuelta,origen,destino));
 
-    }
+    }*/
 
     @Test
+    @DisplayName("Excepción cantidad incorrecta de pasajeros - SERVICE")
     public void bookingFlightTestWrongAmountOfPeopleException(){
         // arrange
 
@@ -212,6 +225,7 @@ public class FlightServiceTest {
 
 
     @Test
+    @DisplayName("Excepción sin pasajeros en booking - SERVICE")
     public void bookingFlightTest0PeopleException(){
         // arrange
 
@@ -230,6 +244,7 @@ public class FlightServiceTest {
     }
 
     @Test
+    @DisplayName("Excepción tipo de asiento incorrecto - SERVICE")
     public void bookingFlightTestWrongSeatTypeException(){
         // arrange
 
@@ -249,6 +264,7 @@ public class FlightServiceTest {
     }
 
     @Test
+    @DisplayName("Excepción origen inexistente en el booking - SERVICE")
     public void bookingFlightTestWrongOriginException(){
         // arrange
 
@@ -268,6 +284,7 @@ public class FlightServiceTest {
     }
 
     @Test
+    @DisplayName("Excepción fecha salida incorrecta en booking - SERVICE")
     public void bookingFlightTestWrongDateException(){
         // arrange
 
@@ -287,6 +304,7 @@ public class FlightServiceTest {
     }
 
     @Test
+    @DisplayName("Excepción fecha de llegada es posterior a la de salida - SERVICE")
     public void bookingFlightDateFromIsAfterDatoToException(){
         // arrange
 
@@ -306,6 +324,7 @@ public class FlightServiceTest {
     }
 
     @Test
+    @DisplayName("Excepción fecha de llegada y salida iguales - SERVICE")
     public void bookingFlightDateFromIsEqualDatoToException(){
         // arrange
 
@@ -325,6 +344,7 @@ public class FlightServiceTest {
     }
 
     @Test
+    @DisplayName("Excepción usuario vacio en booking - SERVICE")
     public void bookingFlightTestNonUserException(){
         // arrange
 
@@ -344,6 +364,7 @@ public class FlightServiceTest {
     }
 
     @Test
+    @DisplayName("Intereses por cuotas en tarjeta de crédito - SERVICE")
     public void bookingFlightInterestCreditCard(){
         // arrange
 
@@ -365,6 +386,7 @@ public class FlightServiceTest {
     }
 
     @Test
+    @DisplayName("Excepción cantidad de cuotas incorrectas con tarjeta de débito - SERVICE")
     public void bookingFlightTestWrongDuesDebitCardException(){
         // arrange
         FlightReservationReqDto param = FlightReservationReqFactory.getFlightReservationDto();
