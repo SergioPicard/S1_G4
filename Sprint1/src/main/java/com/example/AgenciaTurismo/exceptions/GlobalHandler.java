@@ -39,12 +39,6 @@ public class GlobalHandler {
         return new ResponseEntity<>(errorMessageDTO, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(FechasException.class)
-    //Spring sabe que si sale una exception de este tipo, se ejecuta el metodo abajo.
-    public ResponseEntity<String> parametrosError(FechasException exception) {
-        return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
-    }
-
     @ExceptionHandler(SinHotelesException.class)
     //Spring sabe que si sale una exception de este tipo, se ejecuta el metodo abajo.
     public ResponseEntity<ErrorMessageDTO> parametrosError(SinHotelesException e) {
