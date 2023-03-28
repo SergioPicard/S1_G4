@@ -47,11 +47,25 @@ public class HotelAvailableDtoFactory {
                 .build();
     }
 
+    public static HotelAvailableDto centralPlaza(){
+        return HotelAvailableDto.builder()
+                .codigoHotel("CP-0004")
+                .nombre("Central Plaza")
+                .lugar("Medellín")
+                .tipoHabitacion("Múltiple")
+                .precioNoche(8600.0)
+                .disponibleDesde(LocalDate.of(2022,03,01))
+                .disponibleHasta(LocalDate.of(2022,04,17))
+                .reservado(false)
+                .build();
+    }
+
     public static List<HotelAvailableDto> listHotels(){
         List<HotelAvailableDto> list = new ArrayList<>();
         list.add(cataratasHotel());
         list.add(cataratasHotel2());
         list.add(BristolHotel());
+        list.add(centralPlaza());
 
         return list;
     }

@@ -21,10 +21,10 @@ import java.util.List;
 @Builder
 
 public class BookingDto {
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", locale = "es_ES", timezone = "America/New_York", lenient = OptBoolean.TRUE, with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY, without = JsonFormat.Feature.WRITE_SINGLE_ELEM_ARRAYS_UNWRAPPED)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy", locale = "es_ES", timezone = "America/New_York", lenient = OptBoolean.TRUE, with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY, without = JsonFormat.Feature.WRITE_SINGLE_ELEM_ARRAYS_UNWRAPPED)
     private LocalDate dateFrom;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", locale = "es_ES", timezone = "America/New_York", lenient = OptBoolean.TRUE, with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY, without = JsonFormat.Feature.WRITE_SINGLE_ELEM_ARRAYS_UNWRAPPED)
+   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy", locale = "es_ES", timezone = "America/New_York", lenient = OptBoolean.TRUE, with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY, without = JsonFormat.Feature.WRITE_SINGLE_ELEM_ARRAYS_UNWRAPPED)
     private LocalDate datoTo;
 
     @NotBlank(message = "La marca del vehiculo no debe estar vacia o contener espacio en blanco solamente")
@@ -33,7 +33,7 @@ public class BookingDto {
     @NotEmpty(message = "El campo está vacio.")
     private String hotelCode;
 
-    @Positive(message = "Debe ingresar al menos 1 persona.")
+    @Positive(message = "La cantidad de personas debe ser un valor numérico.")
     private Integer peopleAmount;
 
     @NotBlank(message = "El campo está vacio.")
@@ -43,6 +43,6 @@ public class BookingDto {
     private List<@Valid PeopleDto> people;
 
     @NotNull//un objeto no puede estar vacio
-    private PaymentMethodDto paymentMethod;
+    private @Valid PaymentMethodDto paymentMethod;
 }
 

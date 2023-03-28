@@ -6,6 +6,7 @@ import com.example.AgenciaTurismo.repository.HotelesRepository;
 import com.example.AgenciaTurismo.util.FlightAvailableDtoFactory;
 import com.example.AgenciaTurismo.util.HotelAvailableDtoFactory;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -18,9 +19,10 @@ class HotelesRepositoryTest {
     HotelesRepository hotelesRepository = new HotelesRepository();
 
     @Test
+    @DisplayName("se buscan todos los hoteles - REPOSITORY")
     void findAll() {
         // arrange
-        List<HotelAvailableDto> expected = List.of(HotelAvailableDtoFactory.cataratasHotel(), HotelAvailableDtoFactory.cataratasHotel2(), HotelAvailableDtoFactory.BristolHotel());
+        List<HotelAvailableDto> expected = List.of(HotelAvailableDtoFactory.cataratasHotel(), HotelAvailableDtoFactory.cataratasHotel2(), HotelAvailableDtoFactory.BristolHotel(), HotelAvailableDtoFactory.centralPlaza());
         // act
         var result = hotelesRepository.findAll();
         // assert
@@ -28,6 +30,7 @@ class HotelesRepositoryTest {
     }
 
     @Test
+    @DisplayName("Se filtran los hoteles, con fechas, destino y origen como parámetros - REPOSITORY")
     void filterHotelsRep() {
         // arrange
         LocalDate fechaIda = LocalDate.of(2022,02,10);
@@ -41,6 +44,7 @@ class HotelesRepositoryTest {
     }
 
     @Test
+    @DisplayName("Reserva de hotel con DTO de booking como parámetro - REPOSITORY")
     void findHotel() {
 
         // arrange

@@ -4,6 +4,7 @@ import com.example.AgenciaTurismo.dto.response.FlightsAvailableDto;
 import com.example.AgenciaTurismo.repository.FlightsRepository;
 import com.example.AgenciaTurismo.util.FlightAvailableDtoFactory;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -14,6 +15,7 @@ public class FligthsRepositoryTest {
     FlightsRepository flightsRepository = new FlightsRepository();
 
     @Test
+    @DisplayName("se buscan todos los vuelos - REPOSITORY")
     public void findAllTest(){
         // arrange
         List<FlightsAvailableDto> expected = FlightAvailableDtoFactory.listFlights();
@@ -26,6 +28,7 @@ public class FligthsRepositoryTest {
     }
 
     @Test
+    @DisplayName("Se filtran los vuelos, con fechas, destino y origen como parámetros - REPOSITORY")
     public void filterFlightRepTest(){
         // arrange
         LocalDate fechaIda = LocalDate.of(2022,02,10);
@@ -42,6 +45,7 @@ public class FligthsRepositoryTest {
     }
 
     @Test
+    @DisplayName("Reserva de vuelo con DTO de booking como parámetro - REPOSITORY")
     public void findFlightTest(){
         // arrange
         String flightNumber = "PIBA-1420";

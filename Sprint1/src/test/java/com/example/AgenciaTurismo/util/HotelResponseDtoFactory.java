@@ -1,5 +1,7 @@
 package com.example.AgenciaTurismo.util;
 
+import com.example.AgenciaTurismo.dto.request.BookingDto;
+import com.example.AgenciaTurismo.dto.request.BookingRequestDto;
 import com.example.AgenciaTurismo.dto.request.PeopleDto;
 import com.example.AgenciaTurismo.dto.response.*;
 
@@ -12,7 +14,7 @@ public class HotelResponseDtoFactory {
 
         return BookingResponseDto.builder()
                 .userName("lucianoefesta@hotmail.com")
-                .total(239400.0)
+                .total(263340.0)
                 .status(getStatus())
                 .booking(getBookingHotel())
                 .build();
@@ -30,6 +32,7 @@ public class HotelResponseDtoFactory {
                 .build();
     }
 
+
     public static PeopleDto getPeople(){
         return PeopleDto.builder()
                 .dni("36365939")
@@ -43,7 +46,7 @@ public class HotelResponseDtoFactory {
     public static StatusCodeDto getStatus(){
         return StatusCodeDto.builder()
                 .code(200)
-                .message("Reserva Satisfactoria")
+                .message("Reserva Satisfactoria. Por utilizar TC tiene un recargo del 10%. Su recargo es de: $23940.0")
                 .build();
     }
 

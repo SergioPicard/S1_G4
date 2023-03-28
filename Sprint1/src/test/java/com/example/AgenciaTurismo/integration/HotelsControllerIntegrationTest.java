@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -46,6 +47,7 @@ public class HotelsControllerIntegrationTest {
 
 
     @Test
+    @DisplayName("Busqueda de todos los hoteles")
     public void searchAllHotels() throws Exception {
         // arrange
         List<HotelAvailableDto> expected = HotelAvailableDtoFactory.listHotels();
@@ -78,6 +80,7 @@ public class HotelsControllerIntegrationTest {
 
 
     @Test
+    @DisplayName("Se filtran los hoteles con las fechas y destino como parámetro")
     public void filterHotels() throws Exception {
         // arrange
 
@@ -109,6 +112,7 @@ public class HotelsControllerIntegrationTest {
     }
 
     @Test
+    @DisplayName("reserva de un hotel con DTO de reserva como parámetro")
     public void booking() throws Exception {
         // arrange
 
@@ -140,3 +144,4 @@ public class HotelsControllerIntegrationTest {
 
 
 }
+
