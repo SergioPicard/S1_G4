@@ -1,4 +1,4 @@
-package com.example.AgenciaTurismo.service;
+/*package com.example.AgenciaTurismo.service;
 
 import com.example.AgenciaTurismo.dto.request.BookingRequestDto;
 import com.example.AgenciaTurismo.dto.response.BookingResponseDto;
@@ -15,4 +15,4 @@ public interface IHotelesService {
 
      BookingResponseDto bookingResponse(BookingRequestDto bookingRequest);
 
-}
+}*/
