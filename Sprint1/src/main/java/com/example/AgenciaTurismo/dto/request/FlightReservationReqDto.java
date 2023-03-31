@@ -1,10 +1,7 @@
 package com.example.AgenciaTurismo.dto.request;
 
 import com.example.AgenciaTurismo.dto.response.FlightReservationResDto;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
@@ -12,7 +9,8 @@ import javax.validation.constraints.NotBlank;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 @Builder
 public class FlightReservationReqDto {
     @Email(message = "Por favor ingrese un e-mail válido.")

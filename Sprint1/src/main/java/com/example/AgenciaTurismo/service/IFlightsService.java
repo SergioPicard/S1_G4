@@ -1,4 +1,4 @@
-package com.example.AgenciaTurismo.service;
+/*package com.example.AgenciaTurismo.service;
 
 import com.example.AgenciaTurismo.dto.request.FlightReservationReqDto;
 import com.example.AgenciaTurismo.dto.response.FlightResponseDto;
@@ -17,4 +17,4 @@ public interface IFlightsService {
 
     FlightResponseDto flightReservationResponse(FlightReservationReqDto flightReservationReqDto);
 
-}
+}*/

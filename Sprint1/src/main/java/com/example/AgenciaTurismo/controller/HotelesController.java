@@ -1,17 +1,18 @@
 package com.example.AgenciaTurismo.controller;
 
+import com.example.AgenciaTurismo.dto.MessageDTO;
 import com.example.AgenciaTurismo.dto.request.BookingRequestDto;
 import com.example.AgenciaTurismo.dto.response.BookingResponseDto;
 import com.example.AgenciaTurismo.dto.response.HotelAvailableDto;
-import com.example.AgenciaTurismo.service.HotelesService;
-import com.example.AgenciaTurismo.service.IHotelesService;
+
+import com.example.AgenciaTurismo.service.classes.HotelesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -20,14 +21,30 @@ import java.util.List;
 @RequestMapping("/api/v1/")
 public class HotelesController {
     @Autowired
-    IHotelesService hotelesService;
+    HotelesService hotelesService;
 
-    @GetMapping("/hotels")
-    public List<HotelAvailableDto> searchAllHotels(){
-
-        return hotelesService.searchAll();
+   @GetMapping("/hotels")
+    public ResponseEntity<List<HotelAvailableDto>> findAllHotels(){
+        return ResponseEntity.ok(hotelesService.getAllEntities());
     }
 
+    @PostMapping("/hotels/new")
+    public ResponseEntity<HotelAvailableDto> newHotel(@RequestBody HotelAvailableDto hotelAvailableDto){
+        return ResponseEntity.ok(
+                hotelesService.saveEntity(hotelAvailableDto)
+        );
+    }
+    @DeleteMapping("/hotels/{code}")
+    public ResponseEntity<MessageDTO> deleteByIdHotel(@PathVariable String code){
+        return ResponseEntity.ok(
+                hotelesService.deleteEntity(code)
+        );
+    }
+
+
+
+
+ /*
     @GetMapping("/hotel")
     public List<HotelAvailableDto> filterHotels(@RequestParam("dateFrom") @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate dateFrom,
                                                 @RequestParam("dateTo") @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate dateTo,
@@ -40,5 +57,5 @@ public class HotelesController {
     public BookingResponseDto booking(@RequestBody @Valid BookingRequestDto bookingRequest){
 
         return hotelesService.bookingResponse(bookingRequest);
-    }
+    }*/
 }
