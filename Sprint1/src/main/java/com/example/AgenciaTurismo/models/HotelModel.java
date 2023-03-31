@@ -4,18 +4,42 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+
+@Entity
+@Table(name = "hotel")
+
 public class HotelModel {
+
+    @Id
     private String codigoHotel;
+
+    @Column(length = 30, nullable = false)
     private String nombre;
+
+    @Column(length = 30, nullable = false)
     private String lugar;
+
+    @Column(length = 30, nullable = false)
     private String tipoHabitacion;
+
+    @Column(length = 9, nullable = false)
     private Double precioNoche;
+
+    @Column()
     private LocalDate disponibleDesde;
+
+    @Column()
     private LocalDate disponibleHasta;
+
+    @Column()
     private Boolean reservado;
 
 }
