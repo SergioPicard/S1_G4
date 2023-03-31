@@ -11,20 +11,16 @@ import javax.persistence.*;
 @NoArgsConstructor
 
 @Entity
-@Table(name = "metodoPago")
+@Table(name = "payment_method")
 
 public class PaymentMethodModel {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
-    @Column(length = 20)
+    @Column(length = 40)
     private String type;
-
     @Column(length = 19)
     private String number;
-
     @Column(length = 2)
     private Integer dues;
 

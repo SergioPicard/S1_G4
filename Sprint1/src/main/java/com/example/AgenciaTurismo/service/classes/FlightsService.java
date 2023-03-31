@@ -1,24 +1,43 @@
-package com.example.AgenciaTurismo.service;
+package com.example.AgenciaTurismo.service.classes;
 
-import com.example.AgenciaTurismo.dto.request.FlightReservationReqDto;
+import com.example.AgenciaTurismo.dto.MessageDTO;
 import com.example.AgenciaTurismo.dto.response.*;
-import com.example.AgenciaTurismo.exceptions.SinHotelesException;
-import com.example.AgenciaTurismo.exceptions.VuelosException;
-import com.example.AgenciaTurismo.models.FlightModel;
-import com.example.AgenciaTurismo.repository.FlightsRepository;
 import com.example.AgenciaTurismo.repository.IFlightsRepository;
+import com.example.AgenciaTurismo.service.generics.ICrudService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
+
 
 @Service
-public class FlightsService implements IFlightsService {
+public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,String> {
 
     @Autowired
+    IFlightsRepository flightsRepository;
+    ModelMapper mapper = new ModelMapper();
+    @Override
+    public FlightsAvailableDto saveEntity(FlightsAvailableDto objectDTO) {
+        return null;
+    }
+
+    @Override
+    public List<FlightsAvailableDto> getAllEntities() {
+        return null;
+    }
+
+    @Override
+    public FlightsAvailableDto getEntityById(Integer integer) {
+        return null;
+    }
+
+    @Override
+    public MessageDTO deleteEntity(String string) {
+        return null;
+    }
+
+/*    @Autowired
     IFlightsRepository flightsRepository;
 
     public List<FlightsAvailableDto> searchAll(){
@@ -179,6 +198,6 @@ public class FlightsService implements IFlightsService {
 
 
         return response;
-    }
+    }*/
 
 }
