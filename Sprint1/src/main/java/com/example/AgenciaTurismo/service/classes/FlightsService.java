@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -92,9 +91,10 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
         FlightResponseModel response = new FlightResponseModel();
 
         //BUSQUEDA DEL VUELO POR CODIGO PASADO EN EL REQUEST.
-        //var vueloPorCodigo = flightsRepository.findByNroVuelo(flightReservationReqDto.)
+        var vueloPorCodigo = flightsRepository.findByNroVuelo(flightReservationReqDto.)
 
-        var bookedFlight = flightsRepository.existsById(flightReservationReqModel.getId());
+        var bookedFlight = flightsRepository.findById(
+                flightsRepository.findByNroVuelo(flightReservationReqDto.getFlightReservation().getFlightNumber()));
 
 
 /*        var bookedFlight = flightsRepository.findByNroVueloAndTipoAsientoEquals(flightReservationReqDto.getFlightReservation().getFlightNumber(),
@@ -123,13 +123,13 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
 
         // TIPO DE ASIENTO
         String seatTypeAvailable = bookedFlight.getTipoAsiento().toUpperCase();
-        String seatTypeSelect = flightReservationReqModel.getFlightReservation().getFlightModel().getTipoAsiento().toUpperCase();
+        String seatTypeSelect = flightReservationReqModel.getFlightReservation().getFlightModel() .getSeatType().toUpperCase();
 
         //FECHAS
-        LocalDate dateFrom = flightReservationReqModel.getFlightReservation().getFlightModel().getFlightReservation().getFlightModel().getFechaIda();
-        LocalDate dateTo = flightReservationReqModel.getFlightReservation().getFlightModel().getFechaVuelta();
+        LocalDate dateFrom = flightReservationReqDto.getFlightReservation().getDateFrom();
+        LocalDate dateTo = flightReservationReqDto.getFlightReservation().getDatoTo();
 
-        if (!flightReservationReqModel.getUserName().isEmpty()) {
+        if (!flightReservationReqDto.getUserName().isEmpty()) {
             if (!dateFrom.isAfter(dateTo)) {
                 if (!dateFrom.isEqual(dateTo)) {
                     if (dateFromEqual && dateToEqual) {
@@ -138,6 +138,9 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
                                 if (peopleAmount != 0) {
                                     if (peopleAmount == people) {
 
+                                        List<PeopleModel> listPerson = listPersonDTO.stream().map(
+                                                person -> mapper.map(person, PeopleModel.class)
+                                        ).collect(Collectors.toList());
 
 
                                     } else {
@@ -151,8 +154,8 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
                                         + seatTypeAvailable + ".");
                             }
                         } else {
-                            throw new VuelosException("El vuelo '" + bookedFlight.getNroVuelo() + "' se dirige desde " + bookedFlight.getOrigen() + " hacia " + bookedFlight.getDestino() + ", no desde " + flightReservationReqModel.getFlightReservation().getFlightModel().getOrigen() + " hacia "
-                                    + flightReservationReqModel.getFlightReservation().getFlightModel().getDestino());
+                            throw new VuelosException("El vuelo '" + bookedFlight.getNroVuelo() + "' se dirige desde " + bookedFlight.getOrigen() + " hacia " + bookedFlight.getDestino() + ", no desde " + flightReservationReqDto.getFlightReservation().getOrigin() + " hacia "
+                                    + flightReservationReqDto.getFlightReservation().getDestination());
                         }
                     } else {
                         throw new VuelosException("El vuelo número '" + bookedFlight.getNroVuelo() + "' se encuentra dispobile desde el " + bookedFlight.getFechaIda() + " hasta el "
@@ -173,16 +176,16 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
         Double total = bookedFlight.getPrecioPersona() * peopleAmount;
 
         //VERIFICACION 1 SOLA CUOTA CON DEBITO
-        if(flightReservationReqModel.getPaymentMethodDto().getType().equalsIgnoreCase("debitcard")){
-            if(flightReservationReqModel.getPaymentMethodDto().getDues() > 1){
+        if(flightReservationReqDto.getPaymentMethodDto().getType().equalsIgnoreCase("debitcard")){
+            if(flightReservationReqDto.getPaymentMethodDto().getDues() > 1){
                 throw new VuelosException("El método de pago es Débito, solo puede elegir 1 cuota.");
             }
         }
 
         String mensaje = "Reserva Satisfactoria";
 
-        if (flightReservationReqModel.getPaymentMethodDto().getType().equalsIgnoreCase("creditcard")){
-            int cuotas = flightReservationReqModel.getPaymentMethodDto().getDues();
+        if (flightReservationReqDto.getPaymentMethodDto().getType().equalsIgnoreCase("creditcard")){
+            int cuotas = flightReservationReqDto.getPaymentMethodDto().getDues();
             if (cuotas <= 3){
                 mensaje = "Reserva Satisfactoria. Por utilizar TC tiene un recargo del 5%. Su recargo es de: $" + total * 0.05;
 
@@ -198,7 +201,7 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
 
         //SETEO DEL RESPONSE
         response.setFlightModel(bookedFlight);
-        response.setUserName(flightReservationReqModel.getUserName());
+        response.setUserName(flightReservationReqDto.getUserName());
         response.setStatus(new StatusCodeModel(200,mensaje));
         response.setTotal(total);
 
