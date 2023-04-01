@@ -1,6 +1,16 @@
 package com.example.AgenciaTurismo.repository;
 
+<<<<<<< HEAD
 import com.example.AgenciaTurismo.models.FlightModel;
+=======
+import com.example.AgenciaTurismo.dto.request.FlightReservationReqDto;
+import com.example.AgenciaTurismo.dto.response.FlightResponseDto;
+import com.example.AgenciaTurismo.dto.response.FlightsAvailableDto;
+import com.example.AgenciaTurismo.models.FlightModel;
+import com.example.AgenciaTurismo.models.FlightReservationReqModel;
+import com.example.AgenciaTurismo.models.FlightReservationResModel;
+import com.example.AgenciaTurismo.models.HotelModel;
+>>>>>>> camila_sapino
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;
@@ -12,6 +22,9 @@ public interface IFlightsRepository extends JpaRepository<FlightModel,Integer> {
 
     List<FlightModel> findByFechaIdaAndFechaVueltaAndAndOrigenAndDestino
             (LocalDate dateFrom, LocalDate dateTo,String origen, String destination);
+
+    FlightModel findByNroVueloAndTipoAsientoEquals(String code, String asiento);
+
 
 /*    List<FlightModel> dataBase();
 

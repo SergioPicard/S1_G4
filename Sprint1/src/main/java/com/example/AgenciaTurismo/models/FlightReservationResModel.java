@@ -19,7 +19,8 @@ public class FlightReservationResModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @Column()
+
+    /*@Column()
     private LocalDate dateFrom;
     @Column()
     private LocalDate datoTo;
@@ -32,7 +33,7 @@ public class FlightReservationResModel {
     @Column(length = 3, nullable = false)
     private Integer seats;
     @Column(length = 10, nullable = false)
-    private String seatType;
+    private String seatType;*/
 
     //RELACIONES
     @OneToOne
