@@ -22,9 +22,8 @@ public class FlightResponseModel {
     private String userName;
     @Column()
     private Double total;
-    @OneToOne
-    private FlightModel flightModel;
-    @OneToOne
-    private StatusCodeModel status;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private FlightReservationResModel flightReservationResModel;
 
 }

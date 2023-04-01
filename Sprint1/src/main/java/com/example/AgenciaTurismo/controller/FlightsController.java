@@ -50,8 +50,8 @@ public class FlightsController {
 
         return flightsService.filterEntity(fechaIda, fechaVuelta, origen, destino);
     }
-    @PostMapping("/flight-reservation")
-    public ResponseEntity<FlightResponseDto> booking(@RequestBody  FlightReservationReqDto flightReservationReqDto){
+   @PostMapping("/flight-reservation")
+    public ResponseEntity<MessageDTO> booking(@RequestBody  FlightReservationReqDto flightReservationReqDto){
         return ResponseEntity.ok(
                 flightsService.flightReservationResponse(flightReservationReqDto));
     };

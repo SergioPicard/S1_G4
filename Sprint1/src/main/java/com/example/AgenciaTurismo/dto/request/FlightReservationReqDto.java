@@ -9,8 +9,7 @@ import javax.validation.constraints.NotBlank;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
+@Data
 @Builder
 public class FlightReservationReqDto {
     @Email(message = "Por favor ingrese un e-mail válido.")

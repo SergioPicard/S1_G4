@@ -13,5 +13,5 @@ public class FlightResponseDto {
     private String userName;
     private Double total;
     private FlightReservationResDto flightReservation;
-    private StatusCodeDto status;
+    //private StatusCodeDto status;
 }

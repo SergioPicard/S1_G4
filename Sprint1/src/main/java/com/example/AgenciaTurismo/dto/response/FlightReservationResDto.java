@@ -2,6 +2,7 @@ package com.example.AgenciaTurismo.dto.response;
 
 import com.example.AgenciaTurismo.dto.request.PaymentMethodDto;
 import com.example.AgenciaTurismo.dto.request.PeopleDto;
+import com.example.AgenciaTurismo.models.FlightModel;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.OptBoolean;
 import lombok.AllArgsConstructor;
@@ -9,6 +10,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.OneToOne;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
@@ -29,8 +31,8 @@ public class FlightReservationResDto {
     private String destination;
     @NotBlank
     private String flightNumber;
-//    @Positive(message = "La cantidad de personas debe ser un valor numérico.")
-//    private Integer seats;
+    @Positive(message = "La cantidad de personas debe ser un valor numérico.")
+    private Integer seats;
     @NotBlank
     private String seatType;
     private @Valid List<PeopleDto> people;
