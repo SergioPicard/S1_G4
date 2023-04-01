@@ -1,5 +1,7 @@
 package com.example.AgenciaTurismo.models;
 
+import com.example.AgenciaTurismo.dto.response.FlightReservationResDto;
+import com.example.AgenciaTurismo.dto.response.StatusCodeDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,7 +22,15 @@ public class FlightReservationResModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    /*@Column()
+    //RELACIONES
+    @OneToOne(cascade = CascadeType.PERSIST)
+    private FlightModel flightModel;
+    @OneToMany
+    private List<PeopleModel> people;
+
+
+
+        /*@Column()
     private LocalDate dateFrom;
     @Column()
     private LocalDate datoTo;
@@ -34,11 +44,5 @@ public class FlightReservationResModel {
     private Integer seats;
     @Column(length = 10, nullable = false)
     private String seatType;*/
-
-    //RELACIONES
-    @OneToOne
-    private FlightModel flightModel;
-    @OneToMany
-    private List<PeopleModel> people;
 
 }

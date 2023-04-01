@@ -2,13 +2,10 @@ package com.example.AgenciaTurismo.service.classes;
 
 import com.example.AgenciaTurismo.dto.MessageDTO;
 import com.example.AgenciaTurismo.dto.request.FlightReservationReqDto;
+import com.example.AgenciaTurismo.dto.request.PeopleDto;
 import com.example.AgenciaTurismo.dto.response.*;
-import com.example.AgenciaTurismo.models.FlightModel;
-<<<<<<< HEAD
-=======
-import com.example.AgenciaTurismo.models.FlightReservationResModel;
-import com.example.AgenciaTurismo.models.HotelModel;
->>>>>>> camila_sapino
+import com.example.AgenciaTurismo.exceptions.VuelosException;
+import com.example.AgenciaTurismo.models.*;
 import com.example.AgenciaTurismo.repository.IFlightsRepository;
 import com.example.AgenciaTurismo.service.generics.ICrudService;
 import org.modelmapper.ModelMapper;
@@ -16,7 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -47,7 +46,11 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
 
     @Override
     public FlightsAvailableDto getEntityById(Integer integer) {
-        return null;
+        var entity = flightsRepository.findById(integer).orElseThrow(
+                () -> {throw  new VuelosException("No se encontró el vuelo con el id: " + integer);}
+        );
+
+        return mapper.map(entity, FlightsAvailableDto.class);
     }
 
 
@@ -84,43 +87,49 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
         }
     }
 
+    public FlightResponseDto flightReservationResponse(FlightReservationReqModel flightReservationReqModel){
 
-    public FlightResponseDto flightReservationResponse(FlightReservationReqDto flightReservationReqDto){
-
-        FlightResponseDto response = new FlightResponseDto();
+        FlightResponseModel response = new FlightResponseModel();
 
         //BUSQUEDA DEL VUELO POR CODIGO PASADO EN EL REQUEST.
+        //var vueloPorCodigo = flightsRepository.findByNroVuelo(flightReservationReqDto.)
 
-        var bookedFlight = flightsRepository.findByNroVueloAndTipoAsientoEquals(flightReservationReqDto.getFlightReservation().getFlightNumber(),
-                flightReservationReqDto.getFlightReservation().getSeatType());
+        var bookedFlight = flightsRepository.existsById(flightReservationReqModel.getId());
+
+
+/*        var bookedFlight = flightsRepository.findByNroVueloAndTipoAsientoEquals(flightReservationReqDto.getFlightReservation().getFlightNumber(),
+                flightReservationReqDto.getFlightReservation().getSeatType());*/
+
+
+        List<PeopleModel> listPerson = flightReservationReqModel.getFlightReservation().getPeople();
 
 
         //NUEVA RESPONSE RESERVA - DATOS SIN MEDIOS DE PAGO
-        FlightReservationResModel booking = new FlightReservationResModel();
+        //FlightReservationResModel booking = new FlightReservationResModel();
 
         //  CANTIDAD DE PERSONAS
-        int peopleAmount = flightReservationReqDto.getFlightReservation().getSeats();
+        int peopleAmount = listPerson.size();
         // CANTIDAD DE PERSONAS CON SU DETALLE
-        int people = flightReservationReqDto.getFlightReservation().getPeople().size();
+        int people = flightReservationReqModel.getFlightReservation().getPeople().size();
 
         //IGUALDAD DE DESTINO
-        boolean destination = flightReservationReqDto.getFlightReservation().getDestination().equalsIgnoreCase(bookedFlight.getDestino());
+        boolean destination = flightReservationReqModel.getFlightReservation().getFlightModel().getDestino().equalsIgnoreCase(bookedFlight.getDestino());
         //IGUALDAD ORIGEN
-        boolean origin = flightReservationReqDto.getFlightReservation().getOrigin().equalsIgnoreCase(bookedFlight.getOrigen());
+        boolean origin = flightReservationReqModel.getFlightReservation().getFlightModel().getOrigen().equalsIgnoreCase(bookedFlight.getOrigen());
 
         // IGUAL A LA FECHA DISPONIBLE
-        boolean dateFromEqual = bookedFlight.getFechaIda().isEqual(flightReservationReqDto.getFlightReservation().getDateFrom());
-        boolean dateToEqual = bookedFlight.getFechaVuelta().isEqual(flightReservationReqDto.getFlightReservation().getDatoTo());
+        boolean dateFromEqual = bookedFlight.getFechaIda().isEqual(flightReservationReqModel.getFlightReservation().getFlightModel().getFechaIda());
+        boolean dateToEqual = bookedFlight.getFechaVuelta().isEqual(flightReservationReqModel.getFlightReservation().getFlightModel().getFechaVuelta());
 
         // TIPO DE ASIENTO
         String seatTypeAvailable = bookedFlight.getTipoAsiento().toUpperCase();
-        String seatTypeSelect = flightReservationReqDto.getFlightReservation().getSeatType().toUpperCase();
+        String seatTypeSelect = flightReservationReqModel.getFlightReservation().getFlightModel().getTipoAsiento().toUpperCase();
 
         //FECHAS
-        LocalDate dateFrom = flightReservationReqDto.getFlightReservation().getDateFrom();
-        LocalDate dateTo = flightReservationReqDto.getFlightReservation().getDatoTo();
+        LocalDate dateFrom = flightReservationReqModel.getFlightReservation().getFlightModel().getFlightReservation().getFlightModel().getFechaIda();
+        LocalDate dateTo = flightReservationReqModel.getFlightReservation().getFlightModel().getFechaVuelta();
 
-        if (!flightReservationReqDto.getUserName().isEmpty()) {
+        if (!flightReservationReqModel.getUserName().isEmpty()) {
             if (!dateFrom.isAfter(dateTo)) {
                 if (!dateFrom.isEqual(dateTo)) {
                     if (dateFromEqual && dateToEqual) {
@@ -128,18 +137,9 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
                             if (seatTypeSelect.equalsIgnoreCase(seatTypeAvailable)) {
                                 if (peopleAmount != 0) {
                                     if (peopleAmount == people) {
-                                        booking.setFlightModel(bookedFlight);
 
-/*
-                                        booking.setFlightNumber(flightReservationReqDto.getFlightReservation().getFlightNumber());
-                                        booking.setOrigin(flightReservationReqDto.getFlightReservation().getOrigin());
-                                        booking.setSeats(flightReservationReqDto.getFlightReservation().getSeats());
-                                        booking.setPeople(flightReservationReqDto.getFlightReservation().getPeople());
-                                        booking.setDateFrom(flightReservationReqDto.getFlightReservation().getDateFrom());
-                                        booking.setDatoTo(flightReservationReqDto.getFlightReservation().getDatoTo());
-                                        booking.setDestination(bookedFlight.getDestino());
-                                        booking.setSeatType(flightReservationReqDto.getFlightReservation().getSeatType());
-*/
+
+
                                     } else {
                                         throw new VuelosException("La cantidad de pasajeros no coincide con la cantidad de personas ingresada.");
                                     }
@@ -151,8 +151,8 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
                                         + seatTypeAvailable + ".");
                             }
                         } else {
-                            throw new VuelosException("El vuelo '" + bookedFlight.getNroVuelo() + "' se dirige desde " + bookedFlight.getOrigen() + " hacia " + bookedFlight.getDestino() + ", no desde " + flightReservationReqDto.getFlightReservation().getOrigin() + " hacia "
-                                    + flightReservationReqDto.getFlightReservation().getDestination());
+                            throw new VuelosException("El vuelo '" + bookedFlight.getNroVuelo() + "' se dirige desde " + bookedFlight.getOrigen() + " hacia " + bookedFlight.getDestino() + ", no desde " + flightReservationReqModel.getFlightReservation().getFlightModel().getOrigen() + " hacia "
+                                    + flightReservationReqModel.getFlightReservation().getFlightModel().getDestino());
                         }
                     } else {
                         throw new VuelosException("El vuelo número '" + bookedFlight.getNroVuelo() + "' se encuentra dispobile desde el " + bookedFlight.getFechaIda() + " hasta el "
@@ -170,19 +170,19 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
 
 
         //CALCULO DEL TOTAL SIN INTERESES
-        Double total = bookedFlight.getPrecioPersona() * flightReservationReqDto.getFlightReservation().getSeats();
+        Double total = bookedFlight.getPrecioPersona() * peopleAmount;
 
         //VERIFICACION 1 SOLA CUOTA CON DEBITO
-        if(flightReservationReqDto.getPaymentMethodDto().getType().equalsIgnoreCase("debitcard")){
-            if(flightReservationReqDto.getPaymentMethodDto().getDues() > 1){
+        if(flightReservationReqModel.getPaymentMethodDto().getType().equalsIgnoreCase("debitcard")){
+            if(flightReservationReqModel.getPaymentMethodDto().getDues() > 1){
                 throw new VuelosException("El método de pago es Débito, solo puede elegir 1 cuota.");
             }
         }
 
         String mensaje = "Reserva Satisfactoria";
 
-        if (flightReservationReqDto.getPaymentMethodDto().getType().equalsIgnoreCase("creditcard")){
-            int cuotas = flightReservationReqDto.getPaymentMethodDto().getDues();
+        if (flightReservationReqModel.getPaymentMethodDto().getType().equalsIgnoreCase("creditcard")){
+            int cuotas = flightReservationReqModel.getPaymentMethodDto().getDues();
             if (cuotas <= 3){
                 mensaje = "Reserva Satisfactoria. Por utilizar TC tiene un recargo del 5%. Su recargo es de: $" + total * 0.05;
 
@@ -197,13 +197,12 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
         }
 
         //SETEO DEL RESPONSE
-        response.setFlightReservation(booking);
-        response.setUserName(flightReservationReqDto.getUserName());
-        response.setStatus(new StatusCodeDto(200,mensaje));
+        response.setFlightModel(bookedFlight);
+        response.setUserName(flightReservationReqModel.getUserName());
+        response.setStatus(new StatusCodeModel(200,mensaje));
         response.setTotal(total);
 
-
-        return response;
+        return mapper.map(response, FlightResponseDto.class);
     }
 
 /*    @Autowired

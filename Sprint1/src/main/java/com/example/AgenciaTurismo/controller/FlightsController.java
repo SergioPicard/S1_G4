@@ -2,8 +2,9 @@ package com.example.AgenciaTurismo.controller;
 
 
 import com.example.AgenciaTurismo.dto.MessageDTO;
+import com.example.AgenciaTurismo.dto.request.FlightReservationReqDto;
+import com.example.AgenciaTurismo.dto.response.FlightResponseDto;
 import com.example.AgenciaTurismo.dto.response.FlightsAvailableDto;
-import com.example.AgenciaTurismo.dto.response.HotelAvailableDto;
 import com.example.AgenciaTurismo.service.classes.FlightsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -48,6 +50,11 @@ public class FlightsController {
 
         return flightsService.filterEntity(fechaIda, fechaVuelta, origen, destino);
     }
+    @PostMapping("/flight-reservation")
+    public ResponseEntity<FlightResponseDto> booking(@RequestBody  FlightReservationReqDto flightReservationReqDto){
+        return ResponseEntity.ok(
+                flightsService.flightReservationResponse(flightReservationReqDto));
+    };
 
 
 

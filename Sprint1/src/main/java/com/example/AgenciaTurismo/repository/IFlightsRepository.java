@@ -1,18 +1,7 @@
 package com.example.AgenciaTurismo.repository;
 
-<<<<<<< HEAD
 import com.example.AgenciaTurismo.models.FlightModel;
-=======
-import com.example.AgenciaTurismo.dto.request.FlightReservationReqDto;
-import com.example.AgenciaTurismo.dto.response.FlightResponseDto;
-import com.example.AgenciaTurismo.dto.response.FlightsAvailableDto;
-import com.example.AgenciaTurismo.models.FlightModel;
-import com.example.AgenciaTurismo.models.FlightReservationReqModel;
-import com.example.AgenciaTurismo.models.FlightReservationResModel;
-import com.example.AgenciaTurismo.models.HotelModel;
->>>>>>> camila_sapino
 import org.springframework.data.jpa.repository.JpaRepository;
-
 import java.time.LocalDate;
 import java.util.List;
 
