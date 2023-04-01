@@ -2,7 +2,6 @@ package com.example.AgenciaTurismo.service.classes;
 
 import com.example.AgenciaTurismo.dto.MessageDTO;
 import com.example.AgenciaTurismo.dto.request.FlightReservationReqDto;
-import com.example.AgenciaTurismo.dto.request.PeopleDto;
 import com.example.AgenciaTurismo.dto.response.*;
 import com.example.AgenciaTurismo.exceptions.VuelosException;
 import com.example.AgenciaTurismo.models.*;
@@ -14,8 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -94,23 +93,21 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
 
     public MessageDTO flightReservationResponse(FlightReservationReqDto flightReservationReqDto){
 
-        FlightResponseModel response = new FlightResponseModel();
+        FlightResponseModel reservationFligth = new FlightResponseModel();
 
-
-        //BÚSQUEDA DEL VUELO POR CÓDIGO Y TIPO ASIENTO.
-
+        //BÚSQUEDA DEL VUELO POR CÓDIGO Y TIPO ASIENTO PARA VALIDAR ATRIBUTOS.
         var bookedFlight = flightsRepository.findByNroVueloAndTipoAsientoEquals(flightReservationReqDto.getFlightReservation().getFlightNumber(),
                 flightReservationReqDto.getFlightReservation().getSeatType());
 
         if(bookedFlight == null){
-            throw new VuelosException("El vuelo no existe.");
+            throw new VuelosException("El vuelo que desea reservar no existe.");
         }
 
 
-        //MAPEO FLIGHT RESERVATION A ENTIDAD
+        //MAPEO RESERVA DE VUELO DE DTO A ENTIDAD.
         FlightReservationResModel booking = mapper.map(flightReservationReqDto.getFlightReservation(), FlightReservationResModel.class);
 
-        //SETEO ATRIBUTO PARA RELACION
+        //SET ATRIBUTO PARA RELACIÓN
         booking.setFlightModel(bookedFlight);
 
 
@@ -146,36 +143,29 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
                                     if (peopleAmount == people) {
 
                                         //CALCULO DEL TOTAL SIN INTERESES
-                                        Double total = bookedFlight.getPrecioPersona() * flightReservationReqDto.getFlightReservation().getSeats();
+                                        double total = bookedFlight.getPrecioPersona() * flightReservationReqDto.getFlightReservation().getSeats();
 
-                                        //VERIFICACION 1 SOLA CUOTA CON DEBITO
+                                        //VERIFICACIÓN 1 SOLA CUOTA CON DÉBITO
                                         if(flightReservationReqDto.getPaymentMethodDto().getType().equalsIgnoreCase("debitcard")){
                                             if(flightReservationReqDto.getPaymentMethodDto().getDues() > 1){
                                                 throw new VuelosException("El método de pago es Débito, solo puede elegir 1 cuota.");
                                             }
                                         }
 
-                                        String mensaje = "Reserva Satisfactoria";
-
                                         if (flightReservationReqDto.getPaymentMethodDto().getType().equalsIgnoreCase("creditcard")){
                                             int cuotas = flightReservationReqDto.getPaymentMethodDto().getDues();
                                             if (cuotas <= 3){
-                                                mensaje = "Reserva Satisfactoria. Por utilizar TC tiene un recargo del 5%. Su recargo es de: $" + total * 0.05;
-
                                                 total *= 1.05;
 
                                             } else{
-                                                mensaje = "Reserva Satisfactoria. Por utilizar TC tiene un recargo del 10%. Su recargo es de: $" + total * 0.10;
-
                                                 total *= 1.10;
-
                                             }
                                         }
 
-                                        //SETEO DEL RESPONSE
-                                        response.setUserName(flightReservationReqDto.getUserName());
-                                        response.setTotal(total);
-                                        response.setFlightReservationResModel(booking);
+                                        //SET DEL FLIGTHRESERVATION
+                                        reservationFligth.setUserName(flightReservationReqDto.getUserName());
+                                        reservationFligth.setTotal(total);
+                                        reservationFligth.setFlightReservationResModel(booking);
 
 
                                     } else {
@@ -193,7 +183,7 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
                                     + flightReservationReqDto.getFlightReservation().getDestination());
                         }
                     } else {
-                        throw new VuelosException("El vuelo número '" + bookedFlight.getNroVuelo() + "' se encuentra dispobile desde el " + bookedFlight.getFechaIda() + " hasta el "
+                        throw new VuelosException("El vuelo número '" + bookedFlight.getNroVuelo() + "' se encuentra disponible desde el " + bookedFlight.getFechaIda() + " hasta el "
                                 + bookedFlight.getFechaVuelta());
                     }
                 } else {
@@ -206,12 +196,29 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
             throw new VuelosException("Debe ingresar un nombre de usuario.");
         }
 
-        flightsBookingRepository.save(response);
+        flightsBookingRepository.save(reservationFligth);
 
         return MessageDTO.builder()
                 .message("Reserva de vuelo dada de alta correctamente." )
                 .name("CREACIÓN")
                 .build();
+    }
+
+    public MessageDTO deleteFlightReservation(Integer id){
+        if(flightsBookingRepository.existsById(id)){
+            flightsBookingRepository.deleteById(id);
+
+            return MessageDTO.builder()
+                    .message("Reserva de vuelo dada de baja correctamente." )
+                    .name("ELIMINACIÓN")
+                    .build();
+
+        }else{
+            return MessageDTO.builder()
+                    .message("Reserva de vuelo con id: " + id + " no ha sido encontrada." )
+                    .name("ELIMINACIÓN")
+                    .build();
+        }
     }
 
 /*    @Autowired

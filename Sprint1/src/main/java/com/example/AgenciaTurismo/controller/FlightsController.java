@@ -50,12 +50,17 @@ public class FlightsController {
 
         return flightsService.filterEntity(fechaIda, fechaVuelta, origen, destino);
     }
-   @PostMapping("/flight-reservation")
+   @PostMapping("/flight-reservation/new")
     public ResponseEntity<MessageDTO> booking(@RequestBody  FlightReservationReqDto flightReservationReqDto){
         return ResponseEntity.ok(
                 flightsService.flightReservationResponse(flightReservationReqDto));
-    };
+    }
 
+    @DeleteMapping("/flight-reservation/delete/{id}")
+    public  ResponseEntity<MessageDTO> deleteFlightReservation(@PathVariable Integer id){
+        return ResponseEntity.ok(
+                flightsService.deleteFlightReservation(id));
+    }
 
 
     /*@GetMapping("/flights")
