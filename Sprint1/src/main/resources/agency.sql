@@ -107,3 +107,14 @@ INSERT INTO payment_method(dues, number, type)
 VALUES (5,"1234567891234123","creditCard");
 INSERT INTO payment_method(dues, number, type)
 VALUES (6,"1234567891234123","creditCard");
+
+INSERT INTO datos_reserva_hotel (date_from, dato_to, destination, hotel_code, people_amount, room_type, hotel_model_id, payment_method_id)
+VALUES ("2022/02/10", "2022/03/20", "Puerto Iguazú", "CH-0002", 2, "Doble", 1, 1);
+
+INSERT INTO datos_reserva_hotel_people (booking_model_id, people_id)
+VALUES (1, 1);
+INSERT INTO datos_reserva_hotel_people (booking_model_id, people_id)
+VALUES (1, 2);
+
+INSERT INTO reserva_hotel (user_name, booking_id)
+VALUES ("amccathie0@gnu.org", 1);
