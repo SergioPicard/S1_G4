@@ -3,7 +3,6 @@ package com.example.AgenciaTurismo.service.classes;
 import com.example.AgenciaTurismo.dto.MessageDTO;
 import com.example.AgenciaTurismo.dto.response.*;
 import com.example.AgenciaTurismo.models.FlightModel;
-import com.example.AgenciaTurismo.models.HotelModel;
 import com.example.AgenciaTurismo.repository.IFlightsRepository;
 import com.example.AgenciaTurismo.service.generics.ICrudService;
 import org.modelmapper.ModelMapper;
@@ -67,7 +66,6 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
     public List<FlightsAvailableDto> filterEntity(LocalDate dateFrom, LocalDate dateTo,String origin, String destination) {
         // buscar el dato en la base de datos y asegurarnos que exista
         List<FlightModel> list = flightsRepository.findByFechaIdaAndFechaVueltaAndAndOrigenAndDestino(dateFrom, dateTo,origin,destination);
-        System.out.println(list);
 
         if (!list.isEmpty()){
         return list.stream().map(
