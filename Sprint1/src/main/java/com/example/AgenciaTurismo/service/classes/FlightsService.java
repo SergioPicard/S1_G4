@@ -2,6 +2,8 @@ package com.example.AgenciaTurismo.service.classes;
 
 import com.example.AgenciaTurismo.dto.MessageDTO;
 import com.example.AgenciaTurismo.dto.response.*;
+import com.example.AgenciaTurismo.models.FlightModel;
+import com.example.AgenciaTurismo.models.HotelModel;
 import com.example.AgenciaTurismo.repository.IFlightsRepository;
 import com.example.AgenciaTurismo.service.generics.ICrudService;
 import org.modelmapper.ModelMapper;
@@ -9,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -17,14 +20,23 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
     @Autowired
     IFlightsRepository flightsRepository;
     ModelMapper mapper = new ModelMapper();
+
     @Override
-    public FlightsAvailableDto saveEntity(FlightsAvailableDto objectDTO) {
-        return null;
+    public FlightsAvailableDto saveEntity(FlightsAvailableDto flightsAvailableDto) {
+        var entity = mapper.map(flightsAvailableDto, FlightModel.class);
+        // guardar
+        flightsRepository.save(entity);
+        // mappear de entity a dto para llevar al controller
+        return mapper.map(entity, FlightsAvailableDto.class);
     }
 
     @Override
     public List<FlightsAvailableDto> getAllEntities() {
-        return null;
+        var list = flightsRepository.findAll();
+        return list.stream().map(
+                        flight -> mapper.map(flight, FlightsAvailableDto.class)
+                )
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -33,8 +45,22 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
     }
 
     @Override
-    public MessageDTO deleteEntity(String string) {
-        return null;
+    public MessageDTO deleteEntity(String code) {
+        // buscar el dato en la base de datos y asegurarnos que exista
+        List<FlightModel> exists = flightsRepository.findByNroVuelo(code);
+        // eliminar efectivamente
+        if(!exists.isEmpty())
+            flightsRepository.deleteAll();
+        else
+            return MessageDTO.builder()
+                    .message("No se pudo encontrar el Vuelo a eliminar")
+                    .name("ELIMINACION")
+                    .build();
+        // devolver el mensaje DTO
+        return MessageDTO.builder()
+                .message("Se elimino el Vuelo con el codigo: " + code)
+                .name("ELIMINACION")
+                .build();
     }
 
 /*    @Autowired
