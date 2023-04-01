@@ -12,6 +12,9 @@ public interface IFlightsRepository extends JpaRepository<FlightModel,Integer> {
 
     List<FlightModel> findByNroVuelo(String codigo);
 
+    List<FlightModel> findByFechaIdaAndFechaVueltaAndAndOrigenAndDestino
+            (LocalDate dateFrom, LocalDate dateTo,String origen, String destination);
+
 /*    List<FlightModel> dataBase();
 
     List<FlightsAvailableDto> findAll();
