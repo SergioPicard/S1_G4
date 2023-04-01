@@ -19,6 +19,10 @@ import java.time.LocalDate;
 public class FlightModel {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @Column(length = 30, nullable = false)
     private String nroVuelo;
 
     @Column(length = 30, nullable = false)
@@ -38,5 +42,6 @@ public class FlightModel {
 
     @Column()
     private LocalDate fechaVuelta;
+
 
 }

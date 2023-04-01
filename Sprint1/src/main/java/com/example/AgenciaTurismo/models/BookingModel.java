@@ -41,11 +41,12 @@ public class BookingModel {
     @Column(length = 10, nullable = false)
     private String roomType;
 
-    @Column(nullable = false)
+    //RELACIONES
+    @OneToOne
+    private HotelModel hotelModel;
+    @OneToMany
     private List<PeopleModel> people;
-
-
-    @Column()
+    @OneToOne
     private PaymentMethodModel paymentMethod;
 
 }

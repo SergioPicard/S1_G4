@@ -1,24 +1,85 @@
-package com.example.AgenciaTurismo.service;
+package com.example.AgenciaTurismo.service.classes;
 
-import com.example.AgenciaTurismo.dto.request.FlightReservationReqDto;
+import com.example.AgenciaTurismo.dto.MessageDTO;
 import com.example.AgenciaTurismo.dto.response.*;
-import com.example.AgenciaTurismo.exceptions.SinHotelesException;
-import com.example.AgenciaTurismo.exceptions.VuelosException;
 import com.example.AgenciaTurismo.models.FlightModel;
-import com.example.AgenciaTurismo.repository.FlightsRepository;
+import com.example.AgenciaTurismo.models.HotelModel;
 import com.example.AgenciaTurismo.repository.IFlightsRepository;
+import com.example.AgenciaTurismo.service.generics.ICrudService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
+
 @Service
-public class FlightsService implements IFlightsService {
+public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,String> {
 
     @Autowired
+    IFlightsRepository flightsRepository;
+    ModelMapper mapper = new ModelMapper();
+
+    @Override
+    public FlightsAvailableDto saveEntity(FlightsAvailableDto flightsAvailableDto) {
+        var entity = mapper.map(flightsAvailableDto, FlightModel.class);
+        // guardar
+        flightsRepository.save(entity);
+        // mappear de entity a dto para llevar al controller
+        return mapper.map(entity, FlightsAvailableDto.class);
+    }
+
+    @Override
+    public List<FlightsAvailableDto> getAllEntities() {
+        var list = flightsRepository.findAll();
+        return list.stream().map(
+                        flight -> mapper.map(flight, FlightsAvailableDto.class)
+                )
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public FlightsAvailableDto getEntityById(Integer integer) {
+        return null;
+    }
+
+    @Override
+    public MessageDTO deleteEntity(String code) {
+        // buscar el dato en la base de datos y asegurarnos que exista
+        List<FlightModel> exists = flightsRepository.findByNroVuelo(code);
+        // eliminar efectivamente
+        if(!exists.isEmpty())
+            flightsRepository.deleteAll();
+        else
+            return MessageDTO.builder()
+                    .message("No se pudo encontrar el Vuelo a eliminar")
+                    .name("ELIMINACION")
+                    .build();
+        // devolver el mensaje DTO
+        return MessageDTO.builder()
+                .message("Se elimino el Vuelo con el codigo: " + code)
+                .name("ELIMINACION")
+                .build();
+    }
+
+    public List<FlightsAvailableDto> filterEntity(LocalDate dateFrom, LocalDate dateTo,String origin, String destination) {
+        // buscar el dato en la base de datos y asegurarnos que exista
+        List<FlightModel> list = flightsRepository.findByFechaIdaAndFechaVueltaAndAndOrigenAndDestino(dateFrom, dateTo,origin,destination);
+        System.out.println(list);
+
+        if (!list.isEmpty()){
+        return list.stream().map(
+                        hotel -> mapper.map(hotel, FlightsAvailableDto.class)
+                )
+                .collect(Collectors.toList());
+        }else{
+            throw new RuntimeException("No hay vuelos en estas fechas");
+        }
+    }
+
+/*    @Autowired
     IFlightsRepository flightsRepository;
 
     public List<FlightsAvailableDto> searchAll(){
@@ -179,6 +240,6 @@ public class FlightsService implements IFlightsService {
 
 
         return response;
-    }
+    }*/
 
 }
