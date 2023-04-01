@@ -41,6 +41,14 @@ public class HotelesController {
         );
     }
 
+    @GetMapping("/hotel")
+    public List<HotelAvailableDto> filterHotels(@RequestParam("dateFrom") @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate dateFrom,
+                                                @RequestParam("dateTo") @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate dateTo,
+                                                @RequestParam("destination") String destination ){
+
+        return hotelesService.filterEntity(dateFrom, dateTo, destination);
+    }
+
 
 
 

@@ -10,6 +10,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -61,6 +62,21 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
                 .message("Se elimino el Vuelo con el codigo: " + code)
                 .name("ELIMINACION")
                 .build();
+    }
+
+    public List<FlightsAvailableDto> filterEntity(LocalDate dateFrom, LocalDate dateTo,String origin, String destination) {
+        // buscar el dato en la base de datos y asegurarnos que exista
+        List<FlightModel> list = flightsRepository.findByFechaIdaAndFechaVueltaAndAndOrigenAndDestino(dateFrom, dateTo,origin,destination);
+        System.out.println(list);
+
+        if (!list.isEmpty()){
+        return list.stream().map(
+                        hotel -> mapper.map(hotel, FlightsAvailableDto.class)
+                )
+                .collect(Collectors.toList());
+        }else{
+            throw new RuntimeException("No hay vuelos en estas fechas");
+        }
     }
 
 /*    @Autowired

@@ -9,6 +9,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -267,6 +268,26 @@ public class HotelesService implements ICrudService<HotelAvailableDto,Integer,St
                 .name("ELIMINACION")
                 .build();
     }
+
+    public List<HotelAvailableDto> filterEntity(LocalDate dateFrom, LocalDate dateTo, String destination) {
+        // buscar el dato en la base de datos y asegurarnos que exista
+        List<HotelModel> list = hotelesRepository.findByDisponibleDesdeLessThanEqualAndDisponibleHastaGreaterThanEqualAndLugar(dateFrom, dateTo, destination);
+
+        if (!list.isEmpty()){
+        return list.stream().map(
+                        hotel -> mapper.map(hotel, HotelAvailableDto.class)
+                )
+                .collect(Collectors.toList());
+        } else{
+            throw new RuntimeException("No hay hoteles en este lugar, en estas fechas");
+        }
+    }
+
+
+
+
+
+
 
     @Override
     public HotelAvailableDto getEntityById(Integer integer) {
