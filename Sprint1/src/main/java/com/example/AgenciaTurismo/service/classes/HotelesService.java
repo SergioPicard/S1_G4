@@ -20,6 +20,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -308,6 +309,29 @@ public class HotelesService implements ICrudService<HotelAvailableDto,Integer,St
     @Override
     public HotelAvailableDto getEntityById(Integer integer) {
         return null;
+    }
+
+    public MessageDTO editEntity(String code, HotelModel hotelEdit){
+        List<HotelModel> exists = hotelesRepository.findByCodigoHotel(code);
+
+        if (!exists.isEmpty()){
+        for (HotelModel hotel : exists){
+        int idHotel = hotel.getId();
+            hotelEdit.setId(idHotel);
+
+            hotelesRepository.save(hotelEdit);
+
+
+            return MessageDTO.builder()
+                    .message("El hotel ha sido modificado exitosamente" )
+                    .name("MODIFICACIÓN")
+                    .build();
+        }
+        }
+            return MessageDTO.builder()
+                    .message("No se encontró un hotel con este código: " + code )
+                    .name("MODIFICACIÓN")
+                    .build();
     }
 
     /*
