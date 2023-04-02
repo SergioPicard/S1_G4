@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -95,22 +96,26 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
 
         FlightResponseModel reservationFligth = new FlightResponseModel();
 
+        //BÚSQUEDA DE VUELO POR CÓDIGO
+        List<FlightModel> vuelos = flightsRepository.findByNroVuelo(flightReservationReqDto.getFlightReservation().getFlightNumber());
+        if(vuelos.isEmpty()){
+            throw new VuelosException("El vuelo que desea reservar no existe.");
+        }
+
         //BÚSQUEDA DEL VUELO POR CÓDIGO Y TIPO ASIENTO PARA VALIDAR ATRIBUTOS.
         var bookedFlight = flightsRepository.findByNroVueloAndTipoAsientoEquals(flightReservationReqDto.getFlightReservation().getFlightNumber(),
                 flightReservationReqDto.getFlightReservation().getSeatType());
 
         if(bookedFlight == null){
-            throw new VuelosException("El vuelo que desea reservar no existe.");
+            List<String> asientos = new ArrayList<>();
+            for (FlightModel vuelo : vuelos) {
+                asientos.add(vuelo.getTipoAsiento());
+            }
+            throw new VuelosException("No poseemos este tipo de asiento en el vuelo seleccionado. Le podemos ofrecer uno estilo "
+                    + asientos.get(0) + ".");
         }
 
-
-        //MAPEO RESERVA DE VUELO DE DTO A ENTIDAD.
-        FlightReservationResModel booking = mapper.map(flightReservationReqDto.getFlightReservation(), FlightReservationResModel.class);
-
-        //SET ATRIBUTO PARA RELACIÓN
-        booking.setFlightModel(bookedFlight);
-
-
+        //VALIDACIONES
         //  CANTIDAD DE PERSONAS
         int peopleAmount = flightReservationReqDto.getFlightReservation().getSeats();
         // CANTIDAD DE PERSONAS CON SU DETALLE
@@ -138,46 +143,45 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
                 if (!dateFrom.isEqual(dateTo)) {
                     if (dateFromEqual && dateToEqual) {
                         if (destination && origin) {
-                            if (seatTypeSelect.equalsIgnoreCase(seatTypeAvailable)) {
-                                if (peopleAmount != 0) {
-                                    if (peopleAmount == people) {
+                            if (peopleAmount != 0) {
+                                if (peopleAmount == people) {
 
-                                        //CALCULO DEL TOTAL SIN INTERESES
-                                        double total = bookedFlight.getPrecioPersona() * flightReservationReqDto.getFlightReservation().getSeats();
+                                    //CALCULO DEL TOTAL SIN INTERESES
+                                    double total = bookedFlight.getPrecioPersona() * flightReservationReqDto.getFlightReservation().getSeats();
 
-                                        //VERIFICACIÓN 1 SOLA CUOTA CON DÉBITO
-                                        if(flightReservationReqDto.getPaymentMethodDto().getType().equalsIgnoreCase("debitcard")){
-                                            if(flightReservationReqDto.getPaymentMethodDto().getDues() > 1){
-                                                throw new VuelosException("El método de pago es Débito, solo puede elegir 1 cuota.");
-                                            }
+                                    //VERIFICACIÓN 1 SOLA CUOTA CON DÉBITO
+                                    if (flightReservationReqDto.getPaymentMethodDto().getType().equalsIgnoreCase("debitcard")) {
+                                        if (flightReservationReqDto.getPaymentMethodDto().getDues() > 1) {
+                                            throw new VuelosException("El método de pago es Débito, solo puede elegir 1 cuota.");
                                         }
-
-                                        if (flightReservationReqDto.getPaymentMethodDto().getType().equalsIgnoreCase("creditcard")){
-                                            int cuotas = flightReservationReqDto.getPaymentMethodDto().getDues();
-                                            if (cuotas <= 3){
-                                                total *= 1.05;
-
-                                            } else{
-                                                total *= 1.10;
-                                            }
-                                        }
-
-                                        //SET DEL FLIGTHRESERVATION
-                                        reservationFligth.setUserName(flightReservationReqDto.getUserName());
-                                        reservationFligth.setTotal(total);
-                                        reservationFligth.setFlightReservationResModel(booking);
-
-
-                                    } else {
-                                        throw new VuelosException("La cantidad de pasajeros no coincide con la cantidad de personas ingresada.");
                                     }
+
+                                    if (flightReservationReqDto.getPaymentMethodDto().getType().equalsIgnoreCase("creditcard")) {
+                                        int cuotas = flightReservationReqDto.getPaymentMethodDto().getDues();
+                                        if (cuotas <= 3) {
+                                            total *= 1.05;
+
+                                        } else {
+                                            total *= 1.10;
+                                        }
+                                    }
+                                    //MAPEO RESERVA DE VUELO DE DTO A ENTIDAD.
+                                    FlightReservationResModel booking = mapper.map(flightReservationReqDto.getFlightReservation(), FlightReservationResModel.class);
+                                    booking.setFlightModel(bookedFlight);
+
+                                    //SET DEL FLIGTHRESERVATION
+                                    reservationFligth.setUserName(flightReservationReqDto.getUserName());
+                                    reservationFligth.setTotal(total);
+                                    reservationFligth.setFlightReservationResModel(booking);
+
+
                                 } else {
-                                    throw new VuelosException("Número de personas inválido.");
+                                    throw new VuelosException("La cantidad de pasajeros no coincide con la cantidad de personas ingresada.");
                                 }
                             } else {
-                                throw new VuelosException("No poseemos este tipo de asiento en el vuelo seleccionado. Le podemos ofrecer uno estilo "
-                                        + seatTypeAvailable + ".");
+                                throw new VuelosException("Número de personas inválido.");
                             }
+
                         } else {
                             throw new VuelosException("El vuelo '" + bookedFlight.getNroVuelo() + "' se dirige desde " + bookedFlight.getOrigen() + " hacia " + bookedFlight.getDestino() + ", no desde " + flightReservationReqDto.getFlightReservation().getOrigin() + " hacia "
                                     + flightReservationReqDto.getFlightReservation().getDestination());
