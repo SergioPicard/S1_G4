@@ -1,8 +1,15 @@
 package com.example.AgenciaTurismo.service.classes;
 
 import com.example.AgenciaTurismo.dto.MessageDTO;
+import com.example.AgenciaTurismo.dto.request.BookingRequestDto;
 import com.example.AgenciaTurismo.dto.response.HotelAvailableDto;
+import com.example.AgenciaTurismo.exceptions.SinHotelesException;
+import com.example.AgenciaTurismo.models.BookingModel;
+import com.example.AgenciaTurismo.models.BookingRequestModel;
 import com.example.AgenciaTurismo.models.HotelModel;
+import com.example.AgenciaTurismo.models.PaymentMethodModel;
+import com.example.AgenciaTurismo.repository.IBookingModelRepository;
+import com.example.AgenciaTurismo.repository.IHotelBookingRepository;
 import com.example.AgenciaTurismo.repository.IHotelesRepository;
 import com.example.AgenciaTurismo.service.generics.ICrudService;
 import org.modelmapper.ModelMapper;
@@ -10,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -230,6 +238,13 @@ public class HotelesService implements ICrudService<HotelAvailableDto,Integer,St
         }*/
     @Autowired
     IHotelesRepository hotelesRepository;
+
+    @Autowired
+    IHotelBookingRepository hotelBookingRepository;
+
+    @Autowired
+    IBookingModelRepository bookingModelRepository;
+
     ModelMapper mapper = new ModelMapper();
 
     @Override
@@ -284,8 +299,184 @@ public class HotelesService implements ICrudService<HotelAvailableDto,Integer,St
     }
 
 
+    public MessageDTO bookingResponse(BookingRequestDto bookingRequest){
+
+        BookingRequestModel reservationHotel = new BookingRequestModel();
+
+        //BÚSQUEDA DEL HOTEL POR CÓDIGO PASADO EN EL REQUEST.
+        List<HotelModel> hotels = hotelesRepository.findByCodigoHotel(bookingRequest.getBooking().getHotelCode());
+        System.out.println(hotels);
+
+        if(hotels.isEmpty()){
+            throw new SinHotelesException("El hotel que desea reservar no existe.");
+        }
+
+        //BÚSQUEDA DE HOTEL POR CÓDIGO Y HABITACIÓN
+        var bookedHotel = hotelesRepository.findBycodigoHotelAndTipoHabitacionEquals(bookingRequest.getBooking()
+                .getHotelCode(),bookingRequest.getBooking().getRoomType());
+
+        if(bookedHotel == null){
+            List<String> habitacion = new ArrayList<>();
+            for (HotelModel hotel : hotels) {
+                habitacion.add(hotel.getTipoHabitacion());
+            }
+            throw new SinHotelesException("No poseemos este tipo de habitación en el hotel seleccionado. Le podemos ofrecer una habitación "
+                    + habitacion.get(0) + ".");
+        }
+
+        //VALIDACIONES
+        String roomSelect = bookingRequest.getBooking().getRoomType().toUpperCase();
+
+        int peopleAmount = bookingRequest.getBooking().getPeopleAmount();
+        int people = bookingRequest.getBooking().getPeople().size();
+
+        boolean destination = bookedHotel.getLugar().equalsIgnoreCase(bookingRequest.getBooking().getDestination());
+
+        boolean dateFrom = bookedHotel.getDisponibleDesde().isAfter(bookingRequest.getBooking().getDateFrom());
+        boolean dateTo = bookedHotel.getDisponibleHasta().isBefore(bookingRequest.getBooking().getDatoTo());
+
+        boolean dateEqualFrom = bookedHotel.getDisponibleDesde().isEqual(bookingRequest.getBooking().getDateFrom());
+        boolean dateEqualTo = bookedHotel.getDisponibleHasta().isEqual(bookingRequest.getBooking().getDatoTo());
+
+        LocalDate dateFromReq = bookingRequest.getBooking().getDateFrom();
+        LocalDate dateToReq = bookingRequest.getBooking().getDatoTo();
 
 
+        if (!bookingRequest.getUserName().isEmpty()) {
+            //VERIFICAMOS FECHA DE ENTRADA MENOR A SALIDA
+            if (!dateFromReq.isAfter(dateToReq)) {
+
+                //VERIFICAMOS FECHA DE SALIDA MENOR A ENTRADA
+                if (!dateFromReq.isEqual(dateToReq)) {
+
+                    //VERIFICAMOS DISPONIBILIDAD EN ESAS FECHAS
+                    if (!dateFrom && !dateTo || dateEqualFrom && dateEqualTo) {
+
+                        //VERIFICAMOS DE QUE EL DESTINO SOLICITADO ESTÉ EN EL MISMO LUGAR QUE EL HOTEL
+                        if (destination) {
+
+                            // SI ES MÁS DE UNA PERSONA, SEGUIMOS
+                            if (peopleAmount != 0) {
+
+                                switch (roomSelect) {
+                                    //INICIAMOS SWITCH PARA LOS 4 TIPO DE HABITACIONES EXISTENTES ENTRE TODOS LOS HOTELES
+                                    case "SINGLE": {
+                                        if (peopleAmount > 1) {
+                                            throw new SinHotelesException("No puede ingresar " + peopleAmount + " personas en una habitación tipo Single.");
+                                        }
+                                        break;
+                                    }
+                                    case "DOBLE": {
+                                        if (peopleAmount > 2) {
+                                            throw new SinHotelesException("No puede ingresar " + peopleAmount + " personas en una habitación tipo Doble.");
+                                        }
+                                        break;
+                                    }
+                                    case "TRIPLE": {
+                                        if (peopleAmount > 3) {
+                                            throw new SinHotelesException("No puede ingresar " + peopleAmount + " personas en una habitación tipo Triple.");
+                                        }
+                                        break;
+                                    }
+                                    case "MÚLTIPLE": {
+                                        if (peopleAmount > 4) {
+                                            throw new SinHotelesException("El tipo de habitación seleccionada no coincide con la cantidad de personas que se alojarán en ella. " +
+                                                    "No puede ingresar " + peopleAmount + " personas en una habitación tipo Múltiple (máximo 4).");
+                                        }
+                                        break;
+                                    }
+                                }
+
+                                if (peopleAmount == people) {
+                                    // SI COINCIDE LA CANTIDAD DE HUÉSPEDES CON LA CANTIDAD DE PERSONAS INGRESADA
+
+                                    double bookingDays = bookingRequest.getBooking().getDatoTo().getDayOfYear() - bookingRequest.getBooking().getDateFrom().getDayOfYear();
+                                    //CALCULO DE CANTIDAD DE DIAS DE DIF
+
+                                    if (bookingRequest.getBooking().getPaymentMethod().getType().equalsIgnoreCase("debitcard")) {
+
+                                        bookingDays = bookingRequest.getBooking().getDatoTo().getDayOfYear() - bookingRequest.getBooking().getDateFrom().getDayOfYear();
+
+                                        if (bookingRequest.getBooking().getPaymentMethod().getDues() > 1) {
+                                            throw new SinHotelesException("El método de pago es Débito, solo puede elegir 1 cuota.");
+                                        }
+                                    }
+
+                                    double total = bookedHotel.getPrecioNoche() * bookingDays;
+
+                                    if (bookingRequest.getBooking().getPaymentMethod().getType().equalsIgnoreCase("creditcard")) {
+                                        int cuotas = bookingRequest.getBooking().getPaymentMethod().getDues();
+                                        if (cuotas <= 3) {
+                                            total *= 1.05;
+
+                                        } else {
+                                            total *= 1.10;
+
+                                        }
+                                    }
+                                    //MAP DEL BOOKING DTO A BOOKING MODEL
+                                    BookingModel booking = mapper.map(bookingRequest.getBooking(),BookingModel.class);
+                                    booking.setHotelModel(bookedHotel);
+                                    booking.setTotal(total);
+
+                                    //SET DEL RESPONSE
+                                    reservationHotel.setBooking(booking);
+                                    reservationHotel.setUserName(bookingRequest.getUserName());
+
+                                } else {
+                                    throw new SinHotelesException("El número de huéspedes no coincide con la cantidad de personas ingresada.");
+
+                                }
+                            } else {
+                                throw new SinHotelesException("No puede colocar 0 en las personas que ingresarán a la habitación.");
+
+                            }
+
+                        } else {
+                            throw new SinHotelesException("El Hotel '" + bookedHotel.getNombre() + "' se encuentra en " + bookedHotel.getLugar() + ", no en "
+                                    + bookingRequest.getBooking().getDestination() + ". El destino elegido no existe");
+
+                        }
+                    } else {
+                        throw new SinHotelesException("El Hotel '" + bookedHotel.getNombre() + "' se encuentra dispobile desde el " + bookedHotel.getDisponibleDesde() + " hasta el "
+                                + bookedHotel.getDisponibleHasta());
+                    }
+                } else {
+                    throw new SinHotelesException("La fecha de salida debe ser mayor a la de entrada");
+                }
+            } else {
+                throw new SinHotelesException("La fecha de entrada debe ser menor a la de salida");
+            }
+        } else {
+            throw new SinHotelesException("Debe ingresar un usuario.");
+
+        }
+
+        hotelBookingRepository.save(reservationHotel);
+
+        return MessageDTO.builder()
+                .message("Reserva de hotel dada de alta correctamente." )
+                .name("CREACIÓN")
+                .build();
+    }
+
+    public MessageDTO deleteHotelReservation(Integer id){
+        if(hotelBookingRepository.existsById(id)){
+            hotelBookingRepository.deleteById(id);
+            bookingModelRepository.deleteById(id);
+
+
+            return MessageDTO.builder()
+                    .message("Reserva de vuelo dada de baja correctamente." )
+                    .name("ELIMINACIÓN")
+                    .build();
+        }
+
+        return MessageDTO.builder()
+                .message("Reserva de hotel con id: " + id + " no ha sido encontrada." )
+                .name("ELIMINACIÓN")
+                .build();
+    }
 
 
 
@@ -293,5 +484,43 @@ public class HotelesService implements ICrudService<HotelAvailableDto,Integer,St
     public HotelAvailableDto getEntityById(Integer integer) {
         return null;
     }
+
+    /*
+    public List<HotelAvailableDto> filterHotels(LocalDate dateFrom, LocalDate dateTo, String destination) {
+
+        List<HotelAvailableDto> allHotels = hotelesRepository.findAll();
+
+        List<HotelAvailableDto> destinationStatus = allHotels.stream().filter(hotel -> Objects.equals(hotel.getLugar(), destination)).collect(Collectors.toList());
+        List<HotelAvailableDto> dateFromStatus = destinationStatus.stream().filter(hotel -> hotel.getDisponibleDesde().isAfter(dateFrom)).collect(Collectors.toList());
+        List<HotelAvailableDto> dateToStatus = destinationStatus.stream().filter(hotel -> hotel.getDisponibleHasta().isBefore(dateTo)).collect(Collectors.toList());
+        List<HotelAvailableDto> dateEqualFromStatus = destinationStatus.stream().filter(hotel -> hotel.getDisponibleDesde().equals(dateFrom)).collect(Collectors.toList());
+        List<HotelAvailableDto> dateEqualToStatus = destinationStatus.stream().filter(hotel -> hotel.getDisponibleHasta().equals(dateTo)).collect(Collectors.toList());
+
+
+
+        // VALIDACION POR DESTINO
+        if (destinationStatus.isEmpty()){
+            throw new SinHotelesException("El destino elegido no existe.");
+        }
+
+        //VALIDACION FECHA ENTRADA MENOR A SALIDA
+        if(dateFrom.isAfter(dateTo)){
+            throw new SinHotelesException("La fecha de ida debe ser menor a la de vuelta.");
+        }
+
+        //VALIDACION FECHA SALIDA MAYOR A ENTRADA
+        if(dateFrom.isEqual(dateTo)){
+            throw new SinHotelesException("La fecha de vuelta debe ser mayor a la de ida");
+        }
+
+        List<HotelAvailableDto> hotelAvailable = hotelesRepository.filterHotelsRep(dateFrom, dateTo, destination);
+
+        if(hotelAvailable.isEmpty()){
+            throw new SinHotelesException("No se encontraron hoteles disponibles en esta fecha.");
+        }
+
+        return hotelAvailable;
+    }
+*/
 
 }

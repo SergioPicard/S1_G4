@@ -24,7 +24,7 @@ public class BookingRequestModel {
     private String userName;
 
     //RELACIONES
-    @OneToOne
+    @OneToOne(cascade = CascadeType.PERSIST)
     private BookingModel booking;
 
 }

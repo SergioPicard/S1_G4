@@ -62,25 +62,4 @@ public class FlightsController {
                 flightsService.deleteFlightReservation(id));
     }
 
-
-    /*@GetMapping("/flights")
-    public List<FlightsAvailableDto> searchAllFlights(){
-        return flightsService.searchAll();
-    }
-
-    @GetMapping("/flight")
-    public List<FlightsAvailableDto> filterFlights(@RequestParam("dateFrom") @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate fechaIda,
-                                                @RequestParam("dateTo") @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate fechaVuelta,
-                                                @RequestParam("origin") String origen,
-                                                @RequestParam("destination") String destino){
-
-        return flightsService.filterFlights(fechaIda, fechaVuelta, origen, destino);
-    }
-
-    @PostMapping("/flight-reservation")
-    public FlightResponseDto booking(@RequestBody @Valid FlightReservationReqDto flightReservationReqDto){
-
-        return flightsService.flightReservationResponse(flightReservationReqDto);
-    }*/
-
 }

@@ -49,7 +49,17 @@ public class HotelesController {
         return hotelesService.filterEntity(dateFrom, dateTo, destination);
     }
 
+    @PostMapping("/hotel-booking/new")
+    public ResponseEntity<MessageDTO> booking(@RequestBody @Valid BookingRequestDto bookingRequest){
+        return ResponseEntity.ok(
+            hotelesService.bookingResponse(bookingRequest));
+    }
 
+    @DeleteMapping("/hotel-booking/delete/{id}")
+    public  ResponseEntity<MessageDTO> deleteHotelReservation(@PathVariable Integer id){
+       return  ResponseEntity.ok(
+               hotelesService.deleteHotelReservation(id));
+    }
 
 
  /*

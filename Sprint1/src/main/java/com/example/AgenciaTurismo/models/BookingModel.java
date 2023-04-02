@@ -40,13 +40,15 @@ public class BookingModel {
 
     @Column(length = 10, nullable = false)
     private String roomType;
+    @Column(length = 10, nullable = false)
+    private Double total;
 
     //RELACIONES
     @OneToOne
     private HotelModel hotelModel;
-    @OneToMany
+    @OneToMany(cascade = CascadeType.PERSIST)
     private List<PeopleModel> people;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.PERSIST)
     private PaymentMethodModel paymentMethod;
 
 }
