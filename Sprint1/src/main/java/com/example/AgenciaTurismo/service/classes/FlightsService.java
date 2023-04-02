@@ -225,6 +225,30 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
         }
     }
 
+    public MessageDTO editEntity(String code, FlightModel vueloEdit){
+        List<FlightModel> exists = flightsRepository.findByNroVuelo(code);
+
+        if (!exists.isEmpty()){
+            for (FlightModel vuelo : exists){
+                int idVuelo = vuelo.getId();
+                vueloEdit.setId(idVuelo);
+
+                flightsRepository.save(vueloEdit);
+
+
+                return MessageDTO.builder()
+                        .message("El vuelo ha sido modificado exitosamente" )
+                        .name("MODIFICACIÓN")
+                        .build();
+            }
+        }
+        return MessageDTO.builder()
+                .message("No se encontró un vuelo con este código: " + code )
+                .name("MODIFICACIÓN")
+                .build();
+    }
+
+
 /*    @Autowired
     IFlightsRepository flightsRepository;
 

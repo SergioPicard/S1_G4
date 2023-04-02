@@ -61,7 +61,7 @@ public class HotelesController {
                hotelesService.deleteHotelReservation(id));
     }
 
-    @PutMapping("/hotel/edit")
+    @PutMapping("/hotels/edit")
     public  ResponseEntity<MessageDTO> editHotels(@RequestParam String code,
                                  @RequestBody HotelModel hotelModel){
 

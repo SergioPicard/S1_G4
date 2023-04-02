@@ -5,6 +5,8 @@ import com.example.AgenciaTurismo.dto.MessageDTO;
 import com.example.AgenciaTurismo.dto.request.FlightReservationReqDto;
 import com.example.AgenciaTurismo.dto.response.FlightResponseDto;
 import com.example.AgenciaTurismo.dto.response.FlightsAvailableDto;
+import com.example.AgenciaTurismo.models.FlightModel;
+import com.example.AgenciaTurismo.models.HotelModel;
 import com.example.AgenciaTurismo.service.classes.FlightsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -60,6 +62,14 @@ public class FlightsController {
     public  ResponseEntity<MessageDTO> deleteFlightReservation(@PathVariable Integer id){
         return ResponseEntity.ok(
                 flightsService.deleteFlightReservation(id));
+    }
+
+    @PutMapping("/flights/edit")
+    public  ResponseEntity<MessageDTO> editFlights(@RequestParam String code,
+                                                  @RequestBody FlightModel flightModel){
+
+        return  ResponseEntity.ok(
+                flightsService.editEntity(code, flightModel));
     }
 
 }
