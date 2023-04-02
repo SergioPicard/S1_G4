@@ -65,11 +65,11 @@ public class FlightsController {
     }
 
     @PutMapping("/flights/edit")
-    public  ResponseEntity<MessageDTO> editFlights(@RequestParam String code,
+    public  ResponseEntity<MessageDTO> editFlights(@RequestParam String flightNumber,
                                                   @RequestBody FlightModel flightModel){
 
         return  ResponseEntity.ok(
-                flightsService.editEntity(code, flightModel));
+                flightsService.editEntity(flightNumber, flightModel));
     }
 
 }

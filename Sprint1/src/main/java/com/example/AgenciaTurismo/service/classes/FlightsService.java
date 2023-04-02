@@ -225,8 +225,8 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
         }
     }
 
-    public MessageDTO editEntity(String code, FlightModel vueloEdit){
-        List<FlightModel> exists = flightsRepository.findByNroVuelo(code);
+    public MessageDTO editEntity(String flightNumber, FlightModel vueloEdit){
+        List<FlightModel> exists = flightsRepository.findByNroVuelo(flightNumber);
 
         if (!exists.isEmpty()){
             for (FlightModel vuelo : exists){
@@ -243,7 +243,7 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
             }
         }
         return MessageDTO.builder()
-                .message("No se encontró un vuelo con este código: " + code )
+                .message("No se encontró un vuelo con este código: " + flightNumber )
                 .name("MODIFICACIÓN")
                 .build();
     }

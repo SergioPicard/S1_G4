@@ -311,8 +311,8 @@ public class HotelesService implements ICrudService<HotelAvailableDto,Integer,St
         return null;
     }
 
-    public MessageDTO editEntity(String code, HotelModel hotelEdit){
-        List<HotelModel> exists = hotelesRepository.findByCodigoHotel(code);
+    public MessageDTO editEntity(String hotelCode, HotelModel hotelEdit){
+        List<HotelModel> exists = hotelesRepository.findByCodigoHotel(hotelCode);
 
         if (!exists.isEmpty()){
         for (HotelModel hotel : exists){
@@ -329,7 +329,7 @@ public class HotelesService implements ICrudService<HotelAvailableDto,Integer,St
         }
         }
             return MessageDTO.builder()
-                    .message("No se encontró un hotel con este código: " + code )
+                    .message("No se encontró un hotel con este código: " + hotelCode )
                     .name("MODIFICACIÓN")
                     .build();
     }
