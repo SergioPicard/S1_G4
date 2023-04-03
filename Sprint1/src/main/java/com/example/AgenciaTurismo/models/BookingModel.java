@@ -46,9 +46,9 @@ public class BookingModel {
     //RELACIONES
     @OneToOne
     private HotelModel hotelModel;
-    @OneToMany(cascade = CascadeType.PERSIST)
+    @OneToMany(cascade = CascadeType.ALL)
     private List<PeopleModel> people;
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @OneToOne(cascade = CascadeType.ALL)
     private PaymentMethodModel paymentMethod;
 
 }

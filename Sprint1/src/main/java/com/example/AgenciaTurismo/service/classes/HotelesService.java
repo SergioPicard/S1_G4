@@ -1,7 +1,9 @@
 package com.example.AgenciaTurismo.service.classes;
 
 import com.example.AgenciaTurismo.dto.MessageDTO;
+import com.example.AgenciaTurismo.dto.request.BookingDto;
 import com.example.AgenciaTurismo.dto.request.BookingRequestDto;
+import com.example.AgenciaTurismo.dto.response.BookingResDto;
 import com.example.AgenciaTurismo.dto.response.HotelAvailableDto;
 import com.example.AgenciaTurismo.exceptions.CustomException;
 import com.example.AgenciaTurismo.exceptions.SinHotelesException;
@@ -23,44 +25,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class HotelesService implements ICrudService<HotelAvailableDto,Integer,String> {
-
-    /*
-        public List<HotelAvailableDto> filterHotels(LocalDate dateFrom, LocalDate dateTo, String destination) {
-
-            List<HotelAvailableDto> allHotels = hotelesRepository.findAll();
-
-            List<HotelAvailableDto> destinationStatus = allHotels.stream().filter(hotel -> Objects.equals(hotel.getLugar(), destination)).collect(Collectors.toList());
-            List<HotelAvailableDto> dateFromStatus = destinationStatus.stream().filter(hotel -> hotel.getDisponibleDesde().isAfter(dateFrom)).collect(Collectors.toList());
-            List<HotelAvailableDto> dateToStatus = destinationStatus.stream().filter(hotel -> hotel.getDisponibleHasta().isBefore(dateTo)).collect(Collectors.toList());
-            List<HotelAvailableDto> dateEqualFromStatus = destinationStatus.stream().filter(hotel -> hotel.getDisponibleDesde().equals(dateFrom)).collect(Collectors.toList());
-            List<HotelAvailableDto> dateEqualToStatus = destinationStatus.stream().filter(hotel -> hotel.getDisponibleHasta().equals(dateTo)).collect(Collectors.toList());
-
-
-
-            // VALIDACION POR DESTINO
-            if (destinationStatus.isEmpty()){
-                throw new SinHotelesException("El destino elegido no existe.");
-            }
-
-            //VALIDACION FECHA ENTRADA MENOR A SALIDA
-            if(dateFrom.isAfter(dateTo)){
-                throw new SinHotelesException("La fecha de ida debe ser menor a la de vuelta.");
-            }
-
-            //VALIDACION FECHA SALIDA MAYOR A ENTRADA
-            if(dateFrom.isEqual(dateTo)){
-                throw new SinHotelesException("La fecha de vuelta debe ser mayor a la de ida");
-            }
-
-            List<HotelAvailableDto> hotelAvailable = hotelesRepository.filterHotelsRep(dateFrom, dateTo, destination);
-
-            if(hotelAvailable.isEmpty()){
-                throw new SinHotelesException("No se encontraron hoteles disponibles en esta fecha.");
-            }
-
-            return hotelAvailable;
-        }
-        }*/
     @Autowired
     IHotelesRepository hotelesRepository;
 
@@ -98,14 +62,12 @@ public class HotelesService implements ICrudService<HotelAvailableDto,Integer,St
         if(!exists.isEmpty())
             hotelesRepository.deleteAll();
         else
-            return MessageDTO.builder()
-                    .message("No se pudo encontrar el hotel a eliminar")
-                    .name("ELIMINACION")
-                    .build();
+            throw new CustomException("ELIMINACIÓN", "RNo se pudo encontrar el hotel con código: " + code);
+
         // devolver el mensaje DTO
         return MessageDTO.builder()
-                .message("Se elimino el Hotel con el codigo: " + code)
-                .name("ELIMINACION")
+                .message("Se elimino el Hotel con el código: " + code)
+                .name("ELIMINACIÓN")
                 .build();
     }
 
@@ -140,12 +102,12 @@ public class HotelesService implements ICrudService<HotelAvailableDto,Integer,St
                 .getHotelCode(),bookingRequest.getBooking().getRoomType());
 
         if(bookedHotel == null){
-            List<String> habitacion = new ArrayList<>();
+            List<String> room = new ArrayList<>();
             for (HotelModel hotel : hotels) {
-                habitacion.add(hotel.getTipoHabitacion());
+                room.add(hotel.getTipoHabitacion());
             }
             throw new SinHotelesException("No poseemos este tipo de habitación en el hotel seleccionado. Le podemos ofrecer una habitación "
-                    + habitacion.get(0) + ".");
+                    + room.get(0) + ".");
         }
 
         //VALIDACIONES
@@ -296,10 +258,7 @@ public class HotelesService implements ICrudService<HotelAvailableDto,Integer,St
                     .build();
         }
 
-        return MessageDTO.builder()
-                .message("Reserva de hotel con id: " + id + " no ha sido encontrada." )
-                .name("ELIMINACIÓN")
-                .build();
+        throw new CustomException("ELIMINACIÓN", "Reserva de hotel con id: " + id + " no ha sido encontrada.");
     }
 
 
@@ -311,20 +270,17 @@ public class HotelesService implements ICrudService<HotelAvailableDto,Integer,St
 
     public MessageDTO editEntity(String hotelCode, HotelModel hotelEdit){
 
-        // buscamos el hotel a editar por parametro
-
+        // buscamos el hotel a editar por parámetro
         List<HotelModel> listaFiltrada = hotelesRepository.findByCodigoHotel(hotelCode);
-
 
         //listamos todos los hoteles
         List<HotelModel> listAll = hotelesRepository.findAll();
 
-        //listamos los codigos de todos los hoteles
+        //listamos los códigos de todos los hoteles
         List<String> hotelCodes = listAll.stream().map(HotelModel::getCodigoHotel).collect(Collectors.toList());
 
-        //comprobamos que no exista un hotel con el mismo codigo al que estamos modificando
+        //comprobamos que no exista un hotel con el mismo código al que estamos modificando
         boolean codeExist = hotelCodes.stream().anyMatch(hotelEdit.getCodigoHotel()::equalsIgnoreCase);
-
 
         //si existe el hotel, empezamos
         if (!listaFiltrada.isEmpty()) {
@@ -332,12 +288,12 @@ public class HotelesService implements ICrudService<HotelAvailableDto,Integer,St
             //le damos al hotel el mismo id que ya tenía en la db
             hotelEdit.setId(listaFiltrada.get(0).getId());
 
-            // filtramos el primer elemento de la lista, la cual solo contiene uno ya q filtra por codigo de hotel
+            // filtramos el primer elemento de la lista, la cual solo contiene uno ya q filtra por código de hotel
             if (listaFiltrada.get(0).equals(hotelEdit)) {
                 throw new CustomException("MODIFICACIÓN","Debe modificar algún dato.");
             }
 
-            // si cambiamos el codigo y el mismo no se repite en la db, se lo crea
+            // si cambiamos el código y el mismo no se repite en la db, se lo crea
             if (!codeExist) {
                 hotelesRepository.save(hotelEdit);
                 return MessageDTO.builder()
@@ -345,7 +301,7 @@ public class HotelesService implements ICrudService<HotelAvailableDto,Integer,St
                         .name("MODIFICACIÓN")
                         .build();
             } else {
-                throw new CustomException("MODIFICACIÓN","Ya existe un hotel con el mismo codigo de hotel ingresado.");
+                throw new CustomException("MODIFICACIÓN","Ya existe un hotel con el mismo código de hotel ingresado.");
             }
 
             }else {
@@ -353,6 +309,140 @@ public class HotelesService implements ICrudService<HotelAvailableDto,Integer,St
             }
             }
 
+    public List<BookingResDto> getAllBookings() {
+        var list = bookingModelRepository.findAll();
+        return list.stream().map(
+                        booking -> mapper.map(booking, BookingResDto.class)
+                )
+                .collect(Collectors.toList());
+    }
+
+    public MessageDTO updateBookingByID(Integer id, BookingDto bookingDto){
+
+        if (bookingModelRepository.existsById(id)) {
+
+            var model = bookingModelRepository.getById(id);
+            var entity = mapper.map(bookingDto, BookingModel.class);
+            var hotel = hotelesRepository.findByCodigoHotel(model.getHotelCode()).get(0);
+
+            validationsBooking(entity, hotel);
+
+            if(!entity.getPeopleAmount().equals(model.getPeopleAmount())){
+
+                if(peopleAmountFitInRoom(entity)){
+                    throw new SinHotelesException("La cantidad de personas no puede ser mayor a: "+maxPersonsPerRoom(entity)+ ".");
+                }
+            }
+
+            if(entity.getPeopleAmount() != entity.getPeople().size()){
+                throw new SinHotelesException("La cantidad de personas ingresadas no coincide con la estipulada");
+            }
+
+            entity.setId(id);
+            entity.setTotal(model.getTotal());
+            entity.setHotelModel(model.getHotelModel());
+
+            var paymentId = model.getPaymentMethod().getId();
+            entity.getPaymentMethod().setId(paymentId);
+            //probar no crear nuevas personas si ya existen en la base de datos
+            // crear un Irepository de personas, y buscarlas por id? o crear metodo nombrado para buscar?
+            //que pasa si cambio el numero de personas?
+
+            bookingModelRepository.save(entity);
+            return MessageDTO.builder()
+                    .name("MODIFICACION")
+                    .message("Reserva de hotel modificada correctamente")
+                    .build();
+        } else {
+            return MessageDTO.builder()
+                    .name("MODIFICACION")
+                    .message("No se pudo encontrar la reserva especificada")
+                    .build();
+        }
+    }
+
+    private Boolean validationsBooking(BookingModel entity, HotelModel hotel){
+        if(!entity.getRoomType().equals(hotel.getTipoHabitacion())){
+            throw new SinHotelesException("Tipo de habitacion invalido debe ser: "+hotel.getTipoHabitacion()+ ".");
+        }
+        if(!entity.getHotelCode().equals(hotel.getCodigoHotel())){
+            throw new SinHotelesException("El codigo de hotel es invalido debe ser: "+hotel.getCodigoHotel()+ ".");
+        }
+        if(!entity.getDestination().equals(hotel.getLugar())) {
+            throw new SinHotelesException("Destino invalido, debe ser: "+hotel.getLugar()+ ".");
+        }
+        if(entity.getDateFrom().isBefore(hotel.getDisponibleDesde()) ) {
+            throw new SinHotelesException("La fecha es incorrecta, debe ser posterior a : "+hotel.getDisponibleDesde()+ ".");
+        }
+        if(entity.getDatoTo().isAfter(hotel.getDisponibleHasta()) ) {
+            throw new SinHotelesException("La fecha es incorrecta, debe ser anterior a : "+hotel.getDisponibleHasta()+ ".");
+        }
+        if(maxPersonsPerRoom(entity) > entity.getPeopleAmount()){
+            throw new SinHotelesException("La cantidad de personas no puede ser mayor a: "+maxPersonsPerRoom(entity)+ ".");
+        }
+        return true;
+    }
+
+    private Integer maxPersonsPerRoom(BookingModel booking){
+
+        Integer maxAmout = 0;
+
+        switch (booking.getRoomType()) {
+            //INICIAMOS SWITCH PARA LOS 4 TIPO DE HABITACIONES EXISTENTES ENTRE TODOS LOS HOTELES
+            case "SINGLE": {
+                maxAmout = 1;
+                break;
+            }
+            case "DOBLE": {
+                maxAmout = 2;
+                break;
+            }
+            case "TRIPLE": {
+                maxAmout = 3;
+                break;
+            }
+            case "MÚLTIPLE": {
+                maxAmout = 4;
+                break;
+            }
+        }
+
+        return maxAmout;
+    }
+
+    private Boolean peopleAmountFitInRoom(BookingModel booking){
+        var peopleFit = false;
+
+        switch (booking.getRoomType()) {
+            //INICIAMOS SWITCH PARA LOS 4 TIPO DE HABITACIONES EXISTENTES ENTRE TODOS LOS HOTELES
+            case "SINGLE": {
+                if (booking.getPeopleAmount() > 1) {
+                    peopleFit = true;
+                }
+                break;
+            }
+            case "DOBLE": {
+                if (booking.getPeopleAmount() > 2) {
+                    peopleFit = true;
+                }
+                break;
+            }
+            case "TRIPLE": {
+                if (booking.getPeopleAmount() > 3) {
+                    peopleFit = true;
+                }
+                break;
+            }
+            case "MÚLTIPLE": {
+                if (booking.getPeopleAmount() > 4) {
+                    peopleFit = true;
+                }
+                break;
+            }
+        }
+
+        return peopleFit;
+    }
 
     }
 
