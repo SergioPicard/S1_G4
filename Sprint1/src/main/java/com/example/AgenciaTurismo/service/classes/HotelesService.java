@@ -10,6 +10,7 @@ import com.example.AgenciaTurismo.exceptions.SinHotelesException;
 import com.example.AgenciaTurismo.models.BookingModel;
 import com.example.AgenciaTurismo.models.BookingRequestModel;
 import com.example.AgenciaTurismo.models.HotelModel;
+import com.example.AgenciaTurismo.models.PeopleModel;
 import com.example.AgenciaTurismo.repository.IBookingModelRepository;
 import com.example.AgenciaTurismo.repository.IHotelBookingRepository;
 import com.example.AgenciaTurismo.repository.IHotelesRepository;
@@ -338,13 +339,19 @@ public class HotelesService implements ICrudService<HotelAvailableDto,Integer,St
             if(!entity.getPeopleAmount().equals(model.getPeopleAmount())){
 
                 if(peopleAmountFitInRoom(entity)){
-                    throw new SinHotelesException("La cantidad de personas no puede ser mayor a: "+maxPersonsPerRoom(entity)+ ".");
+                    throw new CustomException("EDICIÓN", "La cantidad de personas no puede ser mayor a: "+maxPersonsPerRoom(entity)+ ".");
                 }
             }
 
             if(entity.getPeopleAmount() != entity.getPeople().size()){
-                throw new SinHotelesException("La cantidad de personas ingresadas no coincide con la estipulada");
+                throw new CustomException("EDICIÓN", "La cantidad de personas ingresadas no coincide con la estipulada");
+
             }
+            for (int i = 0; i < model.getPeople().size(); i++) {
+                var personId = model.getPeople().get(i).getId();
+                entity.getPeople().get(i).setId(personId);
+            }
+
 
             entity.setId(id);
             entity.setTotal(model.getTotal());
@@ -371,22 +378,22 @@ public class HotelesService implements ICrudService<HotelAvailableDto,Integer,St
 
     private Boolean validationsBooking(BookingModel entity, HotelModel hotel){
         if(!entity.getRoomType().equals(hotel.getTipoHabitacion())){
-            throw new SinHotelesException("Tipo de habitacion invalido debe ser: "+hotel.getTipoHabitacion()+ ".");
+            throw new CustomException("EDICIÓN", "Tipo de habitacion invalido debe ser: "+hotel.getTipoHabitacion()+ ".");
         }
         if(!entity.getHotelCode().equals(hotel.getCodigoHotel())){
-            throw new SinHotelesException("El codigo de hotel es invalido debe ser: "+hotel.getCodigoHotel()+ ".");
+            throw new CustomException("EDICIÓN", "El codigo de hotel es invalido debe ser: "+hotel.getCodigoHotel()+ ".");
         }
         if(!entity.getDestination().equals(hotel.getLugar())) {
-            throw new SinHotelesException("Destino invalido, debe ser: "+hotel.getLugar()+ ".");
+            throw new CustomException("EDICIÓN", "Destino invalido, debe ser: "+hotel.getLugar()+ ".");
         }
         if(entity.getDateFrom().isBefore(hotel.getDisponibleDesde()) ) {
-            throw new SinHotelesException("La fecha es incorrecta, debe ser posterior a : "+hotel.getDisponibleDesde()+ ".");
+            throw new CustomException("EDICIÓN", "La fecha es incorrecta, debe ser posterior a : "+hotel.getDisponibleDesde()+ ".");
         }
         if(entity.getDatoTo().isAfter(hotel.getDisponibleHasta()) ) {
-            throw new SinHotelesException("La fecha es incorrecta, debe ser anterior a : "+hotel.getDisponibleHasta()+ ".");
+            throw new CustomException("EDICIÓN", "La fecha es incorrecta, debe ser anterior a : "+hotel.getDisponibleHasta()+ ".");
         }
         if(maxPersonsPerRoom(entity) > entity.getPeopleAmount()){
-            throw new SinHotelesException("La cantidad de personas no puede ser mayor a: "+maxPersonsPerRoom(entity)+ ".");
+            throw new CustomException("EDICIÓN", "La cantidad de personas no puede ser mayor a: "+maxPersonsPerRoom(entity)+ ".");
         }
         return true;
     }
