@@ -84,22 +84,22 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
         List<FlightModel> list = flightsRepository.findByFechaIdaAndFechaVueltaAndAndOrigenAndDestino(dateFrom, dateTo,origin,destination);
 
         System.out.println(dateTo);
+        if (origin == null && destination == null && destination.equals(" ") && origin.equals(" ")){
+            throw new CustomException("FILTRAR","Debe ingresar un destino y un origen");
+        }
 
+        if (dateFrom.isAfter(dateTo) || dateFrom.equals(dateTo)){
+            throw new CustomException("FILTRAR","La fecha de ida debe ser menor a la de salida.");
+        }
 
-        if (origin != null && destination != null && !destination.equals(" ") && !origin.equals(" ")){
+        if (list.isEmpty()){
+            throw new CustomException("FILTRAR","No se encontraron vuelos en estas fechas y destino.");
+        }
 
-        if (!list.isEmpty()){
         return list.stream().map(
                         hotel -> mapper.map(hotel, FlightsAvailableDto.class)
                 )
                 .collect(Collectors.toList());
-        }else{
-            throw new CustomException("FILTRAR","No hay vuelos en estas fechas");
-        }
-        }else{
-            throw new CustomException("FILTRAR","Debe ingresar un destino y un origen");
-        }
-
     }
 
 
