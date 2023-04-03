@@ -318,14 +318,11 @@ public class HotelesService implements ICrudService<HotelAvailableDto,Integer,St
 
             bookingModelRepository.save(entity);
             return MessageDTO.builder()
-                    .name("MODIFICACION")
+                    .name("MODIFICACIÓN")
                     .message("Reserva de hotel modificada correctamente")
                     .build();
         } else {
-            return MessageDTO.builder()
-                    .name("MODIFICACION")
-                    .message("No se pudo encontrar la reserva especificada")
-                    .build();
+            throw new CustomException("MODIFICACIÓN", "No se pudo encontrar la reserva especificada");
         }
     }
 
