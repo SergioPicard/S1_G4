@@ -10,7 +10,6 @@ import com.example.AgenciaTurismo.exceptions.SinHotelesException;
 import com.example.AgenciaTurismo.models.BookingModel;
 import com.example.AgenciaTurismo.models.BookingRequestModel;
 import com.example.AgenciaTurismo.models.HotelModel;
-import com.example.AgenciaTurismo.models.PeopleModel;
 import com.example.AgenciaTurismo.repository.IBookingModelRepository;
 import com.example.AgenciaTurismo.repository.IHotelBookingRepository;
 import com.example.AgenciaTurismo.repository.IHotelesRepository;
@@ -94,9 +93,7 @@ public class HotelesService implements ICrudService<HotelAvailableDto,Integer,St
         //BÚSQUEDA DEL HOTEL POR CÓDIGO PASADO EN EL REQUEST.
         List<HotelModel> hotels = hotelesRepository.findByCodigoHotel(bookingRequest.getBooking().getHotelCode());
 
-        if(hotels.isEmpty()){
-            throw new SinHotelesException("El hotel que desea reservar no existe.");
-        }
+        if(hotels.isEmpty()) throw new SinHotelesException("El hotel que desea reservar no existe.");
 
         //BÚSQUEDA DE HOTEL POR CÓDIGO Y HABITACIÓN
         var bookedHotel = hotelesRepository.findBycodigoHotelAndTipoHabitacionEquals(bookingRequest.getBooking()
@@ -112,69 +109,26 @@ public class HotelesService implements ICrudService<HotelAvailableDto,Integer,St
         }
 
         //VALIDACIONES
-        String roomSelect = bookingRequest.getBooking().getRoomType().toUpperCase();
-
-        int peopleAmount = bookingRequest.getBooking().getPeopleAmount();
-        int people = bookingRequest.getBooking().getPeople().size();
-
-        boolean destination = bookedHotel.getLugar().equalsIgnoreCase(bookingRequest.getBooking().getDestination());
-
-        boolean dateFrom = bookedHotel.getDisponibleDesde().isAfter(bookingRequest.getBooking().getDateFrom());
-        boolean dateTo = bookedHotel.getDisponibleHasta().isBefore(bookingRequest.getBooking().getDatoTo());
-
-        boolean dateEqualFrom = bookedHotel.getDisponibleDesde().isEqual(bookingRequest.getBooking().getDateFrom());
-        boolean dateEqualTo = bookedHotel.getDisponibleHasta().isEqual(bookingRequest.getBooking().getDatoTo());
-
-        LocalDate dateFromReq = bookingRequest.getBooking().getDateFrom();
-        LocalDate dateToReq = bookingRequest.getBooking().getDatoTo();
-
-
         if (!bookingRequest.getUserName().isEmpty()) {
+
             //VERIFICAMOS FECHA DE ENTRADA MENOR A SALIDA
-            if (!dateFromReq.isAfter(dateToReq)) {
+            if (!bookingRequest.getBooking().getDateFrom().isAfter(bookingRequest.getBooking().getDatoTo())) {
 
                 //VERIFICAMOS FECHA DE SALIDA MENOR A ENTRADA
-                if (!dateFromReq.isEqual(dateToReq)) {
+                if (!bookingRequest.getBooking().getDateFrom().isEqual(bookingRequest.getBooking().getDatoTo())) {
 
                     //VERIFICAMOS DISPONIBILIDAD EN ESAS FECHAS
-                    if (!dateFrom && !dateTo || dateEqualFrom && dateEqualTo) {
+                    if (compareDate(bookedHotel,bookingRequest)) {
 
                         //VERIFICAMOS DE QUE EL DESTINO SOLICITADO ESTÉ EN EL MISMO LUGAR QUE EL HOTEL
-                        if (destination) {
+                        if (bookedHotel.getLugar().equalsIgnoreCase(bookingRequest.getBooking().getDestination())) {
 
                             // SI ES MÁS DE UNA PERSONA, SEGUIMOS
-                            if (peopleAmount != 0) {
+                            if (bookingRequest.getBooking().getPeopleAmount() != 0) {
 
-                                switch (roomSelect) {
-                                    //INICIAMOS SWITCH PARA LOS 4 TIPO DE HABITACIONES EXISTENTES ENTRE TODOS LOS HOTELES
-                                    case "SINGLE": {
-                                        if (peopleAmount > 1) {
-                                            throw new SinHotelesException("No puede ingresar " + peopleAmount + " personas en una habitación tipo Single.");
-                                        }
-                                        break;
-                                    }
-                                    case "DOBLE": {
-                                        if (peopleAmount > 2) {
-                                            throw new SinHotelesException("No puede ingresar " + peopleAmount + " personas en una habitación tipo Doble.");
-                                        }
-                                        break;
-                                    }
-                                    case "TRIPLE": {
-                                        if (peopleAmount > 3) {
-                                            throw new SinHotelesException("No puede ingresar " + peopleAmount + " personas en una habitación tipo Triple.");
-                                        }
-                                        break;
-                                    }
-                                    case "MÚLTIPLE": {
-                                        if (peopleAmount > 4) {
-                                            throw new SinHotelesException("El tipo de habitación seleccionada no coincide con la cantidad de personas que se alojarán en ella. " +
-                                                    "No puede ingresar " + peopleAmount + " personas en una habitación tipo Múltiple (máximo 4).");
-                                        }
-                                        break;
-                                    }
-                                }
+                                peopleAmountInBookingCreate(bookingRequest);
 
-                                if (peopleAmount == people) {
+                                if (bookingRequest.getBooking().getPeopleAmount() == bookingRequest.getBooking().getPeople().size()) {
                                     // SI COINCIDE LA CANTIDAD DE HUÉSPEDES CON LA CANTIDAD DE PERSONAS INGRESADA
 
                                     double bookingDays = bookingRequest.getBooking().getDatoTo().getDayOfYear() - bookingRequest.getBooking().getDateFrom().getDayOfYear();
@@ -364,6 +318,49 @@ public class HotelesService implements ICrudService<HotelAvailableDto,Integer,St
                     .name("MODIFICACION")
                     .message("No se pudo encontrar la reserva especificada")
                     .build();
+        }
+    }
+
+    private Boolean compareDate(HotelModel hotel, BookingRequestDto request){
+        boolean dateFrom = hotel.getDisponibleDesde().isAfter(request.getBooking().getDateFrom());
+        boolean dateTo = hotel.getDisponibleHasta().isBefore(request.getBooking().getDatoTo());
+
+        boolean dateEqualFrom = hotel.getDisponibleDesde().isEqual(request.getBooking().getDateFrom());
+        boolean dateEqualTo = hotel.getDisponibleHasta().isEqual(request.getBooking().getDatoTo());
+
+        return !dateFrom && !dateTo || dateEqualFrom && dateEqualTo;
+    }
+
+    private void peopleAmountInBookingCreate(BookingRequestDto bookingRequest){
+        Integer peopleFit = bookingRequest.getBooking().getPeopleAmount();
+
+        switch (bookingRequest.getBooking().getRoomType().toUpperCase()) {
+            //INICIAMOS SWITCH PARA LOS 4 TIPO DE HABITACIONES EXISTENTES ENTRE TODOS LOS HOTELES
+            case "SINGLE": {
+                if (peopleFit > 1) {
+                    throw new SinHotelesException("No puede ingresar " + peopleFit + " personas en una habitación tipo Single.");
+                }
+                break;
+            }
+            case "DOBLE": {
+                if (peopleFit > 2) {
+                    throw new SinHotelesException("No puede ingresar " + peopleFit + " personas en una habitación tipo Single.");
+                }
+                break;
+            }
+            case "TRIPLE": {
+                if (peopleFit > 3) {
+                    throw new SinHotelesException("No puede ingresar " + peopleFit + " personas en una habitación tipo Single.");
+                }
+                break;
+            }
+            case "MÚLTIPLE": {
+                if (peopleFit > 4) {
+                    throw new SinHotelesException("El tipo de habitación seleccionada no coincide con la cantidad de personas que se alojarán en ella. " +
+                            "No puede ingresar " + peopleFit + " personas en una habitación tipo Múltiple (máximo 4).");
+                }
+                break;
+            }
         }
     }
 
