@@ -2,7 +2,9 @@ package com.example.AgenciaTurismo.controller;
 
 
 import com.example.AgenciaTurismo.dto.MessageDTO;
+import com.example.AgenciaTurismo.dto.request.BookingDto;
 import com.example.AgenciaTurismo.dto.request.FlightReservationReqDto;
+import com.example.AgenciaTurismo.dto.response.BookingResDto;
 import com.example.AgenciaTurismo.dto.response.FlightResponseDto;
 import com.example.AgenciaTurismo.dto.response.FlightsAvailableDto;
 import com.example.AgenciaTurismo.models.FlightModel;
@@ -71,5 +73,19 @@ public class FlightsController {
         return  ResponseEntity.ok(
                 flightsService.editEntity(flightNumber, flightModel));
     }
+
+    @GetMapping("/flight-reservations")
+    public ResponseEntity<List<BookingResDto>> findAllBookings(){
+        return ResponseEntity.ok(flightsService.getAllBookings());
+    }
+
+    @PutMapping("/flight-reservation/{id}")
+    public ResponseEntity<MessageDTO> updateBookingById(@PathVariable Integer id,
+                                                        @RequestBody @Valid BookingDto bookingDto){
+        return ResponseEntity.ok(
+                flightsService.updateBookingByID(id, bookingDto)
+        );
+    }
+
 
 }
