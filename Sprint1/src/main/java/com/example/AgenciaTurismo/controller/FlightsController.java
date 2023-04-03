@@ -52,7 +52,7 @@ public class FlightsController {
     public List<FlightsAvailableDto> filterFlights(@RequestParam("dateFrom") @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate fechaIda,
                                                    @RequestParam("dateTo") @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate fechaVuelta,
                                                    @RequestParam("origin") String origen,
-                                                   @RequestParam("destination") String destino){
+                                                   @RequestParam(value = "destination") String destino){
 
         return flightsService.filterEntity(fechaIda, fechaVuelta, origen, destino);
     }

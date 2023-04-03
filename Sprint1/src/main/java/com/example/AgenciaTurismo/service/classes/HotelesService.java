@@ -264,16 +264,12 @@ public class HotelesService implements ICrudService<HotelAvailableDto,Integer,St
                 throw new CustomException("MODIFICACIÓN","Debe modificar algún dato.");
             }
 
-            // si cambiamos el código y el mismo no se repite en la db, se lo crea
-            if (!codeExist) {
-                hotelesRepository.save(hotelEdit);
-                return MessageDTO.builder()
-                        .message("El hotel ha sido modificado exitosamente.")
-                        .name("MODIFICACIÓN")
-                        .build();
-            } else {
-                throw new CustomException("MODIFICACIÓN","Ya existe un hotel con el mismo código de hotel ingresado.");
-            }
+            hotelesRepository.save(hotelEdit);
+            return MessageDTO.builder()
+                    .message("El hotel ha sido modificado exitosamente.")
+                    .name("MODIFICACIÓN")
+                    .build();
+
 
             }else {
                 throw new CustomException("MODIFICACIÓN", "No se ha encontrado un hotel con el código enviado.");
