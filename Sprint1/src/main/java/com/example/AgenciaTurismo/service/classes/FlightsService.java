@@ -6,6 +6,7 @@ import com.example.AgenciaTurismo.dto.response.*;
 import com.example.AgenciaTurismo.exceptions.CustomException;
 import com.example.AgenciaTurismo.exceptions.VuelosException;
 import com.example.AgenciaTurismo.models.*;
+import com.example.AgenciaTurismo.repository.IFlightReservationResRepository;
 import com.example.AgenciaTurismo.repository.IFlightsBookingRepository;
 import com.example.AgenciaTurismo.repository.IFlightsRepository;
 import com.example.AgenciaTurismo.service.generics.ICrudService;
@@ -67,8 +68,11 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
         List<FlightModel> exists = flightsRepository.findByNroVuelo(code);
         // eliminar efectivamente
         if(!exists.isEmpty())
-            flightsRepository.deleteAll();
-
+            if(!flightReservationResRepository.findByFlightNumber(code).isEmpty()){
+                throw new CustomException("ELIMINACIÓN", "Existe una reserva con dicho vuelo. Cancelar la reserva antes de eliminar el vuelo.");
+            }else{
+                flightsRepository.deleteAll();
+            }
         else
             throw new CustomException("ELIMINACIÓN", "No se pudo encontrar el vuelo con código: " + code);
 

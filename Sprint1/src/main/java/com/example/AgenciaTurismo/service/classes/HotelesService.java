@@ -58,11 +58,19 @@ public class HotelesService implements ICrudService<HotelAvailableDto,Integer,St
     public MessageDTO deleteEntity(String code) {
         // buscar el dato en la base de datos y asegurarnos que exista
         List<HotelModel> exists = hotelesRepository.findByCodigoHotel(code);
+        System.out.println(exists);
+
         // eliminar efectivamente
-        if(!exists.isEmpty())
+        if(!exists.isEmpty()){
             hotelesRepository.deleteAll();
-        else
+/*            if(!bookingModelRepository.findByHotelCode(code).isEmpty()){
+                throw new CustomException("ELIMINACIÓN", "Existe una reserva con dicho hotel. Cancelar la reserva antes de eliminar el hotel.");
+            }else {
+                hotelesRepository.deleteAll();
+            }
+        }else{*/
             throw new CustomException("ELIMINACIÓN", "RNo se pudo encontrar el hotel con código: " + code);
+        }
 
         // devolver el mensaje DTO
         return MessageDTO.builder()
