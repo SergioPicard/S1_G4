@@ -149,10 +149,6 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
         boolean dateFromEqual = bookedFlight.getFechaIda().isEqual(flightReservationReqDto.getFlightReservation().getDateFrom());
         boolean dateToEqual = bookedFlight.getFechaVuelta().isEqual(flightReservationReqDto.getFlightReservation().getDatoTo());
 
-        // TIPO DE ASIENTO
-        String seatTypeAvailable = bookedFlight.getTipoAsiento().toUpperCase();
-        String seatTypeSelect = flightReservationReqDto.getFlightReservation().getSeatType().toUpperCase();
-
         //FECHAS
         LocalDate dateFrom = flightReservationReqDto.getFlightReservation().getDateFrom();
         LocalDate dateTo = flightReservationReqDto.getFlightReservation().getDatoTo();
