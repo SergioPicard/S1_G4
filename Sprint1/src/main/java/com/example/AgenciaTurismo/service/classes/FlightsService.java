@@ -72,7 +72,9 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
             if(!flightReservationResRepository.findByFlightNumber(code).isEmpty()){
                 throw new CustomException("ELIMINACIÓN", "Existe una reserva con dicho vuelo. Cancelar la reserva antes de eliminar el vuelo.");
             }else{
-                flightsRepository.deleteAll();
+                for (FlightModel flight : exists) {
+                    flightsRepository.delete(flight);
+                }
             }
         else
             throw new CustomException("ELIMINACIÓN", "No se pudo encontrar el vuelo con código: " + code);

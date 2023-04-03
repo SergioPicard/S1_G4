@@ -62,13 +62,14 @@ public class HotelesService implements ICrudService<HotelAvailableDto,Integer,St
 
         // eliminar efectivamente
         if(!exists.isEmpty()){
-            hotelesRepository.deleteAll();
-/*            if(!bookingModelRepository.findByHotelCode(code).isEmpty()){
+            if(!bookingModelRepository.findByHotelCode(code).isEmpty()){
                 throw new CustomException("ELIMINACIÓN", "Existe una reserva con dicho hotel. Cancelar la reserva antes de eliminar el hotel.");
             }else {
-                hotelesRepository.deleteAll();
+                for (HotelModel hotel : exists) {
+                    hotelesRepository.delete(hotel);
+                }
             }
-        }else{*/
+        }else{
             throw new CustomException("ELIMINACIÓN", "RNo se pudo encontrar el hotel con código: " + code);
         }
 
