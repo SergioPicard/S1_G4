@@ -12,12 +12,14 @@ import javax.validation.constraints.*;
 @Builder
 public class PaymentMethodDto {
 
-    @NotNull
+    @NotNull(message = "El campo no puede estar vació")
     private String type;
     @Positive
     @Size(max = 19, min = 16)
+    @NotNull(message = "El campo no puede estar vació")
     private String number;
     @Digits(integer = 1, fraction = 0, message = "Debe ser un número entero.")
     @Max(6)
+    @NotNull(message = "El campo no puede estar vació")
     private Integer dues;
 }

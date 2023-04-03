@@ -335,7 +335,7 @@ public class HotelesService implements ICrudService<HotelAvailableDto,Integer,St
                 }
             }
 
-            if(entity.getPeopleAmount() != entity.getPeople().size()){
+            if(entity.getPeopleAmount() != entity.getPeople().size() || !entity.getPeopleAmount().equals(model.getPeopleAmount())){
                 throw new CustomException("EDICIÓN", "La cantidad de personas ingresadas no coincide con la estipulada");
 
             }
