@@ -41,7 +41,7 @@ public class FlightReservationResModel {
     private String seatType;
 
     //RELACIONES
-    @OneToMany(cascade = CascadeType.PERSIST)
+    @OneToMany(cascade = CascadeType.ALL)
     private List<PeopleModel> people;
 
     @OneToOne

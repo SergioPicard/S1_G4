@@ -285,23 +285,48 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
 
     }
 
-    public List<BookingResDto> getAllBookings() {
+    public List<FlightResponseDto> getAllBookings() {
         var list = flightsBookingRepository.findAll();
+        System.out.println();
         return list.stream().map(
-                        booking -> mapper.map(booking, BookingResDto.class)
+                        booking -> mapper.map(booking, FlightResponseDto.class)
                 )
                 .collect(Collectors.toList());
     }
 
-    public MessageDTO updateBookingByID(Integer id, BookingDto bookingDto){
+    public MessageDTO updateBookingByID(Integer id, FlightResponseDto bookingDto){
 
         if (flightsBookingRepository.existsById(id)){
-            var model = flightsBookingRepository.findById(id);
-            System.out.println(model.toString());
+            var model = flightsBookingRepository.getById(id);
+            var entity = mapper.map(bookingDto, FlightResponseModel.class);
+            var flight = flightsRepository.findByNroVuelo(model.getFlightReservationResModel().getFlightNumber());
+
+            entity.setId(id);
+            entity.setFlightReservationResModel(model.getFlightReservationResModel());
+            System.out.println("---------------------------------------------");
+            System.out.println(entity.toString());
+            System.out.println("---------------------------------------------");
+            entity.setTotal(model.getTotal());
+
+            var paymentId = model.getPaymentMethod().getId();
+            entity.getPaymentMethod().setId(paymentId);
+            //probar no crear nuevas personas si ya existen en la base de datos
+            // crear un Irepository de personas, y buscarlas por id? o crear metodo nombrado para buscar?
+            //que pasa si cambio el numero de personas?
+
+            flightsBookingRepository.save(entity);
+            return MessageDTO.builder()
+                    .name("MODIFICACION")
+                    .message("Reserva de booking de vuelo modificada correctamente")
+                    .build();
+        } else {
+            return MessageDTO.builder()
+                    .name("MODIFICACION")
+                    .message("No se pudo encontrar la reserva especificada")
+                    .build();
+        }
 
         }
-        return null;
-    }
 /*
         if (flightsBookingRepository.existsById(id)) {
 

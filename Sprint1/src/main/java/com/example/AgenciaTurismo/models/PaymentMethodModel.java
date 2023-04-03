@@ -21,7 +21,7 @@ public class PaymentMethodModel {
     private String type;
     @Column(length = 19)
     private String number;
-    @Column(length = 2)
+    @Column(length = 2, nullable = false)
     private Integer dues;
 
 }
