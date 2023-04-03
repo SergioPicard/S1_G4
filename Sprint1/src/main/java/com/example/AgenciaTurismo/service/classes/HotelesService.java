@@ -344,13 +344,13 @@ public class HotelesService implements ICrudService<HotelAvailableDto,Integer,St
             }
             case "DOBLE": {
                 if (peopleFit > 2) {
-                    throw new SinHotelesException("No puede ingresar " + peopleFit + " personas en una habitación tipo Single.");
+                    throw new SinHotelesException("No puede ingresar " + peopleFit + " personas en una habitación tipo Doble.");
                 }
                 break;
             }
             case "TRIPLE": {
                 if (peopleFit > 3) {
-                    throw new SinHotelesException("No puede ingresar " + peopleFit + " personas en una habitación tipo Single.");
+                    throw new SinHotelesException("No puede ingresar " + peopleFit + " personas en una habitación tipo Triple.");
                 }
                 break;
             }
