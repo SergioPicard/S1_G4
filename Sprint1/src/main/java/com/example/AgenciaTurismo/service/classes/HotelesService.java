@@ -262,7 +262,6 @@ public class HotelesService implements ICrudService<HotelAvailableDto,Integer,St
     }
 
 
-
     @Override
     public HotelAvailableDto getEntityById(Integer integer) {
         return null;
