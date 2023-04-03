@@ -45,6 +45,15 @@ public class GlobalHandler {
         return new ResponseEntity<>(messageDTO, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(CustomException.class)
+    //Spring sabe que si sale una exception de este tipo, se ejecuta el metodo abajo.
+    public ResponseEntity<MessageDTO> parametrosError(CustomException ex) {
+        MessageDTO messageDTO = new MessageDTO();
+        messageDTO.setMessage(ex.getMessage());
+        messageDTO.setName(ex.getName());
+        return new ResponseEntity<>(messageDTO, HttpStatus.BAD_REQUEST);
+    }
+
 
     @ExceptionHandler(VuelosException.class)
     //Spring sabe que si sale una exception de este tipo, se ejecuta el metodo abajo.

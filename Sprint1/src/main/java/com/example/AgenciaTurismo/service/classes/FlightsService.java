@@ -3,6 +3,7 @@ package com.example.AgenciaTurismo.service.classes;
 import com.example.AgenciaTurismo.dto.MessageDTO;
 import com.example.AgenciaTurismo.dto.request.FlightReservationReqDto;
 import com.example.AgenciaTurismo.dto.response.*;
+import com.example.AgenciaTurismo.exceptions.CustomException;
 import com.example.AgenciaTurismo.exceptions.VuelosException;
 import com.example.AgenciaTurismo.models.*;
 import com.example.AgenciaTurismo.repository.IFlightsBookingRepository;
@@ -225,74 +226,54 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
         }
     }
 
-    public MessageDTO editEntity(String flightNumber, FlightModel vueloEdit){
-        List<FlightModel> exists = flightsRepository.findByNroVuelo(flightNumber);
 
-        if (!exists.isEmpty()){
-            for (FlightModel vuelo : exists){
-                int idVuelo = vuelo.getId();
-                vueloEdit.setId(idVuelo);
+    public MessageDTO editEntity(String flightNumber, FlightModel vueloEdit){
+
+
+        // filtramos por el código que nos envía
+        List<FlightModel> listaFiltrada = flightsRepository.findByNroVuelo(flightNumber);
+
+        //buscamos cambiar el vuelo que queremos, por lo que también
+        // hay que verificar el tipo de asiento, ya que el código de vuelo a veces se repite
+        FlightModel vueloSeleccionado = listaFiltrada.stream()
+                .filter(vuelo -> vuelo.getTipoAsiento().equals(vueloEdit.getTipoAsiento()))
+                .findFirst()
+                .orElse(null);
+
+
+
+        //si existe el vuelo, empezamos
+        if (!listaFiltrada.isEmpty() && vueloSeleccionado != null) {
+
+            //le damos al vuelo el mismo id que ya tenía en la db
+            vueloEdit.setId(vueloSeleccionado.getId());
+
+            // verificamos que se cambie alguna información
+            if (vueloSeleccionado.equals(vueloEdit)) {
+                throw new CustomException("MODIFICACIÓN","Debe modificar algún dato.");
+            }
+
+            //VALIDACION FECHA ENTRADA MENOR A SALIDA
+            if(vueloEdit.getFechaIda().isAfter(vueloEdit.getFechaVuelta())){
+                throw new CustomException("MODIFICACIÓN","La fecha de ida debe ser menor a la de vuelta.");
+            }
+
+            //VALIDACION FECHA SALIDA MAYOR A ENTRADA
+            if(vueloEdit.getFechaIda().isEqual(vueloEdit.getFechaVuelta())){
+                throw new CustomException("MODIFICACIÓN","La fecha de vuelta debe ser mayor a la de ida");
+            }
+
+            //si sale bien, reemplazamos el vuelo a la db y enviamos un msj de informe
 
                 flightsRepository.save(vueloEdit);
-
-
                 return MessageDTO.builder()
-                        .message("El vuelo ha sido modificado exitosamente" )
+                        .message("El vuelo ha sido modificado exitosamente.")
                         .name("MODIFICACIÓN")
                         .build();
-            }
+
+        }else {
+            throw new CustomException("MODIFICACIÓN", "No se ha encontrado un vuelo con el código enviado.");
         }
-        return MessageDTO.builder()
-                .message("No se encontró un vuelo con este código: " + flightNumber )
-                .name("MODIFICACIÓN")
-                .build();
+
     }
-
-
-/*    @Autowired
-    IFlightsRepository flightsRepository;
-
-    public List<FlightsAvailableDto> searchAll(){
-
-        return flightsRepository.findAll();
-    }
-
-    public List<FlightsAvailableDto> filterFlights(LocalDate fechaIda, LocalDate fechaVuelta, String origen, String destino){
-
-        List<FlightsAvailableDto> allFlights = flightsRepository.findAll();
-
-        List<FlightsAvailableDto> destinationStatus = allFlights.stream().filter(flight -> Objects.equals(flight.getDestino(), destino)).collect(Collectors.toList());
-        List<FlightsAvailableDto> originStatus = allFlights.stream().filter(flight -> Objects.equals(flight.getOrigen(), origen)).collect(Collectors.toList());
-
-        // VALIDACION POR DESTINO
-        if (destinationStatus.isEmpty()){
-            throw new VuelosException("El destino elegido no existe.");
-        }
-
-        // VALIDACION POR ORIGEN
-        if (originStatus.isEmpty()){
-            throw new VuelosException("El origen elegido no existe.");
-        }
-
-        //VALIDACION FECHA ENTRADA MENOR A SALIDA
-        if(fechaIda.isAfter(fechaVuelta)){
-            throw new VuelosException("La fecha de ida debe ser menor a la de vuelta.");
-        }
-
-        //VALIDACION FECHA SALIDA MAYOR A ENTRADA
-        if(fechaIda.isEqual(fechaVuelta)){
-            throw new VuelosException("La fecha de vuelta debe ser mayor a la de ida");
-        }
-
-
-        List<FlightsAvailableDto> flightsAvailable = flightsRepository.filterFlightRep(fechaIda, fechaVuelta, origen, destino);
-
-        if(flightsAvailable.isEmpty()){
-            throw new VuelosException("No se encontraron vuelos disponibles en este periodo de tiempo y en el destino indicado.");
-        }
-
-
-        return flightsAvailable;
-    }*/
-
 }

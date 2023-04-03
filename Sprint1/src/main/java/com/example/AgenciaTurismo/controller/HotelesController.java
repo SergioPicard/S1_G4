@@ -62,8 +62,7 @@ public class HotelesController {
     }
 
     @PutMapping("/hotels/edit")
-    public  ResponseEntity<MessageDTO> editHotels(@RequestParam String hotelCode,
-                                 @RequestBody HotelModel hotelModel){
+    public  ResponseEntity<MessageDTO> editHotels(@RequestParam String hotelCode, @RequestBody @Valid HotelModel hotelModel){
 
         return  ResponseEntity.ok(
                 hotelesService.editEntity(hotelCode, hotelModel));

@@ -11,8 +11,9 @@ import lombok.NoArgsConstructor;
 @Builder
 public class MessageDTO {
 
-    String name;
+
     String message;
+    String name;
 
 
 }

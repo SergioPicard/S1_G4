@@ -3,11 +3,11 @@ package com.example.AgenciaTurismo.service.classes;
 import com.example.AgenciaTurismo.dto.MessageDTO;
 import com.example.AgenciaTurismo.dto.request.BookingRequestDto;
 import com.example.AgenciaTurismo.dto.response.HotelAvailableDto;
+import com.example.AgenciaTurismo.exceptions.CustomException;
 import com.example.AgenciaTurismo.exceptions.SinHotelesException;
 import com.example.AgenciaTurismo.models.BookingModel;
 import com.example.AgenciaTurismo.models.BookingRequestModel;
 import com.example.AgenciaTurismo.models.HotelModel;
-import com.example.AgenciaTurismo.models.PaymentMethodModel;
 import com.example.AgenciaTurismo.repository.IBookingModelRepository;
 import com.example.AgenciaTurismo.repository.IHotelBookingRepository;
 import com.example.AgenciaTurismo.repository.IHotelesRepository;
@@ -19,8 +19,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -312,26 +310,50 @@ public class HotelesService implements ICrudService<HotelAvailableDto,Integer,St
     }
 
     public MessageDTO editEntity(String hotelCode, HotelModel hotelEdit){
-        List<HotelModel> exists = hotelesRepository.findByCodigoHotel(hotelCode);
 
-        if (!exists.isEmpty()){
-        for (HotelModel hotel : exists){
-        int idHotel = hotel.getId();
-            hotelEdit.setId(idHotel);
+        // buscamos el hotel a editar por parametro
 
-            hotelesRepository.save(hotelEdit);
+        List<HotelModel> listaFiltrada = hotelesRepository.findByCodigoHotel(hotelCode);
 
 
-            return MessageDTO.builder()
-                    .message("El hotel ha sido modificado exitosamente" )
-                    .name("MODIFICACIÓN")
-                    .build();
-        }
-        }
-            return MessageDTO.builder()
-                    .message("No se encontró un hotel con este código: " + hotelCode )
-                    .name("MODIFICACIÓN")
-                    .build();
+        //listamos todos los hoteles
+        List<HotelModel> listAll = hotelesRepository.findAll();
+
+        //listamos los codigos de todos los hoteles
+        List<String> hotelCodes = listAll.stream().map(HotelModel::getCodigoHotel).collect(Collectors.toList());
+
+        //comprobamos que no exista un hotel con el mismo codigo al que estamos modificando
+        boolean codeExist = hotelCodes.stream().anyMatch(hotelEdit.getCodigoHotel()::equalsIgnoreCase);
+
+
+        //si existe el hotel, empezamos
+        if (!listaFiltrada.isEmpty()) {
+
+            //le damos al hotel el mismo id que ya tenía en la db
+            hotelEdit.setId(listaFiltrada.get(0).getId());
+
+            // filtramos el primer elemento de la lista, la cual solo contiene uno ya q filtra por codigo de hotel
+            if (listaFiltrada.get(0).equals(hotelEdit)) {
+                throw new CustomException("MODIFICACIÓN","Debe modificar algún dato.");
+            }
+
+            // si cambiamos el codigo y el mismo no se repite en la db, se lo crea
+            if (!codeExist) {
+                hotelesRepository.save(hotelEdit);
+                return MessageDTO.builder()
+                        .message("El hotel ha sido modificado exitosamente.")
+                        .name("MODIFICACIÓN")
+                        .build();
+            } else {
+                throw new CustomException("MODIFICACIÓN","Ya existe un hotel con el mismo codigo de hotel ingresado.");
+            }
+
+            }else {
+                throw new CustomException("MODIFICACIÓN", "No se ha encontrado un hotel con el código enviado.");
+            }
+            }
+
+
     }
 
     /*
@@ -372,4 +394,4 @@ public class HotelesService implements ICrudService<HotelAvailableDto,Integer,St
     }
 */
 
-}
+
