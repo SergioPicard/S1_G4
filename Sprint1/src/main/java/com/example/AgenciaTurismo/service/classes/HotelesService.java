@@ -75,13 +75,21 @@ public class HotelesService implements ICrudService<HotelAvailableDto,Integer,St
         // buscar el dato en la base de datos y asegurarnos que exista
         List<HotelModel> list = hotelesRepository.findByDisponibleDesdeLessThanEqualAndDisponibleHastaGreaterThanEqualAndLugar(dateFrom, dateTo, destination);
 
+        if (dateFrom.isAfter(dateTo) || dateFrom.equals(dateTo)){
+            throw new CustomException("FILTRAR","La fecha de ingreso debe ser menor a la de salida.");
+        }
+
+        if (!destination.equalsIgnoreCase(list.stream().map(HotelModel::getLugar).toString())){
+        throw new CustomException("FILTRAR","No hay hoteles en el destino elegido.");
+        }
+
         if (!list.isEmpty()){
         return list.stream().map(
                         hotel -> mapper.map(hotel, HotelAvailableDto.class)
                 )
                 .collect(Collectors.toList());
         } else{
-            throw new RuntimeException("No hay hoteles en este lugar, en estas fechas");
+            throw new CustomException("FILTRAR","No hay hoteles en estas fechas.");
         }
     }
 
