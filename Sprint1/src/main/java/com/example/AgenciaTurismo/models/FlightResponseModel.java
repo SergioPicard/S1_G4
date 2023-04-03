@@ -26,4 +26,7 @@ public class FlightResponseModel {
     @OneToOne(cascade = CascadeType.ALL)
     private FlightReservationResModel flightReservationResModel;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    private PaymentMethodModel paymentMethod;
+
 }

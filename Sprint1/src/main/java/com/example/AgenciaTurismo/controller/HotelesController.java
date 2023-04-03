@@ -116,11 +116,3 @@ public class HotelesController {
 }
 
 
- /*
-
-    @PostMapping("/booking")
-    public BookingResponseDto booking(@RequestBody @Valid BookingRequestDto bookingRequest){
-
-        return hotelesService.bookingResponse(bookingRequest);
-    }*/
-

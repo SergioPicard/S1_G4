@@ -12,6 +12,7 @@ import javax.validation.constraints.NotBlank;
 @Data
 @Builder
 public class FlightReservationReqDto {
+    //las validaciones para que no este vacio
     @Email(message = "Por favor ingrese un e-mail válido.")
     private String userName;
     private @Valid FlightReservationResDto flightReservation;

@@ -1,11 +1,13 @@
 package com.example.AgenciaTurismo.service.classes;
 
 import com.example.AgenciaTurismo.dto.MessageDTO;
+import com.example.AgenciaTurismo.dto.request.BookingDto;
 import com.example.AgenciaTurismo.dto.request.FlightReservationReqDto;
 import com.example.AgenciaTurismo.dto.response.*;
 import com.example.AgenciaTurismo.exceptions.CustomException;
 import com.example.AgenciaTurismo.exceptions.VuelosException;
 import com.example.AgenciaTurismo.models.*;
+import com.example.AgenciaTurismo.repository.IFlightReservationResRepository;
 import com.example.AgenciaTurismo.repository.IFlightsBookingRepository;
 import com.example.AgenciaTurismo.repository.IFlightsRepository;
 import com.example.AgenciaTurismo.service.generics.ICrudService;
@@ -13,12 +15,10 @@ import lombok.SneakyThrows;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.MissingServletRequestParameterException;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -30,6 +30,9 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
 
     @Autowired
     IFlightsBookingRepository flightsBookingRepository;
+
+    @Autowired
+    IFlightReservationResRepository flightReservationResRepository;
 
     ModelMapper mapper = new ModelMapper();
 
@@ -60,14 +63,19 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
         return mapper.map(entity, FlightsAvailableDto.class);
     }
 
-
     @Override
     public MessageDTO deleteEntity(String code) {
         // buscar el dato en la base de datos y asegurarnos que exista
         List<FlightModel> exists = flightsRepository.findByNroVuelo(code);
         // eliminar efectivamente
         if(!exists.isEmpty())
-            flightsRepository.deleteAll();
+            if(!flightReservationResRepository.findByFlightNumber(code).isEmpty()){
+                throw new CustomException("ELIMINACIÓN", "Existe una reserva con dicho vuelo. Cancelar la reserva antes de eliminar el vuelo.");
+            }else{
+                for (FlightModel flight : exists) {
+                    flightsRepository.delete(flight);
+                }
+            }
         else
             throw new CustomException("ELIMINACIÓN", "No se pudo encontrar el vuelo con código: " + code);
 
@@ -283,4 +291,98 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
         }
 
     }
+
+    public List<FlightResponseDto> getAllBookings() {
+        var list = flightsBookingRepository.findAll();
+        System.out.println();
+        return list.stream().map(
+                        booking -> mapper.map(booking, FlightResponseDto.class)
+                )
+                .collect(Collectors.toList());
+    }
+
+    public MessageDTO updateBookingByID(Integer id, FlightResponseDto bookingDto){
+
+        if (flightsBookingRepository.existsById(id)){
+            var model = flightsBookingRepository.getById(id);
+            var entity = mapper.map(bookingDto, FlightResponseModel.class);
+            var flight = flightsRepository.findByNroVuelo(model.getFlightReservationResModel().getFlightNumber());
+
+            entity.setId(id);
+            entity.setFlightReservationResModel(model.getFlightReservationResModel());
+            System.out.println("---------------------------------------------");
+            System.out.println(entity.toString());
+            System.out.println("---------------------------------------------");
+            entity.setTotal(model.getTotal());
+
+            var paymentId = model.getPaymentMethod().getId();
+            entity.getPaymentMethod().setId(paymentId);
+            //probar no crear nuevas personas si ya existen en la base de datos
+            // crear un Irepository de personas, y buscarlas por id? o crear metodo nombrado para buscar?
+            //que pasa si cambio el numero de personas?
+
+            flightsBookingRepository.save(entity);
+            return MessageDTO.builder()
+                    .name("MODIFICACION")
+                    .message("Reserva de booking de vuelo modificada correctamente")
+                    .build();
+        } else {
+            return MessageDTO.builder()
+                    .name("MODIFICACION")
+                    .message("No se pudo encontrar la reserva especificada")
+                    .build();
+        }
+
+        }
+/*
+        if (flightsBookingRepository.existsById(id)) {
+
+            var model = flightsBookingRepository.getById(id);
+            var entity = mapper.map(bookingDto, BookingModel.class);
+            var hotel = flightsRepository.findByNroVuelo(model.getFlightReservationResModel().getFlightNumber()).get(0);
+
+            //validationsBooking(entity, hotel);
+
+            if(!entity.getPeopleAmount().equals(model.getPeopleAmount())){
+
+                if(peopleAmountFitInRoom(entity)){
+                    throw new CustomException("EDICIÓN", "La cantidad de personas no puede ser mayor a: "+maxPersonsPerRoom(entity)+ ".");
+                }
+            }
+
+            if(entity.getPeopleAmount() != entity.getPeople().size() || !entity.getPeopleAmount().equals(model.getPeopleAmount())){
+                throw new CustomException("EDICIÓN", "La cantidad de personas ingresadas no coincide con la estipulada");
+
+            }
+            for (int i = 0; i < model.getPeople().size(); i++) {
+                var personId = model.getPeople().get(i).getId();
+                entity.getPeople().get(i).setId(personId);
+            }
+
+
+            entity.setId(id);
+            entity.setTotal(model.getTotal());
+            entity.setHotelModel(model.getHotelModel());
+
+            var paymentId = model.getPaymentMethod().getId();
+            entity.getPaymentMethod().setId(paymentId);
+            //probar no crear nuevas personas si ya existen en la base de datos
+            // crear un Irepository de personas, y buscarlas por id? o crear metodo nombrado para buscar?
+            //que pasa si cambio el numero de personas?
+
+            bookingModelRepository.save(entity);
+            return MessageDTO.builder()
+                    .name("MODIFICACION")
+                    .message("Reserva de hotel modificada correctamente")
+                    .build();
+        } else {
+            return MessageDTO.builder()
+                    .name("MODIFICACION")
+                    .message("No se pudo encontrar la reserva especificada")
+                    .build();
+        }
+    }*/
+
+
+
 }

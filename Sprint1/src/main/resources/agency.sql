@@ -108,13 +108,25 @@ VALUES (5,"1234567891234123","creditCard");
 INSERT INTO payment_method(dues, number, type)
 VALUES (6,"1234567891234123","creditCard");
 
-INSERT INTO datos_reserva_hotel (date_from, dato_to, destination, hotel_code, people_amount, room_type, total,hotel_model_id, payment_method_id)
-VALUES ("2022/02/10", "2022/03/20", "Puerto Iguazú", "CH-0002", 2, "Doble", 50000,1, 1);
+--INSERT INTO datos_reserva_hotel (date_from, dato_to, destination, hotel_code, people_amount, room_type, total,hotel_model_id, payment_method_id)
+--VALUES ("2022/02/10", "2022/03/20", "Puerto Iguazú", "CH-0002", 2, "Doble", 50000,1, 1);
 
-INSERT INTO datos_reserva_hotel_people (booking_model_id, people_id)
-VALUES (1, 1);
-INSERT INTO datos_reserva_hotel_people (booking_model_id, people_id)
-VALUES (1, 2);
+--INSERT INTO datos_reserva_hotel_people (booking_model_id, people_id)
+--VALUES (1, 1);
+--INSERT INTO datos_reserva_hotel_people (booking_model_id, people_id)
+--VALUES (1, 2);
 
-INSERT INTO reserva_hotel (user_name, booking_id)
-VALUES ("amccathie0@gnu.org", 1);
+--INSERT INTO reserva_hotel (user_name, booking_id)
+--VALUES ("amccathie0@gnu.org", 1);
+
+--INSERT INTO datos_reserva_vuelo(date_from, dato_to, destination, flight_number, origin, seat_type, seats, flight_model_id)
+--VALUES("2022/02/10","2022/02/15","Puerto Iguazú","BAPI-1235","Buenos Aires","Economy", 1, 1);
+
+--INSERT INTO req_reserva_vuelo(user_name, flight_reservation_id, payment_method_dto_id)
+--VALUES ("amccathie0@gnu.org", 1, 6);
+
+--INSERT INTO datos_reserva_vuelo_people(flight_reservation_res_model_id, people_id)
+--VALUES (1, 1);
+
+--INSERT INTO reserva_vuelo(total, user_name, flight_reservation_res_model_id, payment_method_id)
+--VALUES (5000, "amccathie0@gnu.org", 1, 6);

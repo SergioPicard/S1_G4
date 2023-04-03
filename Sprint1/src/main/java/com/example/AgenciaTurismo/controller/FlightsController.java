@@ -2,10 +2,14 @@ package com.example.AgenciaTurismo.controller;
 
 
 import com.example.AgenciaTurismo.dto.MessageDTO;
+import com.example.AgenciaTurismo.dto.request.BookingDto;
 import com.example.AgenciaTurismo.dto.request.FlightReservationReqDto;
+import com.example.AgenciaTurismo.dto.response.BookingResDto;
+import com.example.AgenciaTurismo.dto.response.FlightReservationResDto;
 import com.example.AgenciaTurismo.dto.response.FlightResponseDto;
 import com.example.AgenciaTurismo.dto.response.FlightsAvailableDto;
 import com.example.AgenciaTurismo.models.FlightModel;
+import com.example.AgenciaTurismo.models.FlightReservationResModel;
 import com.example.AgenciaTurismo.models.HotelModel;
 import com.example.AgenciaTurismo.service.classes.FlightsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,5 +75,19 @@ public class FlightsController {
         return  ResponseEntity.ok(
                 flightsService.editEntity(flightNumber, flightModel));
     }
+
+    @GetMapping("/flight-reservations")
+    public ResponseEntity<List<FlightResponseDto>> findAllBookings(){
+        return ResponseEntity.ok(flightsService.getAllBookings());
+    }
+
+    @PutMapping("/flight-reservation/{id}")
+    public ResponseEntity<MessageDTO> updateBookingById(@PathVariable Integer id,
+                                                        @RequestBody @Valid FlightResponseDto bookingDto){
+        return ResponseEntity.ok(
+                flightsService.updateBookingByID(id, bookingDto)
+        );
+    }
+
 
 }

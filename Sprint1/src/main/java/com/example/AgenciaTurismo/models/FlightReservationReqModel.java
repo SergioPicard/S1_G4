@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.Valid;
 
 
 @Data
@@ -22,8 +23,8 @@ public class FlightReservationReqModel {
     private String userName;
 
     //RELACIONES
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private FlightReservationResModel flightReservation;
-    @OneToOne
-    private  PaymentMethodModel paymentMethodDto;
+    @OneToOne(cascade = CascadeType.ALL)
+    private PaymentMethodModel paymentMethodDto;
 }
