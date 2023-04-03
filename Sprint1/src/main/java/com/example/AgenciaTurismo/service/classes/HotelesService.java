@@ -23,44 +23,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class HotelesService implements ICrudService<HotelAvailableDto,Integer,String> {
-
-    /*
-        public List<HotelAvailableDto> filterHotels(LocalDate dateFrom, LocalDate dateTo, String destination) {
-
-            List<HotelAvailableDto> allHotels = hotelesRepository.findAll();
-
-            List<HotelAvailableDto> destinationStatus = allHotels.stream().filter(hotel -> Objects.equals(hotel.getLugar(), destination)).collect(Collectors.toList());
-            List<HotelAvailableDto> dateFromStatus = destinationStatus.stream().filter(hotel -> hotel.getDisponibleDesde().isAfter(dateFrom)).collect(Collectors.toList());
-            List<HotelAvailableDto> dateToStatus = destinationStatus.stream().filter(hotel -> hotel.getDisponibleHasta().isBefore(dateTo)).collect(Collectors.toList());
-            List<HotelAvailableDto> dateEqualFromStatus = destinationStatus.stream().filter(hotel -> hotel.getDisponibleDesde().equals(dateFrom)).collect(Collectors.toList());
-            List<HotelAvailableDto> dateEqualToStatus = destinationStatus.stream().filter(hotel -> hotel.getDisponibleHasta().equals(dateTo)).collect(Collectors.toList());
-
-
-
-            // VALIDACION POR DESTINO
-            if (destinationStatus.isEmpty()){
-                throw new SinHotelesException("El destino elegido no existe.");
-            }
-
-            //VALIDACION FECHA ENTRADA MENOR A SALIDA
-            if(dateFrom.isAfter(dateTo)){
-                throw new SinHotelesException("La fecha de ida debe ser menor a la de vuelta.");
-            }
-
-            //VALIDACION FECHA SALIDA MAYOR A ENTRADA
-            if(dateFrom.isEqual(dateTo)){
-                throw new SinHotelesException("La fecha de vuelta debe ser mayor a la de ida");
-            }
-
-            List<HotelAvailableDto> hotelAvailable = hotelesRepository.filterHotelsRep(dateFrom, dateTo, destination);
-
-            if(hotelAvailable.isEmpty()){
-                throw new SinHotelesException("No se encontraron hoteles disponibles en esta fecha.");
-            }
-
-            return hotelAvailable;
-        }
-        }*/
     @Autowired
     IHotelesRepository hotelesRepository;
 
@@ -98,14 +60,12 @@ public class HotelesService implements ICrudService<HotelAvailableDto,Integer,St
         if(!exists.isEmpty())
             hotelesRepository.deleteAll();
         else
-            return MessageDTO.builder()
-                    .message("No se pudo encontrar el hotel a eliminar")
-                    .name("ELIMINACION")
-                    .build();
+            throw new CustomException("ELIMINACIÓN", "RNo se pudo encontrar el hotel con código: " + code);
+
         // devolver el mensaje DTO
         return MessageDTO.builder()
-                .message("Se elimino el Hotel con el codigo: " + code)
-                .name("ELIMINACION")
+                .message("Se elimino el Hotel con el código: " + code)
+                .name("ELIMINACIÓN")
                 .build();
     }
 
@@ -140,12 +100,12 @@ public class HotelesService implements ICrudService<HotelAvailableDto,Integer,St
                 .getHotelCode(),bookingRequest.getBooking().getRoomType());
 
         if(bookedHotel == null){
-            List<String> habitacion = new ArrayList<>();
+            List<String> room = new ArrayList<>();
             for (HotelModel hotel : hotels) {
-                habitacion.add(hotel.getTipoHabitacion());
+                room.add(hotel.getTipoHabitacion());
             }
             throw new SinHotelesException("No poseemos este tipo de habitación en el hotel seleccionado. Le podemos ofrecer una habitación "
-                    + habitacion.get(0) + ".");
+                    + room.get(0) + ".");
         }
 
         //VALIDACIONES
@@ -296,10 +256,7 @@ public class HotelesService implements ICrudService<HotelAvailableDto,Integer,St
                     .build();
         }
 
-        return MessageDTO.builder()
-                .message("Reserva de hotel con id: " + id + " no ha sido encontrada." )
-                .name("ELIMINACIÓN")
-                .build();
+        throw new CustomException("ELIMINACIÓN", "Reserva de hotel con id: " + id + " no ha sido encontrada.");
     }
 
 
@@ -311,20 +268,17 @@ public class HotelesService implements ICrudService<HotelAvailableDto,Integer,St
 
     public MessageDTO editEntity(String hotelCode, HotelModel hotelEdit){
 
-        // buscamos el hotel a editar por parametro
-
+        // buscamos el hotel a editar por parámetro
         List<HotelModel> listaFiltrada = hotelesRepository.findByCodigoHotel(hotelCode);
-
 
         //listamos todos los hoteles
         List<HotelModel> listAll = hotelesRepository.findAll();
 
-        //listamos los codigos de todos los hoteles
+        //listamos los códigos de todos los hoteles
         List<String> hotelCodes = listAll.stream().map(HotelModel::getCodigoHotel).collect(Collectors.toList());
 
-        //comprobamos que no exista un hotel con el mismo codigo al que estamos modificando
+        //comprobamos que no exista un hotel con el mismo código al que estamos modificando
         boolean codeExist = hotelCodes.stream().anyMatch(hotelEdit.getCodigoHotel()::equalsIgnoreCase);
-
 
         //si existe el hotel, empezamos
         if (!listaFiltrada.isEmpty()) {
@@ -332,12 +286,12 @@ public class HotelesService implements ICrudService<HotelAvailableDto,Integer,St
             //le damos al hotel el mismo id que ya tenía en la db
             hotelEdit.setId(listaFiltrada.get(0).getId());
 
-            // filtramos el primer elemento de la lista, la cual solo contiene uno ya q filtra por codigo de hotel
+            // filtramos el primer elemento de la lista, la cual solo contiene uno ya q filtra por código de hotel
             if (listaFiltrada.get(0).equals(hotelEdit)) {
                 throw new CustomException("MODIFICACIÓN","Debe modificar algún dato.");
             }
 
-            // si cambiamos el codigo y el mismo no se repite en la db, se lo crea
+            // si cambiamos el código y el mismo no se repite en la db, se lo crea
             if (!codeExist) {
                 hotelesRepository.save(hotelEdit);
                 return MessageDTO.builder()
@@ -345,7 +299,7 @@ public class HotelesService implements ICrudService<HotelAvailableDto,Integer,St
                         .name("MODIFICACIÓN")
                         .build();
             } else {
-                throw new CustomException("MODIFICACIÓN","Ya existe un hotel con el mismo codigo de hotel ingresado.");
+                throw new CustomException("MODIFICACIÓN","Ya existe un hotel con el mismo código de hotel ingresado.");
             }
 
             }else {

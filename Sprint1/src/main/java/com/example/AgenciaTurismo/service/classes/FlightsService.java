@@ -67,14 +67,12 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
         if(!exists.isEmpty())
             flightsRepository.deleteAll();
         else
-            return MessageDTO.builder()
-                    .message("No se pudo encontrar el Vuelo a eliminar")
-                    .name("ELIMINACION")
-                    .build();
+            throw new CustomException("ELIMINACIÓN", "No se pudo encontrar el vuelo con código: " + code);
+
         // devolver el mensaje DTO
         return MessageDTO.builder()
-                .message("Se elimino el Vuelo con el codigo: " + code)
-                .name("ELIMINACION")
+                .message("Se elimino el Vuelo con el código: " + code)
+                .name("ELIMINACIÓN")
                 .build();
     }
 
@@ -219,10 +217,7 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
                     .build();
 
         }else{
-            return MessageDTO.builder()
-                    .message("Reserva de vuelo con id: " + id + " no ha sido encontrada." )
-                    .name("ELIMINACIÓN")
-                    .build();
+            throw new CustomException("ELIMINACIÓN", "Reserva de vuelo con id: " + id + " no ha sido encontrada.");
         }
     }
 
