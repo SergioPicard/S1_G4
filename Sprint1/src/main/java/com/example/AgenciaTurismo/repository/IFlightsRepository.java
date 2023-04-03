@@ -15,6 +15,7 @@ public interface IFlightsRepository extends JpaRepository<FlightModel,Integer> {
     FlightModel findByNroVueloAndTipoAsientoEquals(String code, String asiento);
 
 
+
 /*    List<FlightModel> dataBase();
 
     List<FlightsAvailableDto> findAll();

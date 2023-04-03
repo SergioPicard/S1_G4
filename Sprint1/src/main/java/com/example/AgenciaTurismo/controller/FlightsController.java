@@ -9,6 +9,7 @@ import com.example.AgenciaTurismo.dto.response.FlightReservationResDto;
 import com.example.AgenciaTurismo.dto.response.FlightResponseDto;
 import com.example.AgenciaTurismo.dto.response.FlightsAvailableDto;
 import com.example.AgenciaTurismo.models.FlightModel;
+import com.example.AgenciaTurismo.models.FlightReservationResModel;
 import com.example.AgenciaTurismo.models.HotelModel;
 import com.example.AgenciaTurismo.service.classes.FlightsService;
 import org.springframework.beans.factory.annotation.Autowired;
