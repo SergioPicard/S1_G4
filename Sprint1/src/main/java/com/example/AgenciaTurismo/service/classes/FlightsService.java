@@ -9,9 +9,11 @@ import com.example.AgenciaTurismo.models.*;
 import com.example.AgenciaTurismo.repository.IFlightsBookingRepository;
 import com.example.AgenciaTurismo.repository.IFlightsRepository;
 import com.example.AgenciaTurismo.service.generics.ICrudService;
+import lombok.SneakyThrows;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -76,18 +78,28 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
                 .build();
     }
 
-    public List<FlightsAvailableDto> filterEntity(LocalDate dateFrom, LocalDate dateTo,String origin, String destination) {
+    @SneakyThrows
+    public List<FlightsAvailableDto> filterEntity(LocalDate dateFrom, LocalDate dateTo, String origin, String destination) {
         // buscar el dato en la base de datos y asegurarnos que exista
         List<FlightModel> list = flightsRepository.findByFechaIdaAndFechaVueltaAndAndOrigenAndDestino(dateFrom, dateTo,origin,destination);
 
-        if (!list.isEmpty()){
+        System.out.println(dateTo);
+        if (origin == null && destination == null && destination.equals(" ") && origin.equals(" ")){
+            throw new CustomException("FILTRAR","Debe ingresar un destino y un origen");
+        }
+
+        if (dateFrom.isAfter(dateTo) || dateFrom.equals(dateTo)){
+            throw new CustomException("FILTRAR","La fecha de ida debe ser menor a la de salida.");
+        }
+
+        if (list.isEmpty()){
+            throw new CustomException("FILTRAR","No se encontraron vuelos en estas fechas y destino.");
+        }
+
         return list.stream().map(
                         hotel -> mapper.map(hotel, FlightsAvailableDto.class)
                 )
                 .collect(Collectors.toList());
-        }else{
-            throw new RuntimeException("No hay vuelos en estas fechas");
-        }
     }
 
 
