@@ -13,12 +13,10 @@ import lombok.SneakyThrows;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.MissingServletRequestParameterException;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -30,6 +28,9 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
 
     @Autowired
     IFlightsBookingRepository flightsBookingRepository;
+
+    @Autowired
+    IFlightReservationResRepository flightReservationResRepository;
 
     ModelMapper mapper = new ModelMapper();
 
@@ -60,7 +61,6 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
         return mapper.map(entity, FlightsAvailableDto.class);
     }
 
-
     @Override
     public MessageDTO deleteEntity(String code) {
         // buscar el dato en la base de datos y asegurarnos que exista
@@ -68,6 +68,7 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
         // eliminar efectivamente
         if(!exists.isEmpty())
             flightsRepository.deleteAll();
+
         else
             throw new CustomException("ELIMINACIÓN", "No se pudo encontrar el vuelo con código: " + code);
 
