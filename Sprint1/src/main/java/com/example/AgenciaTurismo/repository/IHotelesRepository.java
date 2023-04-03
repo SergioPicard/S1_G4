@@ -23,6 +23,8 @@ public interface IHotelesRepository extends JpaRepository<HotelModel,Integer> {
     @Query("SELECT h FROM HotelModel h ORDER BY h.precioNoche ASC")
     List <HotelModel> findAllOrderByPrecioNocheAsc();
 
+    List<HotelModel> findByNombreContainsIgnoreCase(String nameHotel);
+
 
 /*    List<HotelModel> dataBase();
 

@@ -1,0 +1,233 @@
+openapi: 3.0.0
+info:
+  title: API de agencia de Turismo.
+  description: Esta API se encarga de manejar la información de los hoteles y vuelos ofrecidos por la agencia.
+  version: 1.0.0
+servers:
+- url: localhost:8080/v1/hotels/
+tags:
+- name: hoteles
+  description: Información de los hoteles disponibles ofrecidos por la empresa.
+
+paths:
+
+  /findByDestination/{destination}:
+    get:
+      tags:
+      - hoteles
+      summary: Muestra toda la información de hoteles filtrados por destino.
+      parameters:
+      - name: destination
+        in: path
+        description: Lugar en donde se quiere encontrar un hotel.
+        required: true
+        allowReserved: true
+        schema:
+          type: string
+          
+      responses:
+        200:
+          description: (OK) Consulta realizada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BodyHotelesGet'
+        400:
+          $ref: '#/components/responses/BadRequest'
+    
+  /findByLowerPrice:
+    get:
+      tags:
+      - hoteles
+      summary: Muestra todos los hoteles ofrecidos, ordenados de menor a mayor costo por noche.
+      responses:
+        200:
+          description:  (OK) Consulta realizada.
+          content:
+            application/json:
+              schema:
+                properties:
+                  lista de hoteles:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/HotelesLowerCostGet'
+                  
+        400:
+          $ref: '#/components/responses/BadRequest'
+  
+  /staySimulation:
+    get:
+      tags:
+      - hoteles
+      summary: Actualiza la informacion de un cliente en la base de datos.
+      parameters:
+        - in: query
+          name: hotelCode
+          required: true
+          schema:
+            type: string
+          allowReserved: true
+        - in: query
+          name: days
+          required: true
+          schema:
+            type: string
+          allowReserved: true
+        - in: query
+          name: peopleAmount
+          required: true
+          schema:
+            type: string
+          allowReserved: true
+        
+      responses:
+        200:
+          description: (OK) Consulta realizada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaySimulationMessage'
+        400:
+          $ref: '#/components/responses/BadRequest'
+          
+  /findByName/{hotelName}:
+    get:
+      tags:
+      - hoteles
+      summary: Muestra toda la información de hoteles filtrados por destino.
+      parameters:
+      - name: hotelName
+        in: path
+        description: Nombre o letras para encontrar un hotel.
+        required: true
+        allowReserved: true
+        schema:
+          type: string
+          
+      responses:
+        200:
+          description: (OK) Consulta realizada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HotelFindByName'
+        400:
+          $ref: '#/components/responses/BadRequest'
+  
+components:
+  responses:
+    
+    BadRequest:
+      description: (Bad Request) Los datos enviados son incorrectos o hay datos obligatorios no enviados.
+        
+
+  schemas:
+    BodyHotelesGet:
+      type: object
+      properties:
+        codigoHotel:
+          type: string
+          enum: [CH-0002]
+          description: Código del hotel a buscar
+        nombre:
+          type: string
+          description: Nombre del hotel
+        lugar:
+          type: string
+          description: Ubicación del hotel
+        tipoHabitacion:
+          type: string
+          description: Tipo de habitación que ofrece el hotel
+        precioNoche:
+          type: integer
+          description: Precio por noche
+        disponibleDesde:
+          type: string
+          format: date
+          description: Fecha de inicio de disponibilidad del hotel
+        disponibleHasta:
+          type: string
+          format: date
+          description: Fecha de fin de disponibilidad del hotel
+        reservado:
+          type: boolean
+          description: Si está reservado
+          
+    HotelesLowerCostGet:
+        type: object
+        properties:
+            codigoHotel:
+              type: string
+              enum: [CH-0002]
+              description: Código del hotel a buscar
+            nombre:
+              type: string
+              description: Nombre del hotel
+            lugar:
+              type: string
+              description: Ubicación del hotel
+            tipoHabitacion:
+              type: string
+              description: Tipo de habitación que ofrece el hotel
+            precioNoche:
+              type: integer
+              description: Precio por noche
+            disponibleDesde:
+              type: string
+              format: date
+              description: Fecha de inicio de disponibilidad del hotel
+            disponibleHasta:
+              type: string
+              format: date
+              description: Fecha de fin de disponibilidad del hotel
+            reservado:
+              type: boolean
+              description: Si está reservado
+              
+              
+    StaySimulationMessage:
+        type: object
+        properties:
+            Message:
+              type: string
+              enum: [El costo total de la simulación es de...]
+              description: Mensaje devolviendo el costo simulado
+            name:
+              type: string
+              enum: [SIMULACIÓN]
+              description: Nombre de la simulación
+              
+              
+              
+              
+    HotelFindByName:
+        type: object
+        properties:
+            codigoHotel:
+              type: string
+              enum: [CH-0002]
+              description: Código del hotel a buscar
+            nombre:
+              type: string
+              enum: [Nombre del hotel buscado]
+              description: Nombre del hotel
+            lugar:
+              type: string
+              description: Ubicación del hotel
+            tipoHabitacion:
+              type: string
+              description: Tipo de habitación que ofrece el hotel
+            precioNoche:
+              type: integer
+              description: Precio por noche
+            disponibleDesde:
+              type: string
+              format: date
+              description: Fecha de inicio de disponibilidad del hotel
+            disponibleHasta:
+              type: string
+              format: date
+              description: Fecha de fin de disponibilidad del hotel
+            reservado:
+              type: boolean
+              description: Si está reservado

@@ -22,6 +22,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class HotelesService implements ICrudService<HotelAvailableDto,Integer,String> {
@@ -460,7 +461,7 @@ public class HotelesService implements ICrudService<HotelAvailableDto,Integer,St
 
 
 
-    // ENDPOINTS NUEVOS - SERGIO
+    // ENDPOINTS NUEVOS
 
 
     public List<HotelAvailableDto> filterEntityForDestination(String destination)  {
@@ -481,10 +482,55 @@ public class HotelesService implements ICrudService<HotelAvailableDto,Integer,St
 
         // buscar el dato en la base de datos y asegurarnos que exista
         var list = hotelesRepository.findAllOrderByPrecioNocheAsc();
+
         return list.stream().map(
                         hotel -> mapper.map(hotel, HotelAvailableDto.class)
                 )
                 .collect(Collectors.toList());
+    }
+
+    public MessageDTO staySimulation(String hotelCode, Integer days, Integer peopleAmount){
+
+        // buscar el dato en la base de datos y asegurarnos que exista
+        List<HotelModel> list =  hotelesRepository.findByCodigoHotel(hotelCode);
+        System.out.println(list);
+
+        if (list.isEmpty()){
+            throw new CustomException("COSTO SIMULACIÓN", "Código de hotel incorrecto.");
+        }
+
+        if (days <= 0 || peopleAmount <= 0){
+            throw new CustomException("COSTO SIMULACIÓN", "Debe ingresar un número mayor a 0");
+        }
+
+        double priceHotel = list.stream()
+                .filter(hotel -> hotel.getPrecioNoche() != null)
+                .mapToDouble(HotelModel::getPrecioNoche)
+                .findFirst()
+                .orElse(0.0);
+
+        var result = (priceHotel * days) * peopleAmount;
+
+        return MessageDTO.builder()
+                .message("El costo abonando con tarjeta de débito para " +peopleAmount+ " personas, durante " + days + " días, en el hotel código: " + hotelCode
+                        + ", es de: $" + result)
+                .name("COSTO SIMULACIÓN")
+                .build();
+    }
+
+    public List<HotelAvailableDto> filterByName(String hotelName)  {
+
+        // buscar el dato en la base de datos y asegurarnos que exista
+        List<HotelModel> list = hotelesRepository.findByNombreContainsIgnoreCase(hotelName);
+        System.out.println(list);
+
+        if (list.isEmpty()) {
+            throw new CustomException("FILTRAR", "No se han encontrado hoteles en el lugar elegido.");
+        }
+
+        return list.stream().map(
+                hotel -> mapper.map(hotel, HotelAvailableDto.class)
+        ).collect(Collectors.toList());
     }
 
 

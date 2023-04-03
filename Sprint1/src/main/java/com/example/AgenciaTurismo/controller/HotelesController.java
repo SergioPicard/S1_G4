@@ -96,6 +96,20 @@ public class HotelesController {
         return ResponseEntity.ok(hotelesService.findByLowerPrice());
     }
 
+    @GetMapping("/hotels/staySimulation")
+    public ResponseEntity<MessageDTO> staySimulation(@RequestParam("hotelCode") String hotelCode,
+                                                     @RequestParam("days") Integer days,
+                                                     @RequestParam("peopleAmount") Integer peopleAmount ){
+
+        return ResponseEntity.ok(hotelesService.staySimulation(hotelCode, days,peopleAmount));
+    }
+
+    @GetMapping("/hotels/findByName/{hotelName}")
+    public List<HotelAvailableDto> findByNameHotel(@PathVariable String hotelName){
+
+        return hotelesService.filterByName(hotelName);
+    }
+
 
 
 
