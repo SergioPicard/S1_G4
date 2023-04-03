@@ -1,7 +1,9 @@
 package com.example.AgenciaTurismo.controller;
 
 import com.example.AgenciaTurismo.dto.MessageDTO;
+import com.example.AgenciaTurismo.dto.request.BookingDto;
 import com.example.AgenciaTurismo.dto.request.BookingRequestDto;
+import com.example.AgenciaTurismo.dto.response.BookingResDto;
 import com.example.AgenciaTurismo.dto.response.HotelAvailableDto;
 
 import com.example.AgenciaTurismo.models.HotelModel;
@@ -66,6 +68,19 @@ public class HotelesController {
 
         return  ResponseEntity.ok(
                 hotelesService.editEntity(hotelCode, hotelModel));
+    }
+
+    @GetMapping("/hotel-bookings")
+    public ResponseEntity<List<BookingResDto>> findAllBookings(){
+        return ResponseEntity.ok(hotelesService.getAllBookings());
+    }
+
+    @PutMapping("/hotel-booking/{id}")
+    public ResponseEntity<MessageDTO> updateBookingById(@PathVariable Integer id,
+                                                        @RequestBody @Valid BookingDto bookingDto){
+        return ResponseEntity.ok(
+                hotelesService.updateBookingByID(id, bookingDto)
+        );
     }
 
    }

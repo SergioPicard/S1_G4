@@ -1,7 +1,9 @@
 package com.example.AgenciaTurismo.service.classes;
 
 import com.example.AgenciaTurismo.dto.MessageDTO;
+import com.example.AgenciaTurismo.dto.request.BookingDto;
 import com.example.AgenciaTurismo.dto.request.BookingRequestDto;
+import com.example.AgenciaTurismo.dto.response.BookingResDto;
 import com.example.AgenciaTurismo.dto.response.HotelAvailableDto;
 import com.example.AgenciaTurismo.exceptions.CustomException;
 import com.example.AgenciaTurismo.exceptions.SinHotelesException;
@@ -307,6 +309,140 @@ public class HotelesService implements ICrudService<HotelAvailableDto,Integer,St
             }
             }
 
+    public List<BookingResDto> getAllBookings() {
+        var list = bookingModelRepository.findAll();
+        return list.stream().map(
+                        booking -> mapper.map(booking, BookingResDto.class)
+                )
+                .collect(Collectors.toList());
+    }
+
+    public MessageDTO updateBookingByID(Integer id, BookingDto bookingDto){
+
+        if (bookingModelRepository.existsById(id)) {
+
+            var model = bookingModelRepository.getById(id);
+            var entity = mapper.map(bookingDto, BookingModel.class);
+            var hotel = hotelesRepository.findByCodigoHotel(model.getHotelCode()).get(0);
+
+            validationsBooking(entity, hotel);
+
+            if(!entity.getPeopleAmount().equals(model.getPeopleAmount())){
+
+                if(peopleAmountFitInRoom(entity)){
+                    throw new SinHotelesException("La cantidad de personas no puede ser mayor a: "+maxPersonsPerRoom(entity)+ ".");
+                }
+            }
+
+            if(entity.getPeopleAmount() != entity.getPeople().size()){
+                throw new SinHotelesException("La cantidad de personas ingresadas no coincide con la estipulada");
+            }
+
+            entity.setId(id);
+            entity.setTotal(model.getTotal());
+            entity.setHotelModel(model.getHotelModel());
+
+            var paymentId = model.getPaymentMethod().getId();
+            entity.getPaymentMethod().setId(paymentId);
+            //probar no crear nuevas personas si ya existen en la base de datos
+            // crear un Irepository de personas, y buscarlas por id? o crear metodo nombrado para buscar?
+            //que pasa si cambio el numero de personas?
+
+            bookingModelRepository.save(entity);
+            return MessageDTO.builder()
+                    .name("MODIFICACION")
+                    .message("Reserva de hotel modificada correctamente")
+                    .build();
+        } else {
+            return MessageDTO.builder()
+                    .name("MODIFICACION")
+                    .message("No se pudo encontrar la reserva especificada")
+                    .build();
+        }
+    }
+
+    private Boolean validationsBooking(BookingModel entity, HotelModel hotel){
+        if(!entity.getRoomType().equals(hotel.getTipoHabitacion())){
+            throw new SinHotelesException("Tipo de habitacion invalido debe ser: "+hotel.getTipoHabitacion()+ ".");
+        }
+        if(!entity.getHotelCode().equals(hotel.getCodigoHotel())){
+            throw new SinHotelesException("El codigo de hotel es invalido debe ser: "+hotel.getCodigoHotel()+ ".");
+        }
+        if(!entity.getDestination().equals(hotel.getLugar())) {
+            throw new SinHotelesException("Destino invalido, debe ser: "+hotel.getLugar()+ ".");
+        }
+        if(entity.getDateFrom().isBefore(hotel.getDisponibleDesde()) ) {
+            throw new SinHotelesException("La fecha es incorrecta, debe ser posterior a : "+hotel.getDisponibleDesde()+ ".");
+        }
+        if(entity.getDatoTo().isAfter(hotel.getDisponibleHasta()) ) {
+            throw new SinHotelesException("La fecha es incorrecta, debe ser anterior a : "+hotel.getDisponibleHasta()+ ".");
+        }
+        if(maxPersonsPerRoom(entity) > entity.getPeopleAmount()){
+            throw new SinHotelesException("La cantidad de personas no puede ser mayor a: "+maxPersonsPerRoom(entity)+ ".");
+        }
+        return true;
+    }
+
+    private Integer maxPersonsPerRoom(BookingModel booking){
+
+        Integer maxAmout = 0;
+
+        switch (booking.getRoomType()) {
+            //INICIAMOS SWITCH PARA LOS 4 TIPO DE HABITACIONES EXISTENTES ENTRE TODOS LOS HOTELES
+            case "SINGLE": {
+                maxAmout = 1;
+                break;
+            }
+            case "DOBLE": {
+                maxAmout = 2;
+                break;
+            }
+            case "TRIPLE": {
+                maxAmout = 3;
+                break;
+            }
+            case "MÚLTIPLE": {
+                maxAmout = 4;
+                break;
+            }
+        }
+
+        return maxAmout;
+    }
+
+    private Boolean peopleAmountFitInRoom(BookingModel booking){
+        var peopleFit = false;
+
+        switch (booking.getRoomType()) {
+            //INICIAMOS SWITCH PARA LOS 4 TIPO DE HABITACIONES EXISTENTES ENTRE TODOS LOS HOTELES
+            case "SINGLE": {
+                if (booking.getPeopleAmount() > 1) {
+                    peopleFit = true;
+                }
+                break;
+            }
+            case "DOBLE": {
+                if (booking.getPeopleAmount() > 2) {
+                    peopleFit = true;
+                }
+                break;
+            }
+            case "TRIPLE": {
+                if (booking.getPeopleAmount() > 3) {
+                    peopleFit = true;
+                }
+                break;
+            }
+            case "MÚLTIPLE": {
+                if (booking.getPeopleAmount() > 4) {
+                    peopleFit = true;
+                }
+                break;
+            }
+        }
+
+        return peopleFit;
+    }
 
     }
 
