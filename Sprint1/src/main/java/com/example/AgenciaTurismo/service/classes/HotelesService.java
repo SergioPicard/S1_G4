@@ -10,7 +10,6 @@ import com.example.AgenciaTurismo.exceptions.SinHotelesException;
 import com.example.AgenciaTurismo.models.BookingModel;
 import com.example.AgenciaTurismo.models.BookingRequestModel;
 import com.example.AgenciaTurismo.models.HotelModel;
-import com.example.AgenciaTurismo.models.PeopleModel;
 import com.example.AgenciaTurismo.repository.IBookingModelRepository;
 import com.example.AgenciaTurismo.repository.IHotelBookingRepository;
 import com.example.AgenciaTurismo.repository.IHotelesRepository;
@@ -459,44 +458,42 @@ public class HotelesService implements ICrudService<HotelAvailableDto,Integer,St
         return peopleFit;
     }
 
+
+
+    // ENDPOINTS NUEVOS - SERGIO
+
+
+    public List<HotelAvailableDto> filterEntityForDestination(String destination)  {
+
+            // buscar el dato en la base de datos y asegurarnos que exista
+            List<HotelModel> list = hotelesRepository.findByLugar(destination);
+
+            if (list.isEmpty()) {
+                throw new CustomException("FILTRAR", "No se han encontrado hoteles en el lugar elegido.");
+            }
+
+            return list.stream().map(
+                    hotel -> mapper.map(hotel, HotelAvailableDto.class)
+            ).collect(Collectors.toList());
+        }
+
+    public List<HotelAvailableDto> findByLowerPrice()  {
+
+        // buscar el dato en la base de datos y asegurarnos que exista
+        var list = hotelesRepository.findAllOrderByPrecioNocheAsc();
+        return list.stream().map(
+                        hotel -> mapper.map(hotel, HotelAvailableDto.class)
+                )
+                .collect(Collectors.toList());
     }
 
-    /*
-    public List<HotelAvailableDto> filterHotels(LocalDate dateFrom, LocalDate dateTo, String destination) {
-
-        List<HotelAvailableDto> allHotels = hotelesRepository.findAll();
-
-        List<HotelAvailableDto> destinationStatus = allHotels.stream().filter(hotel -> Objects.equals(hotel.getLugar(), destination)).collect(Collectors.toList());
-        List<HotelAvailableDto> dateFromStatus = destinationStatus.stream().filter(hotel -> hotel.getDisponibleDesde().isAfter(dateFrom)).collect(Collectors.toList());
-        List<HotelAvailableDto> dateToStatus = destinationStatus.stream().filter(hotel -> hotel.getDisponibleHasta().isBefore(dateTo)).collect(Collectors.toList());
-        List<HotelAvailableDto> dateEqualFromStatus = destinationStatus.stream().filter(hotel -> hotel.getDisponibleDesde().equals(dateFrom)).collect(Collectors.toList());
-        List<HotelAvailableDto> dateEqualToStatus = destinationStatus.stream().filter(hotel -> hotel.getDisponibleHasta().equals(dateTo)).collect(Collectors.toList());
 
 
 
-        // VALIDACION POR DESTINO
-        if (destinationStatus.isEmpty()){
-            throw new SinHotelesException("El destino elegido no existe.");
-        }
 
-        //VALIDACION FECHA ENTRADA MENOR A SALIDA
-        if(dateFrom.isAfter(dateTo)){
-            throw new SinHotelesException("La fecha de ida debe ser menor a la de vuelta.");
-        }
 
-        //VALIDACION FECHA SALIDA MAYOR A ENTRADA
-        if(dateFrom.isEqual(dateTo)){
-            throw new SinHotelesException("La fecha de vuelta debe ser mayor a la de ida");
-        }
 
-        List<HotelAvailableDto> hotelAvailable = hotelesRepository.filterHotelsRep(dateFrom, dateTo, destination);
 
-        if(hotelAvailable.isEmpty()){
-            throw new SinHotelesException("No se encontraron hoteles disponibles en esta fecha.");
-        }
 
-        return hotelAvailable;
+
     }
-*/
-
-

@@ -83,7 +83,23 @@ public class HotelesController {
         );
     }
 
-   }
+    // END-POINTS PROPIOS
+
+    @GetMapping("/hotels/findByDestination/{destination}")
+    public List<HotelAvailableDto> filterHotelsForDestination(@PathVariable String destination){
+
+        return hotelesService.filterEntityForDestination(destination);
+    }
+
+    @GetMapping("/hotels/findByLowerPrice")
+    public ResponseEntity<List<HotelAvailableDto>> filterByLowerPrice(){
+        return ResponseEntity.ok(hotelesService.findByLowerPrice());
+    }
+
+
+
+
+}
 
 
  /*
