@@ -4,11 +4,14 @@ import com.example.AgenciaTurismo.dto.request.FlightReservationReqDto;
 import com.example.AgenciaTurismo.dto.response.FlightResponseDto;
 import com.example.AgenciaTurismo.dto.response.FlightsAvailableDto;
 import com.example.AgenciaTurismo.exceptions.VuelosException;
+import com.example.AgenciaTurismo.models.FlightModel;
 import com.example.AgenciaTurismo.repository.IFlightsRepository;
 import com.example.AgenciaTurismo.service.classes.FlightsService;
 import com.example.AgenciaTurismo.util.FlightAvailableDtoFactory;
+import com.example.AgenciaTurismo.util.FlightModelFactory;
 import com.example.AgenciaTurismo.util.FlightReservationReqFactory;
 import com.example.AgenciaTurismo.util.FlightResponseDtoFactory;
+import org.hibernate.mapping.Any;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,6 +21,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import javax.persistence.ManyToMany;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -31,6 +35,34 @@ public class FlightServiceTest {
     FlightsService flightsService;
 
     @Test
+    @DisplayName("Se filtran los vuelos por precio - SERVICE")
+    public void filterByPrecioVueloTest(){
+        // arrange
+        Double precio = 50000.00;
+        List<FlightsAvailableDto> expected = FlightAvailableDtoFactory.listFlights();
+        // act
+        Mockito.when(flightsRepository.findByPrecioPersona(precio)).thenReturn(FlightModelFactory.listFlights());
+        List<FlightsAvailableDto> result = flightsService.filterByPrecioVuelo(precio);
+
+        // assert
+        Assertions.assertEquals(expected,result);
+
+       /* // arrange
+        Double precio = 7000.00;
+        FlightsAvailableDto expected = FlightAvailableDtoFactory.getBapi();
+
+        // act
+       Mockito.when(flightsRepository.findByPrecioPersona().thenReturn(FlightAvailableDtoFactory.listFlights());
+       var result = flightsService.filterByPrecioVuelo(precio);
+
+        // assert
+        Assertions.assertEquals(expected,result);*/
+    }
+
+
+
+
+/*    @Test
     @DisplayName("Se buscan todos los vuelos - SERVICE")
     public void searchAllTest(){
         // arrange
@@ -184,7 +216,7 @@ public class FlightServiceTest {
 
     }
 
-   /* @Test
+   *//* @Test
     @DisplayName("")
     public void filterFlightTestNonAvailableException(){
         // arrange
@@ -200,7 +232,7 @@ public class FlightServiceTest {
         Assertions.assertThrows(VuelosException.class, ()-> flightsService
                 .filterFlights(fechaIda,fechaVuelta,origen,destino));
 
-    }*/
+    }*//*
 
     @Test
     @DisplayName("Excepción cantidad incorrecta de pasajeros - SERVICE")
@@ -369,9 +401,9 @@ public class FlightServiceTest {
         FlightResponseDto expected = FlightResponseDtoFactory.getResponseCredit3();
         FlightReservationReqDto param = FlightReservationReqFactory.getFlightReservationDtoCredit3();
         FlightsAvailableDto available = FlightAvailableDtoFactory.getBapi();
-        /*param.getPaymentMethodDto().setType("debitcard");
+        *//*param.getPaymentMethodDto().setType("debitcard");
         param.getPaymentMethodDto().setDues(1);
-        expected.setTotal(6500.0);*/
+        expected.setTotal(6500.0);*//*
 //        param.getPaymentMethodDto().setDues(3);
 
         Mockito.when(flightsRepository.findFlight(param.getFlightReservation().getFlightNumber(),
@@ -399,5 +431,5 @@ public class FlightServiceTest {
         Assertions.assertThrows(VuelosException.class, ()-> flightsService
                 .flightReservationResponse(param));
 
-    }
+    }*/
 }

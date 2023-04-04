@@ -411,4 +411,18 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
         return total;
     }
 
+    public List<FlightsAvailableDto> filterByPrecioVuelo(Double precio) {
+        // buscar el dato en la base de datos y asegurarnos que exista
+        List<FlightModel> list = flightsRepository.findByPrecioPersona(precio);
+
+        if (!list.isEmpty()){
+            return list.stream().map(
+                            vuelo -> mapper.map(vuelo, FlightsAvailableDto.class)
+                    )
+                    .collect(Collectors.toList());
+        } else{
+            throw new CustomException("FILTRAR","No hay vuelos disponibles por un precio menor al colocado");
+        }
+    }
+
 }

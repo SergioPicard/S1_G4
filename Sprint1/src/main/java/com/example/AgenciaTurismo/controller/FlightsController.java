@@ -4,10 +4,7 @@ package com.example.AgenciaTurismo.controller;
 import com.example.AgenciaTurismo.dto.MessageDTO;
 import com.example.AgenciaTurismo.dto.request.BookingDto;
 import com.example.AgenciaTurismo.dto.request.FlightReservationReqDto;
-import com.example.AgenciaTurismo.dto.response.BookingResDto;
-import com.example.AgenciaTurismo.dto.response.FlightReservationResDto;
-import com.example.AgenciaTurismo.dto.response.FlightResponseDto;
-import com.example.AgenciaTurismo.dto.response.FlightsAvailableDto;
+import com.example.AgenciaTurismo.dto.response.*;
 import com.example.AgenciaTurismo.models.FlightModel;
 import com.example.AgenciaTurismo.models.FlightReservationResModel;
 import com.example.AgenciaTurismo.models.HotelModel;
@@ -88,5 +85,11 @@ public class FlightsController {
         return ResponseEntity.ok(
                 flightsService.updateBookingByID(id, bookingDto)
         );
+    }
+
+    @GetMapping("/flight/precio")
+    public List<FlightsAvailableDto> filterFlightsPrice(@RequestParam("precio")Double precio ){
+
+        return flightsService.filterByPrecioVuelo(precio);
     }
 }

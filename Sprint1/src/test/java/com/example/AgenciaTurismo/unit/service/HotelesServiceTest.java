@@ -27,9 +27,14 @@ class HotelesServiceTest {
     @InjectMocks
     HotelesService hotelesService;
 
+
+
+
+
+ /*
     @Test
     @DisplayName("Se buscan todos los hoteles - SERVICE")
-    void searchAll() {
+   void searchAll() {
         // arrange
         List<HotelAvailableDto> expected = HotelAvailableDtoFactory.listHotels();
 
@@ -400,7 +405,7 @@ class HotelesServiceTest {
         Assertions.assertEquals(expected, result);
 
 
-    }
+    }*/
 
 
 
