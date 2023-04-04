@@ -38,14 +38,13 @@ class HotelesServiceTest {
         // arrange
         String destino = "Puerto Iguazú";
         List<HotelAvailableDto> expected = List.of(HotelAvailableDtoFactory.cataratasHotel1(),
-                HotelAvailableDtoFactory.cataratasHotel21());
+                                            HotelAvailableDtoFactory.cataratasHotel21());
         System.out.println(expected);
 
         // act
         Mockito.when(hotelesRepository.findByLugar(destino))
-                .thenReturn(List.of(HotelAvailableDtoFactory.cataratasHotel(),
-                        HotelAvailableDtoFactory.cataratasHotel2()));
-
+                                            .thenReturn(List.of(HotelAvailableDtoFactory.cataratasHotel(),
+                                                    HotelAvailableDtoFactory.cataratasHotel2()));
 
         var result = hotelesService.filterEntityForDestination(destino);
 
