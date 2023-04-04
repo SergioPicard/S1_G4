@@ -15,11 +15,4 @@ public interface IHotelesRepository extends JpaRepository<HotelModel,Integer> {
 
     HotelModel findBycodigoHotelAndTipoHabitacionEquals(String code, String habitacion);
 
-/*    List<HotelModel> dataBase();
-
-    List<HotelAvailableDto> findAll();
-
-    List<HotelAvailableDto> filterHotelsRep(LocalDate dateFrom, LocalDate dateTo, String destination);
-
-    HotelAvailableDto findHotel(String code);*/
 }

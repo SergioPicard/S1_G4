@@ -89,6 +89,4 @@ public class FlightsController {
                 flightsService.updateBookingByID(id, bookingDto)
         );
     }
-
-
 }
