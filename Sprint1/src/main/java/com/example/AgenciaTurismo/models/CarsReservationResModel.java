@@ -24,6 +24,10 @@ public class CarsReservationResModel {
     private String origin;
     @Column(length = 10, nullable = false)
     private String carsCode;
+    @Column(length = 2, nullable = false)
+    private Integer peopleAmount;
+    @Column(length = 10, nullable = false)
+    private Double total;
 
 
     //RELACIONES

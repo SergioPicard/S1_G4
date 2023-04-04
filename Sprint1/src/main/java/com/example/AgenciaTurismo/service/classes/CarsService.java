@@ -1,11 +1,13 @@
 package com.example.AgenciaTurismo.service.classes;
 
 import com.example.AgenciaTurismo.dto.MessageDTO;
+import com.example.AgenciaTurismo.dto.request.BookingRequestDto;
+import com.example.AgenciaTurismo.dto.request.CarsBookingRequestDTO;
 import com.example.AgenciaTurismo.dto.response.CarsAvailableDTO;
 import com.example.AgenciaTurismo.dto.response.FlightsAvailableDto;
 import com.example.AgenciaTurismo.exceptions.CarsException;
-import com.example.AgenciaTurismo.models.CarsModel;
-import com.example.AgenciaTurismo.models.FlightModel;
+import com.example.AgenciaTurismo.exceptions.SinHotelesException;
+import com.example.AgenciaTurismo.models.*;
 import com.example.AgenciaTurismo.repository.*;
 import com.example.AgenciaTurismo.service.generics.ICrudService;
 import org.modelmapper.ModelMapper;
@@ -13,7 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
+import javax.security.auth.login.CredentialException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,7 +42,7 @@ public class CarsService implements ICrudService <CarsAvailableDTO,Integer,Strin
         // mappear de entity a dto para llevar al controller
 
         return MessageDTO.builder()
-                .message("Auto dado de alta correctamente." )
+                .message("Auto dado de alta correctamente.")
                 .name("CREACIÓN")
                 .build();
     }
@@ -86,7 +90,8 @@ public class CarsService implements ICrudService <CarsAvailableDTO,Integer,Strin
                 .name("ELIMINACION")
                 .build();
     }
-    public List<CarsAvailableDTO> filterEntity(LocalDate disponibleDesde, LocalDate disponibleHasta, String lugar) {
+
+    /*public List<CarsAvailableDTO> filterEntity(LocalDate disponibleDesde, LocalDate disponibleHasta, String lugar) {
         // buscar el dato en la base de datos y asegurarnos que exista
         List<CarsModel> list = carsRepository.findByDisponibleDesdeLessThanEqualAndDisponibleHastaGreaterThanEqualAndLugar(disponibleDesde, disponibleHasta, lugar);
 
@@ -98,5 +103,20 @@ public class CarsService implements ICrudService <CarsAvailableDTO,Integer,Strin
         } else{
             throw new RuntimeException("No hay autos en este lugar, en estas fechas");
         }
+    }*/
+    public MessageDTO bookingResponse(CarsBookingRequestDTO bookingRequest) {
+
+        CarsBookingRequestModel reservationCars = new CarsBookingRequestModel();
+
+        //BÚSQUEDA DEL AUTO POR CÓDIGO PASADO EN EL REQUEST.
+        List<CarsModel> cars = carsRepository.findByCodigoAuto(bookingRequest.getCarsBooking().getCodigoAuto());
+
+        if (cars.isEmpty()) throw new CarsException("El auto que desea reservar no existe.");
+
+        return MessageDTO.builder()
+                .message("Reserva de auto dada de alta correctamente." )
+                .name("CREACIÓN")
+                .build();
     }
 }
+

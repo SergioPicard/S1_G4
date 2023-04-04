@@ -1,6 +1,9 @@
 package com.example.AgenciaTurismo.controller;
 
 import com.example.AgenciaTurismo.dto.MessageDTO;
+import com.example.AgenciaTurismo.dto.request.BookingRequestDto;
+import com.example.AgenciaTurismo.dto.request.CarsBookingRequestDTO;
+import com.example.AgenciaTurismo.dto.request.FlightReservationReqDto;
 import com.example.AgenciaTurismo.dto.response.CarsAvailableDTO;
 import com.example.AgenciaTurismo.service.classes.CarsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -39,5 +43,10 @@ public class CarsController {
         return ResponseEntity.ok(
                 carsService.deleteEntity(code)
         );
+    }
+    @PostMapping("/cars-booking/new")
+    public ResponseEntity<MessageDTO> booking(@RequestBody @Valid CarsBookingRequestDTO carsBookingRequest){
+        return ResponseEntity.ok(
+                carsService.bookingResponse(carsBookingRequest));
     }
 }
