@@ -86,5 +86,10 @@ public class GlobalHandler {
                 )
         );
     }
+
+    @ExceptionHandler(ParametrosIncorrectosExcepcion.class)
+    public ResponseEntity<String> ParametrosIncorrectosExcepcion(ParametrosIncorrectosExcepcion exception) {
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
+    }
 }
 

@@ -14,7 +14,10 @@ import com.example.AgenciaTurismo.models.HotelModel;
 import com.example.AgenciaTurismo.service.classes.FlightsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+<<<<<<< HEAD
+=======
 import org.springframework.http.ResponseEntity;
+>>>>>>> sprint3
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -50,10 +53,17 @@ public class FlightsController {
     }
 
     @GetMapping("/flight")
+<<<<<<< HEAD
+    public List<FlightsAvailableDto> filterFlights(@Valid @RequestParam("dateFrom") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)LocalDate fechaIda,
+                                                @RequestParam("dateTo") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)LocalDate fechaVuelta,
+                                                @RequestParam("origin") String origen,
+                                                @RequestParam("destination") String destino){
+=======
     public List<FlightsAvailableDto> filterFlights(@RequestParam("dateFrom") @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate fechaIda,
                                                    @RequestParam("dateTo") @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate fechaVuelta,
                                                    @RequestParam("origin") String origen,
                                                    @RequestParam(value = "destination") String destino){
+>>>>>>> sprint3
 
         return flightsService.filterEntity(fechaIda, fechaVuelta, origen, destino);
     }
@@ -63,10 +73,17 @@ public class FlightsController {
                 flightsService.flightReservationResponse(flightReservationReqDto));
     }
 
+<<<<<<< HEAD
+    @PostMapping("/flight-reservation")
+    public FlightResponseDto booking(@RequestBody @Valid FlightReservationReqDto flightReservationReqDto){
+
+        return flightsService.flightReservationResponse(flightReservationReqDto);
+=======
     @DeleteMapping("/flight-reservation/delete/{id}")
     public  ResponseEntity<MessageDTO> deleteFlightReservation(@PathVariable Integer id){
         return ResponseEntity.ok(
                 flightsService.deleteFlightReservation(id));
+>>>>>>> sprint3
     }
 
     @PutMapping("/flights/edit")

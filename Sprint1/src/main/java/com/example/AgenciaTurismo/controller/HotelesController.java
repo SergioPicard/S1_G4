@@ -10,7 +10,10 @@ import com.example.AgenciaTurismo.models.HotelModel;
 import com.example.AgenciaTurismo.service.classes.HotelesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+<<<<<<< HEAD
+=======
 import org.springframework.http.ResponseEntity;
+>>>>>>> sprint3
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,10 +54,17 @@ public class HotelesController {
         return hotelesService.filterEntity(dateFrom, dateTo, destination);
     }
 
+<<<<<<< HEAD
+    @PostMapping("/booking")
+    public BookingResponseDto booking(@RequestBody @Valid BookingRequestDto bookingRequest){
+
+        return hotelesService.bookingResponse(bookingRequest);
+=======
     @PostMapping("/hotel-booking/new")
     public ResponseEntity<MessageDTO> booking(@RequestBody @Valid BookingRequestDto bookingRequest){
         return ResponseEntity.ok(
             hotelesService.bookingResponse(bookingRequest));
+>>>>>>> sprint3
     }
 
     @DeleteMapping("/hotel-booking/delete/{id}")

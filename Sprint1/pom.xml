@@ -76,7 +76,10 @@
 			<groupId>com.fasterxml.jackson.datatype</groupId>
 			<artifactId>jackson-datatype-jsr310</artifactId>
 		</dependency>
+<<<<<<< HEAD
+=======
 
+>>>>>>> sprint3
 	</dependencies>
 
 	<build>
