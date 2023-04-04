@@ -4,11 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.OptBoolean;
 import lombok.*;
 
-<<<<<<< HEAD
-import javax.validation.constraints.Email;
-=======
 import javax.validation.constraints.*;
->>>>>>> sprint3
 import java.time.LocalDate;
 
 @AllArgsConstructor
@@ -27,12 +23,8 @@ public class PeopleDto {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", locale = "es_ES", timezone = "America/New_York", lenient = OptBoolean.TRUE, with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY, without = JsonFormat.Feature.WRITE_SINGLE_ELEM_ARRAYS_UNWRAPPED)
     @NotNull(message = "El campo de fecha de nacimiento(birthDate) no puede estar vació")
     private LocalDate birthDate;
-<<<<<<< HEAD
-    @Email
-=======
     @Email(message = "Por favor ingrese un e-mail válido")
     @NotNull(message = "El campo de mail(email) no puede estar vació")
->>>>>>> sprint3
     private String email;
 }
 
