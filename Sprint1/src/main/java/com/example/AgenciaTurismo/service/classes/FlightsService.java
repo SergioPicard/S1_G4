@@ -301,25 +301,38 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
 
     public MessageDTO updateBookingByID(Integer id, FlightResponseDto bookingDto){
 
+        // BUSCAMOS EL BOOKING EN LA BASE DE DATOS
         if (flightsBookingRepository.existsById(id)){
-            var model = flightsBookingRepository.getById(id);
-            var entity = mapper.map(bookingDto, FlightResponseModel.class);
-            var flight = flightsRepository.findByNroVuelo(model.getFlightReservationResModel().getFlightNumber());
+            var bookingDB = flightsBookingRepository.getById(id);
+        // OBTENEMOS EL ID DEL BOOKING EN LA BASE DE DATOS
+            var bookingId = bookingDB.getId();
+        // OBTEBEMOS LOS DATOS DENTRO DEL BOOKING(EL FLIGHTRESERVATIONRES
+            var dataBookingDB = bookingDB.getFlightReservationResModel();
+        // TRANSFORMAMOS EL DTO EN MODELO
+            var newBooking = mapper.map(bookingDto, FlightResponseModel.class);
+            var newBookingData = mapper.map(bookingDto.getFlightReservation(), FlightReservationResModel.class);
 
-            entity.setId(id);
-            //entity.setFlightReservationResModel(model.getFlightReservationResModel());
-            System.out.println("---------------------------------------------");
-            System.out.println(entity.toString());
-            System.out.println("---------------------------------------------");
-            entity.setTotal(model.getTotal());
+        // ASIGNAMOS EL ID DE LA BASE DE DATOS AL NUEVO BOOKING
+            newBooking.setId(bookingId);
+        // REALIZAMOS CHEQUEOS MEDIANTE METODO PRIVADO
+            setBooking(dataBookingDB, newBookingData);
 
-            var paymentId = model.getPaymentMethod().getId();
-            entity.getPaymentMethod().setId(paymentId);
-            //probar no crear nuevas personas si ya existen en la base de datos
-            // crear un Irepository de personas, y buscarlas por id? o crear metodo nombrado para buscar?
-            //que pasa si cambio el numero de personas?
+            newBooking.setFlightReservationResModel(newBookingData);
+        // RECALCULAMOS EL TOTAL CON UN METODO PRIVADO
+            newBooking.setTotal(newTotal(newBooking));
+        // ASIGNAMOS LAS ID DE LAS PERSONAS DE LA BASE DE DATOS A LAS PERSONAS EN EL NUEVO BOOKING
+            for (int i = 0; i < newBookingData.getPeople().size(); i++) {
 
-            flightsBookingRepository.save(entity);
+                var personId = dataBookingDB.getPeople().get(i).getId();
+                System.out.println(personId);
+
+                newBookingData.getPeople().get(i).setId(personId);
+            }
+
+            var paymentMethodId = bookingDB.getPaymentMethod().getId();
+            newBooking.getPaymentMethod().setId(paymentMethodId);
+
+            flightsBookingRepository.save(newBooking);
             return MessageDTO.builder()
                     .name("MODIFICACION")
                     .message("Reserva de booking de vuelo modificada correctamente")
@@ -332,6 +345,60 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
         }
 
         }
+
+    private boolean setBooking(FlightReservationResModel bookingDB, FlightReservationResModel newBooking){
+
+        newBooking.setId(bookingDB.getId());
+        newBooking.setFlightModel(bookingDB.getFlightModel());
+
+        if (!newBooking.getDateFrom().isEqual(bookingDB.getDateFrom())){
+            throw new CustomException("EDICIÓN", "La fecha de salida de este vuelo es única y no puede ser cambiada. Fecha: "+bookingDB.getDateFrom()+ ".");
+        }
+
+        if (!newBooking.getDatoTo().isEqual(bookingDB.getDatoTo())){
+            throw new CustomException("EDICIÓN", "La fecha de vuelta de este vuelo es única y no puede ser cambiada. Fecha: "+bookingDB.getDatoTo()+ ".");
+        }
+
+        if (!newBooking.getDestination().equalsIgnoreCase(bookingDB.getDestination())){
+            throw new CustomException("EDICIÓN", "El destino(destination) no coincide con el del vuelo: "+bookingDB.getDestination()+ ".");
+        }
+
+        if (!newBooking.getOrigin().equalsIgnoreCase(bookingDB.getOrigin())){
+            throw new CustomException("EDICIÓN", "El origen(origin) no coincide con el del vuelo: "+bookingDB.getOrigin()+ ".");
+        }
+
+        if (!newBooking.getFlightNumber().equalsIgnoreCase(bookingDB.getFlightNumber())){
+            throw new CustomException("EDICIÓN", "El código de vuelo no puede ser cambiado, debe ser: "+bookingDB.getOrigin()+ ".");
+        }
+
+        if (!newBooking.getSeats().equals(bookingDB.getSeats())){
+            throw new CustomException("EDICIÓN", "No se puede agregar personas a esta reserva, solo modificar las existentes.");
+        }
+
+        return true;
+
+    }
+
+    private Double newTotal(FlightResponseModel booking) {
+        var flight = flightsRepository.findByNroVueloAndTipoAsientoEquals(booking.getFlightReservationResModel().getFlightNumber(), booking.getFlightReservationResModel().getSeatType());
+        var cardType = booking.getPaymentMethod().getType();
+        var total = flight.getPrecioPersona() * booking.getFlightReservationResModel().getSeats();
+
+        if (cardType.equalsIgnoreCase("debitcard")) {
+            if (!booking.getPaymentMethod().getDues().equals(1)) {
+                throw new CustomException("EDICIÓN", "Solo se puede realizar el pago en una(1) cuota con tarjeta de debito.");
+            }
+        }
+
+        if (cardType.equalsIgnoreCase("creditcard")) {
+            if (booking.getPaymentMethod().getDues() <= 3) {
+                total *= 1.05;
+            } else {
+                total *= 1.10;
+            }
+        }
+        return total;
+    }
 /*
         if (flightsBookingRepository.existsById(id)) {
 

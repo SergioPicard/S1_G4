@@ -312,8 +312,11 @@ public class HotelesService implements ICrudService<HotelAvailableDto,Integer,St
 
 
             entity.setId(id);
-            entity.setTotal(model.getTotal());
             entity.setHotelModel(model.getHotelModel());
+
+            if(!entity.getPaymentMethod().getType().equalsIgnoreCase(model.getPaymentMethod().getType()) || !entity.getPaymentMethod().getDues().equals(model.getPaymentMethod().getDues())){
+                entity.setTotal(newTotal(entity));
+            }
 
             var paymentId = model.getPaymentMethod().getId();
             entity.getPaymentMethod().setId(paymentId);
@@ -457,7 +460,30 @@ public class HotelesService implements ICrudService<HotelAvailableDto,Integer,St
         return peopleFit;
     }
 
+    private Double newTotal(BookingModel booking){
+        var hotel = hotelesRepository.findByCodigoHotel(booking.getHotelCode()).get(0);
+        double bookingDays = booking.getDatoTo().getDayOfYear() - booking.getDateFrom().getDayOfYear();
+        var cardType = booking.getPaymentMethod().getType();
+        var total = bookingDays * hotel.getPrecioNoche();
+
+        if (cardType.equalsIgnoreCase("debitcard")){
+            if (!booking.getPaymentMethod().getDues().equals(1)){
+                throw new CustomException("EDICIÓN", "Solo se puede realizar el pago en una(1) cuota con tarjeta de debito.");
+            }
+        }
+
+        if (cardType.equalsIgnoreCase("creditcard")){
+            if (booking.getPaymentMethod().getDues() <= 3){
+                total *= 1.05;
+            } else {
+                total *=  1.10;
+            }
+        }
+
+        return total;
     }
+
+}
 
     /*
     public List<HotelAvailableDto> filterHotels(LocalDate dateFrom, LocalDate dateTo, String destination) {
