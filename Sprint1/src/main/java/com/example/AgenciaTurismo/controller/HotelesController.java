@@ -92,8 +92,8 @@ public class HotelesController {
     }
 
     @GetMapping("/hotels/findByLowerPrice")
-    public ResponseEntity<List<HotelAvailableDto>> filterByLowerPrice(){
-        return ResponseEntity.ok(hotelesService.findByLowerPrice());
+    public List<HotelAvailableDto> filterByLowerPrice(){
+        return hotelesService.findByLowerPrice();
     }
 
     @GetMapping("/hotels/staySimulation")
