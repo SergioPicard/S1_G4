@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.List;
@@ -82,6 +83,13 @@ public class HotelesController {
                 hotelesService.updateBookingByID(id, bookingDto)
         );
     }
+
+    @GetMapping("/hotel/precio")
+    public List<HotelAvailableDto> filterHotelsPrice(@RequestParam("precio")Double precio ){
+
+        return hotelesService.filterByPrecioNoche(precio);
+    }
+
 
    }
 

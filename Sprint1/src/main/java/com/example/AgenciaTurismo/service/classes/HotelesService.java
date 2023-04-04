@@ -18,6 +18,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -495,6 +496,20 @@ public class HotelesService implements ICrudService<HotelAvailableDto,Integer,St
         }
 
         return total;
+    }
+
+    public List<HotelAvailableDto> filterByPrecioNoche(Double precio) {
+        // buscar el dato en la base de datos y asegurarnos que exista
+        List<HotelModel> list = hotelesRepository.findByPrecioNoche(precio);
+
+        if (!list.isEmpty()){
+            return list.stream().map(
+                            hotel -> mapper.map(hotel, HotelAvailableDto.class)
+                    )
+                    .collect(Collectors.toList());
+        } else{
+            throw new CustomException("FILTRAR","No hay hoteles disponibles con un precio menor al colocado");
+        }
     }
 
 }
