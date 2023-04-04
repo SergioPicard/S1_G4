@@ -9,8 +9,7 @@ import java.time.LocalDate;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
+@Data
 @Builder
 public class PeopleDto {
     @Size(max = 8)

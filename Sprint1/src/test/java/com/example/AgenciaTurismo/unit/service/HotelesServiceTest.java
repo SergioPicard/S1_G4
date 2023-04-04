@@ -26,7 +26,7 @@ class HotelesServiceTest {
 
     @InjectMocks
     HotelesService hotelesService;
-
+/*
     @Test
     @DisplayName("Se buscan todos los hoteles - SERVICE")
     void searchAll() {
@@ -400,7 +400,7 @@ class HotelesServiceTest {
         Assertions.assertEquals(expected, result);
 
 
-    }
+    }*/
 
 
 

@@ -89,4 +89,16 @@ public class FlightsController {
                 flightsService.updateBookingByID(id, bookingDto)
         );
     }
+
+    //ENDPOINTS ACTIVIDAD INDIVIDUAL SPRINT3
+
+    @GetMapping("/flightReservation/{destino}")
+    public ResponseEntity<List<FlightReservationResDto>> findByDestination(@PathVariable String destino){
+        return ResponseEntity.ok(flightsService.findByDestination(destino));
+    }
+
+    @GetMapping("/flightsTotal")
+    public ResponseEntity<List<Map<String,Object>>> getTotalForFlight(){
+        return ResponseEntity.ok(flightsService.getTotalForFlight());
+    }
 }

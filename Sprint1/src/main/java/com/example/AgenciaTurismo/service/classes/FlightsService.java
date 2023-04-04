@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -411,4 +412,30 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
         return total;
     }
 
+
+
+    //MÉTODOS ACTIVIDAD INDIVIDUAL SPRINT 3
+
+    public List<FlightReservationResDto> findByDestination(String destino){
+        List<FlightReservationResModel> list = flightReservationResRepository.findByDestination(destino);
+
+        if(list.isEmpty()){
+            throw new CustomException("CONSULTA", "No existen reservas para " + destino + ".");
+        }
+
+        return list.stream().map(
+                vuelo -> mapper.map(vuelo, FlightReservationResDto.class)
+        ).collect(Collectors.toList());
+    }
+
+
+  public List<Map<String,Object>> getTotalForFlight(){
+        var list = flightsBookingRepository.getTotalForFlight();
+
+        if(list.isEmpty()){
+            throw new CustomException("CONSULTA", "No existen ventas.");
+        }
+
+        return list;
+    }
 }

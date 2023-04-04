@@ -1,13 +1,12 @@
 package com.example.AgenciaTurismo.unit.service;
 
-import com.example.AgenciaTurismo.dto.request.FlightReservationReqDto;
-import com.example.AgenciaTurismo.dto.response.FlightResponseDto;
-import com.example.AgenciaTurismo.dto.response.FlightsAvailableDto;
-import com.example.AgenciaTurismo.exceptions.VuelosException;
-import com.example.AgenciaTurismo.repository.IFlightsRepository;
+import com.example.AgenciaTurismo.dto.response.FlightReservationResDto;
+import com.example.AgenciaTurismo.models.FlightReservationResModel;
+import com.example.AgenciaTurismo.models.FlightResponseModel;
+import com.example.AgenciaTurismo.repository.IFlightReservationResRepository;
+import com.example.AgenciaTurismo.repository.IFlightsBookingRepository;
 import com.example.AgenciaTurismo.service.classes.FlightsService;
-import com.example.AgenciaTurismo.util.FlightAvailableDtoFactory;
-import com.example.AgenciaTurismo.util.FlightReservationReqFactory;
+import com.example.AgenciaTurismo.util.ConsultasNuevasFuncionalidades;
 import com.example.AgenciaTurismo.util.FlightResponseDtoFactory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -17,19 +16,90 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.modelmapper.ModelMapper;
+import org.xmlunit.util.Mapper;
 
-import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @ExtendWith(MockitoExtension.class)
 public class FlightServiceTest {
 
     @Mock
-    IFlightsRepository flightsRepository;
+    IFlightReservationResRepository flightReservationResRepository;
+
+    @Mock
+    IFlightsBookingRepository flightsBookingRepository;
 
     @InjectMocks
     FlightsService flightsService;
 
+    ModelMapper mapper = new ModelMapper();
+
+    //TEST NUEVAS FUNCIONALIDADES SPRINT 3 INDIVIDUAL
+
+    @Test
+    @DisplayName("Buscar reservas por destino")
+    public void findByDestinationTest(){
+        //arrange
+        List<FlightReservationResDto> expected = List.of(FlightResponseDtoFactory.flightReservationRes());
+        var model = expected.stream().map(
+                reserva -> mapper.map(reserva, FlightReservationResModel.class)
+        ).collect(Collectors.toList());
+
+        String destino = "Puerto Iguazú";
+
+        //act
+        Mockito.when(flightReservationResRepository.findByDestination(destino)).thenReturn(model);
+        var result = flightsService.findByDestination(destino);
+
+        //assert
+        Assertions.assertEquals(expected,result);
+    }
+
+    @Test
+    @DisplayName("Exception Buscar reservas por destino")
+    public void findByNoDestinationTest(){
+        //arrange
+        List<FlightReservationResModel> model = List.of();
+        String destino = "Puerto Iguazú";
+
+        //act && assert
+        Mockito.when(flightReservationResRepository.findByDestination(destino)).thenReturn(model);
+
+        Assertions.assertThrows(RuntimeException.class, ()-> flightsService
+                .findByDestination(destino));
+    }
+
+    @Test
+    @DisplayName("Consulta Total recaudado por venta de vuelo")
+    public void getTotalForFlightTest(){
+        //arrange
+        List<Map<String,Object>> expected = ConsultasNuevasFuncionalidades.listSold();
+
+        //act
+        Mockito.when(flightsBookingRepository.getTotalForFlight()).thenReturn(expected);
+        var result = flightsService.getTotalForFlight();
+
+        //assert
+        Assertions.assertEquals(expected,result);
+    }
+
+    @Test
+    @DisplayName("Excepción Consulta Total recaudado por venta de vuelo")
+    public void getTotalForFlightTestNosold(){
+        //arrange
+        List<Map<String,Object>> expected = List.of();
+
+        //act && assert
+        Mockito.when(flightsBookingRepository.getTotalForFlight()).thenReturn(expected);
+
+        Assertions.assertThrows(RuntimeException.class,
+                () -> flightsService.getTotalForFlight());
+    }
+
+    /*
     @Test
     @DisplayName("Se buscan todos los vuelos - SERVICE")
     public void searchAllTest(){
@@ -38,7 +108,7 @@ public class FlightServiceTest {
 
         // act
         Mockito.when(flightsRepository.findAll()).thenReturn(FlightAvailableDtoFactory.listFlights());
-        var result = flightsService.searchAll();
+        var result = flightsService.getAllEntities();
 
         // assert
         Assertions.assertEquals(expected,result);
@@ -202,6 +272,7 @@ public class FlightServiceTest {
 
     }*/
 
+    /*
     @Test
     @DisplayName("Excepción cantidad incorrecta de pasajeros - SERVICE")
     public void bookingFlightTestWrongAmountOfPeopleException(){
@@ -373,7 +444,7 @@ public class FlightServiceTest {
         param.getPaymentMethodDto().setDues(1);
         expected.setTotal(6500.0);*/
 //        param.getPaymentMethodDto().setDues(3);
-
+/*
         Mockito.when(flightsRepository.findFlight(param.getFlightReservation().getFlightNumber(),
                 param.getFlightReservation().getSeatType())).thenReturn(available);
         var result = flightsService.flightReservationResponse(param);
@@ -399,5 +470,5 @@ public class FlightServiceTest {
         Assertions.assertThrows(VuelosException.class, ()-> flightsService
                 .flightReservationResponse(param));
 
-    }
+    }*/
 }

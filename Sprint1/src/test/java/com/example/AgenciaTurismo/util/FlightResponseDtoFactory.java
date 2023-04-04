@@ -4,18 +4,55 @@ import com.example.AgenciaTurismo.dto.request.PeopleDto;
 import com.example.AgenciaTurismo.dto.response.FlightReservationResDto;
 import com.example.AgenciaTurismo.dto.response.FlightResponseDto;
 import com.example.AgenciaTurismo.dto.response.StatusCodeDto;
+import com.example.AgenciaTurismo.models.FlightReservationResModel;
+import com.example.AgenciaTurismo.models.FlightResponseModel;
+import com.example.AgenciaTurismo.models.PeopleModel;
 
 import java.time.LocalDate;
 import java.util.List;
 
 public class FlightResponseDtoFactory {
 
+    //FACTORY PARA TEST ACTIVIDAD INDIVIDUAL SPRINT3
+
+    public static FlightResponseDto flightReservation1(){
+        return FlightResponseDto.builder()
+                .userName("luchofesta@gmail.com")
+                .total(10000.0)
+                .flightReservation(flightReservationRes())
+                .build();
+    }
+
+    public static FlightReservationResDto flightReservationRes(){
+        return FlightReservationResDto.builder()
+                .dateFrom(LocalDate.of(2022,02,10))
+                .datoTo(LocalDate.of(2022,02,15))
+                .destination("Puerto Iguazú")
+                .flightNumber("LUCHO-1992")
+                .origin("Buenos Aires")
+                .seatType("Business")
+                .seats(1)
+                .people(List.of(people1()))
+                .build();
+    }
+    public static PeopleDto people1(){
+        return PeopleDto.builder()
+                .birthDate(LocalDate.of(1992,01,24))
+                .dni("37491218")
+                .email("luchofesta@gmail.com")
+                .lastName("Festa")
+                .name("Luciano")
+                .build();
+    }
+
+
+    //FACTORY PARA RESTO DE TEST SPRINT ANTERIORES
+
     public static FlightResponseDto getResponse(){
 
         return FlightResponseDto.builder()
                 .userName("lucianoefesta@hotmail.com")
                 .total(7150.000000000001)
-                .status(getStatus())
                 .flightReservation(getFlightReservation())
                 .build();
     }
@@ -25,7 +62,6 @@ public class FlightResponseDtoFactory {
         return FlightResponseDto.builder()
                 .userName("lucianoefesta@hotmail.com")
                 .total(6500.0)
-                .status(getStatus())
                 .flightReservation(getFlightReservation())
                 .build();
     }
@@ -35,7 +71,6 @@ public class FlightResponseDtoFactory {
         return FlightResponseDto.builder()
                 .userName("lucianoefesta@hotmail.com")
                 .total(6825.0)
-                .status(getStatusCredit3())
                 .flightReservation(getFlightReservation())
                 .build();
     }
@@ -52,6 +87,7 @@ public class FlightResponseDtoFactory {
                 .seatType("Economy")
                 .build();
     }
+
 
     public static PeopleDto getPeople(){
         return PeopleDto.builder()
