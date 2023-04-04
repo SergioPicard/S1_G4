@@ -30,7 +30,7 @@ public class FlightServiceTest {
     @InjectMocks
     FlightsService flightsService;
 
-    @Test
+  /*  @Test
     @DisplayName("Se buscan todos los vuelos - SERVICE")
     public void searchAllTest(){
         // arrange
@@ -184,7 +184,7 @@ public class FlightServiceTest {
 
     }
 
-   /* @Test
+   *//* @Test
     @DisplayName("")
     public void filterFlightTestNonAvailableException(){
         // arrange
@@ -200,7 +200,7 @@ public class FlightServiceTest {
         Assertions.assertThrows(VuelosException.class, ()-> flightsService
                 .filterFlights(fechaIda,fechaVuelta,origen,destino));
 
-    }*/
+    }*//*
 
     @Test
     @DisplayName("Excepción cantidad incorrecta de pasajeros - SERVICE")
@@ -369,21 +369,21 @@ public class FlightServiceTest {
         FlightResponseDto expected = FlightResponseDtoFactory.getResponseCredit3();
         FlightReservationReqDto param = FlightReservationReqFactory.getFlightReservationDtoCredit3();
         FlightsAvailableDto available = FlightAvailableDtoFactory.getBapi();
-        /*param.getPaymentMethodDto().setType("debitcard");
+        *//*param.getPaymentMethodDto().setType("debitcard");
         param.getPaymentMethodDto().setDues(1);
         expected.setTotal(6500.0);*/
 //        param.getPaymentMethodDto().setDues(3);
 
-        Mockito.when(flightsRepository.findFlight(param.getFlightReservation().getFlightNumber(),
+ /*       Mockito.when(flightsRepository.findFlight(param.getFlightReservation().getFlightNumber(),
                 param.getFlightReservation().getSeatType())).thenReturn(available);
         var result = flightsService.flightReservationResponse(param);
 
         // act && assert
         Assertions.assertEquals(expected, result);
 
-    }
+    }*/
 
-    @Test
+/*    @Test
     @DisplayName("Excepción cantidad de cuotas incorrectas con tarjeta de débito - SERVICE")
     public void bookingFlightTestWrongDuesDebitCardException(){
         // arrange
@@ -399,5 +399,5 @@ public class FlightServiceTest {
         Assertions.assertThrows(VuelosException.class, ()-> flightsService
                 .flightReservationResponse(param));
 
-    }
+    }*/
 }

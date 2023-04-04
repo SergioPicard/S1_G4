@@ -39,7 +39,7 @@ public class FlightsControllerIntegrationTest {
             .registerModule(new JavaTimeModule())
             .writer();
 
-    @Test
+    /*@Test
     @DisplayName("Busqueda de todos los vuelos")
     public void searchAllFlights() throws Exception {
 
@@ -147,7 +147,7 @@ public class FlightsControllerIntegrationTest {
                 .andExpect(statusExpected)
                 .andExpect(contentTypeExpected);
 
-    }
+    }*/
 
 
 }

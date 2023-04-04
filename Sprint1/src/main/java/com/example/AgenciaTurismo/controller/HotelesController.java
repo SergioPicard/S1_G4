@@ -99,9 +99,11 @@ public class HotelesController {
     @GetMapping("/hotels/staySimulation")
     public ResponseEntity<MessageDTO> staySimulation(@RequestParam("hotelCode") String hotelCode,
                                                      @RequestParam("days") Integer days,
-                                                     @RequestParam("peopleAmount") Integer peopleAmount ){
+                                                     @RequestParam("peopleAmount") Integer peopleAmount,
+                                                     @RequestParam("pay") String pay,
+                                                     @RequestParam(value = "seat", required = false)Integer seat) {
 
-        return ResponseEntity.ok(hotelesService.staySimulation(hotelCode, days,peopleAmount));
+        return ResponseEntity.ok(hotelesService.staySimulation(hotelCode, days,peopleAmount, pay, seat));
     }
 
     @GetMapping("/hotels/findByName/{hotelName}")

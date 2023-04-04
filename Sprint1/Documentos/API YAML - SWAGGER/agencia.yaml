@@ -4,9 +4,9 @@ info:
   description: Esta API se encarga de manejar la información de los hoteles y vuelos ofrecidos por la agencia.
   version: 1.0.0
 servers:
-- url: localhost:8080/v1/hotels/
+- url: localhost:8080/api/v1/hotels/
 tags:
-- name: hoteles
+- name: Hoteles
   description: Información de los hoteles disponibles ofrecidos por la empresa.
 
 paths:
@@ -14,7 +14,7 @@ paths:
   /findByDestination/{destination}:
     get:
       tags:
-      - hoteles
+      - Hoteles
       summary: Muestra toda la información de hoteles filtrados por destino.
       parameters:
       - name: destination
@@ -31,14 +31,14 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BodyHotelesGet'
+                $ref: '#/components/schemas/HotelesDestinationGet'
         400:
           $ref: '#/components/responses/BadRequest'
     
   /findByLowerPrice:
     get:
       tags:
-      - hoteles
+      - Hoteles
       summary: Muestra todos los hoteles ofrecidos, ordenados de menor a mayor costo por noche.
       responses:
         200:
@@ -58,8 +58,8 @@ paths:
   /staySimulation:
     get:
       tags:
-      - hoteles
-      summary: Actualiza la informacion de un cliente en la base de datos.
+      - Hoteles
+      summary: Simulación de una reserva de hotel.
       parameters:
         - in: query
           name: hotelCode
@@ -79,6 +79,18 @@ paths:
           schema:
             type: string
           allowReserved: true
+        - in: query
+          name: pay
+          required: true
+          schema:
+            type: string
+          allowReserved: true
+        - in: query
+          name: seat
+          required: false
+          schema:
+            type: integer
+          allowReserved: true
         
       responses:
         200:
@@ -86,14 +98,14 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StaySimulationMessage'
+                $ref: '#/components/schemas/HotelesStaySimulation'
         400:
           $ref: '#/components/responses/BadRequest'
           
   /findByName/{hotelName}:
     get:
       tags:
-      - hoteles
+      - Hoteles
       summary: Muestra toda la información de hoteles filtrados por destino.
       parameters:
       - name: hotelName
@@ -122,7 +134,7 @@ components:
         
 
   schemas:
-    BodyHotelesGet:
+    HotelesDestinationGet:
       type: object
       properties:
         codigoHotel:
@@ -185,7 +197,7 @@ components:
               description: Si está reservado
               
               
-    StaySimulationMessage:
+    HotelesStaySimulation:
         type: object
         properties:
             Message:

@@ -492,33 +492,74 @@ public class HotelesService implements ICrudService<HotelAvailableDto,Integer,St
                 .collect(Collectors.toList());
     }
 
-    public MessageDTO staySimulation(String hotelCode, Integer days, Integer peopleAmount){
+    public MessageDTO staySimulation(String hotelCode, Integer days, Integer peopleAmount,
+                                     String pay, Integer seat) {
 
         // buscar el dato en la base de datos y asegurarnos que exista
-        List<HotelModel> list =  hotelesRepository.findByCodigoHotel(hotelCode);
+        List<HotelModel> list = hotelesRepository.findByCodigoHotel(hotelCode);
         System.out.println(list);
 
-        if (list.isEmpty()){
+
+
+        if (pay.equalsIgnoreCase("credit") || pay.equalsIgnoreCase("debit")){
+
+        // si no encontramos el hotel solicitado:
+        if (list.isEmpty()) {
             throw new CustomException("COSTO SIMULACIÓN", "Código de hotel incorrecto.");
         }
-
-        if (days <= 0 || peopleAmount <= 0){
+        // si se envía 0 o un número negativo en los días o cantidad de personas
+        if (days <= 0 || peopleAmount <= 0) {
             throw new CustomException("COSTO SIMULACIÓN", "Debe ingresar un número mayor a 0");
         }
 
+
+        // buscamos el precio del hotel encontrado
         double priceHotel = list.stream()
                 .filter(hotel -> hotel.getPrecioNoche() != null)
                 .mapToDouble(HotelModel::getPrecioNoche)
                 .findFirst()
                 .orElse(0.0);
-
+        // calculamos el total
         var result = (priceHotel * days) * peopleAmount;
 
+
+        // si es débido, lo devolvemos inmediatamente
+        if (pay.equalsIgnoreCase("debit")){
+            return MessageDTO.builder()
+                    .message("El costo abonando con tarjeta de débito para " +peopleAmount+ " personas, durante " + days + " días, en el hotel código: " + hotelCode
+                            + ", es de: $" + result)
+                    .name("COSTO SIMULACIÓN")
+                    .build();
+        }
+
+        // en caso de ser crédito, se le suma un recargo
+        if (pay.equalsIgnoreCase("credit")) {
+
+            if (seat <= 0){
+                throw new CustomException("COSTO SIMULACIÓN", "Debe ingresar una cuota mayor a 0");
+            }
+
+            if (seat <= 3) {
+                result *= 1.05;
+
+            } else if (seat <= 6){
+                result *= 1.10;
+            }
+            else {
+                throw new CustomException("COSTO SIMULACIÓN", "El número de cuotas es de 1 hasta 6.");
+            }
+        }
+
         return MessageDTO.builder()
-                .message("El costo abonando con tarjeta de débito para " +peopleAmount+ " personas, durante " + days + " días, en el hotel código: " + hotelCode
-                        + ", es de: $" + result)
+                .message("El costo abonando con tarjeta de crédito (incluye recargo) para " +peopleAmount+ " personas, durante "
+                        + days + " días, en el hotel código: " + hotelCode
+                        + ", es de: $" + result + " realizado en "
+                        + seat + " cuotas, con un costo de c/u: $" + (result/seat))
                 .name("COSTO SIMULACIÓN")
                 .build();
+        } else{
+            throw new CustomException("COSTO SIMULACIÓN", "Debe ingresar debit/credit en el metodo de pago.");
+        }
     }
 
     public List<HotelAvailableDto> filterByName(String hotelName)  {

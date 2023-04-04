@@ -1,8 +1,10 @@
 package com.example.AgenciaTurismo.unit.service;
 
+import com.example.AgenciaTurismo.dto.MessageDTO;
 import com.example.AgenciaTurismo.dto.request.BookingRequestDto;
 import com.example.AgenciaTurismo.dto.response.*;
 import com.example.AgenciaTurismo.exceptions.SinHotelesException;
+import com.example.AgenciaTurismo.models.HotelModel;
 import com.example.AgenciaTurismo.repository.IHotelesRepository;
 import com.example.AgenciaTurismo.service.classes.HotelesService;
 import com.example.AgenciaTurismo.util.*;
@@ -27,7 +29,96 @@ class HotelesServiceTest {
     @InjectMocks
     HotelesService hotelesService;
 
+
+    // TESTEO DE LOS ENDPOINTS NUEVOS:
+
     @Test
+    @DisplayName("Se filtran los hoteles por destino - SERVICE")
+    public void filterForDestination() {
+        // arrange
+        String destino = "Puerto Iguazú";
+        List<HotelAvailableDto> expected = List.of(HotelAvailableDtoFactory.cataratasHotel1(),
+                HotelAvailableDtoFactory.cataratasHotel21());
+        System.out.println(expected);
+
+        // act
+        Mockito.when(hotelesRepository.findByLugar(destino))
+                .thenReturn(List.of(HotelAvailableDtoFactory.cataratasHotel(),
+                        HotelAvailableDtoFactory.cataratasHotel2()));
+
+
+        var result = hotelesService.filterEntityForDestination(destino);
+
+        // assert
+        Assertions.assertEquals(expected, result);
+    }
+
+    @Test
+    @DisplayName("Se buscan todos los hoteles de menor a mayor precio - SERVICE")
+    void searchForLowerPrice() {
+        // arrange
+        List<HotelAvailableDto> expected = HotelAvailableDtoFactory.listHotelsForLowerPrice1();
+
+        // act
+        Mockito.when(hotelesRepository.findAllOrderByPrecioNocheAsc())
+                .thenReturn(HotelAvailableDtoFactory.listHotelsForLowerPrice());
+        var result = hotelesService.findByLowerPrice();
+
+        System.out.println(expected);
+        System.out.println(result);
+
+        // assert
+        Assertions.assertEquals(expected, result);
+    }
+
+    @Test
+    @DisplayName("Se filtran los hoteles por el nombre - SERVICE")
+    public void filterForName() {
+        // arrange
+        String name = "Cata";
+        List<HotelAvailableDto> expected = List.of(HotelAvailableDtoFactory.cataratasHotel1(),
+                HotelAvailableDtoFactory.cataratasHotel21());
+
+        // act
+        Mockito.when(hotelesRepository.findByNombreContainsIgnoreCase(name))
+                .thenReturn(List.of(HotelAvailableDtoFactory.cataratasHotel(),
+                        HotelAvailableDtoFactory.cataratasHotel2()));
+
+
+        var result = hotelesService.filterByName(name);
+        System.out.println(result);
+
+        // assert
+        Assertions.assertEquals(expected, result);
+    }
+    @Test
+    @DisplayName("Se simula el costo de una reserva")
+    public void staySimulation() {
+        // arrange
+        String hotelCode = "CH-0002";
+        Integer peopleAmount = 2;
+        Integer days = 10;
+        String pay = "credit";
+        Integer seat = 6;
+
+        MessageDTO expected = HotelAvailableDtoFactory.MessageDTOFactory();
+
+        // act
+        Mockito.when(hotelesRepository.findByCodigoHotel(hotelCode))
+                .thenReturn(List.of(HotelAvailableDtoFactory.cataratasHotel()));
+
+
+        var result = hotelesService.staySimulation(hotelCode,days,peopleAmount,pay,seat);
+        System.out.println(result);
+        // assert
+        Assertions.assertEquals(expected, result);
+    }
+
+
+
+}
+
+   /* @Test
     @DisplayName("Se buscan todos los hoteles - SERVICE")
     void searchAll() {
         // arrange
@@ -39,6 +130,8 @@ class HotelesServiceTest {
 
         // assert
         Assertions.assertEquals(expected,result);
+    }
+
     }
 
     @Test
@@ -401,11 +494,4 @@ class HotelesServiceTest {
 
 
     }
-
-
-
-
-
-
-
-}
+*/
