@@ -1,0 +1,18 @@
+
+t	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(›—Ÿøùÿÿÿÿ
+J
+java:S1068"/Remove this unused "codigoHotel" private field.(ÑĞîÏøÿÿÿÿ
+E
+java:S1068"*Remove this unused "nombre" private field.(µÿï„ùÿÿÿÿ
+?
+java:S1068")Remove this unused "lugar" private field.(é§†ş
+M
+java:S1068"2Remove this unused "tipoHabitacion" private field.(§øáûÿÿÿÿ
+J
+java:S1068"/Remove this unused "precioNoche" private field.(ğò£Ùşÿÿÿÿ
+N
+java:S1068"3Remove this unused "disponibleDesde" private field.(şõÚ›úÿÿÿÿ
+N
+java:S1068"3Remove this unused "disponibleHasta" private field.(€„ì¸ÿÿÿÿÿ
+C
+java:S1068"-Remove this unused "reservado" private field.(ª¨†
