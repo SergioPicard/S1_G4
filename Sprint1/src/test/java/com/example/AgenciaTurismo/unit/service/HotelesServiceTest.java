@@ -27,7 +27,19 @@ class HotelesServiceTest {
     @InjectMocks
     HotelesService hotelesService;
 
+    @Test
+    @DisplayName("Se filtran los hoteles por precio - SERVICE")
+    public void filterByPrecioVueloTest(){
+        // arrange
+        Double precio = 10000.00;
+        List<HotelAvailableDto> expected = HotelAvailableDtoFactory.listHotels();
+        // act
+        Mockito.when(hotelesRepository.findByPrecioNoche(precio)).thenReturn(HotelModelFactory.listHotels());
+        List<HotelAvailableDto> result = hotelesService.filterByPrecioNoche(precio);
 
+        // assert
+        Assertions.assertEquals(expected,result);
+    }
 
 
 

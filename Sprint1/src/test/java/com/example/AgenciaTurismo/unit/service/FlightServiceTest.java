@@ -46,17 +46,6 @@ public class FlightServiceTest {
 
         // assert
         Assertions.assertEquals(expected,result);
-
-       /* // arrange
-        Double precio = 7000.00;
-        FlightsAvailableDto expected = FlightAvailableDtoFactory.getBapi();
-
-        // act
-       Mockito.when(flightsRepository.findByPrecioPersona().thenReturn(FlightAvailableDtoFactory.listFlights());
-       var result = flightsService.filterByPrecioVuelo(precio);
-
-        // assert
-        Assertions.assertEquals(expected,result);*/
     }
 
 

@@ -139,6 +139,38 @@ public class HotelsControllerIntegrationTest {
 
     }
 
+    //CONTROLADOR Filtro por Precio.
+
+    /*@Test
+    @DisplayName("Filtro de hoteles por precio")
+    public void filterHotelsPrice() throws Exception {
+        // arrange
+        List<HotelAvailableDto> expected = HotelAvailableDtoFactory.listHotels();
+
+        //REQUEST CON MockHttpServletRequestBuilder & MockMvcRequestBuilders (librerias)
+        //Declaramos la request que vamos a llamar o hacer
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get("/api/v1/hotels");
+
+        //Los 3 EXPECTED con ResultMatcher & MockMvcResultMatchers
+        //StatusExpected
+        ResultMatcher statusExpected = MockMvcResultMatchers.status().isOk();
+
+        //BodyExpected
+        ResultMatcher bodyExpected = MockMvcResultMatchers.content().json(
+                writer.writeValueAsString(expected)
+        );
+
+        //ContentTypeExpected
+        ResultMatcher contentTypeExpected = MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON);
+
+        // act & assert con mockmvc
+        mockMvc.perform(request)
+                .andDo(MockMvcResultHandlers.print()) //Devuelve el request de manera gráfica
+                .andExpect(statusExpected)
+                .andExpect(bodyExpected)
+                .andExpect(contentTypeExpected);
+    }*/
+
 
 
 
