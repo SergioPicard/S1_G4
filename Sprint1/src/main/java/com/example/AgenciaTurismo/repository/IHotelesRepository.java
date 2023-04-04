@@ -13,7 +13,7 @@ public interface IHotelesRepository extends JpaRepository<HotelModel,Integer> {
     List<HotelModel> findByCodigoHotel(String codigo);
 
     //Busca y filtra los hoteles en base al precio maximo que uno quiere
-    @Query("FROM HotelModel h WHERE h.precioNoche <= :precio")
+    @Query("FROM HotelModel h WHERE h.precioNoche <= :precio AND h.reservado = false")
     List<HotelModel> findByPrecioNoche(@Param("precio")Double precio);
 
     List<HotelModel> findByDisponibleDesdeLessThanEqualAndDisponibleHastaGreaterThanEqualAndLugar
