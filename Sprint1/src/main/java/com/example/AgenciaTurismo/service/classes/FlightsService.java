@@ -411,15 +411,4 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
         return total;
     }
 
-    public List<FlightReservationResDto> findByDestination(String destino){
-        var list = flightReservationResRepository.findByDestination(destino);
-
-        if(list.isEmpty()){
-            throw new CustomException("CONSULTA", "No existen reservas para " + destino + ".");
-        }
-
-        return list.stream().map(
-                vuelo -> mapper.map(vuelo, FlightReservationResDto.class)
-        ).collect(Collectors.toList());
-    }
 }
