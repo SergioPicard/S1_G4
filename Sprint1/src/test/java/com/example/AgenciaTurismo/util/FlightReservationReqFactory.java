@@ -20,6 +20,22 @@ public class FlightReservationReqFactory {
                 .build();
     }
 
+    public static FlightReservationReqDto getFlightReservationDtoDebit(){
+        return FlightReservationReqDto.builder()
+                .userName("lucianoefesta@hotmail.com")
+                .flightReservation(getFlightReservation())
+                .paymentMethodDto(getPaymentMethodDebit())
+                .build();
+    }
+
+    public static FlightReservationReqDto getFlightReservationDtoCredit3(){
+        return FlightReservationReqDto.builder()
+                .userName("lucianoefesta@hotmail.com")
+                .flightReservation(getFlightReservation())
+                .paymentMethodDto(getPaymentMethodCredit3())
+                .build();
+    }
+
     public static FlightReservationResDto getFlightReservation(){
         return FlightReservationResDto.builder()
                 .flightNumber("BAPI-1235")
@@ -45,10 +61,67 @@ public class FlightReservationReqFactory {
 
     public static PaymentMethodDto getPaymentMethod(){
         return PaymentMethodDto.builder()
-                .dues(6)
-                .type("Credit Card")
-                .number("4545 6565 9898 7878")
+                .dues(4)
+                .type("creditcard")
+                .number("4545656598987878")
                 .build();
     }
 
+    public static PaymentMethodDto getPaymentMethodDebit(){
+        return PaymentMethodDto.builder()
+                .dues(1)
+                .type("debitcard")
+                .number("4545656598987878")
+                .build();
+    }
+
+    public static PaymentMethodDto getPaymentMethodCredit3(){
+        return PaymentMethodDto.builder()
+                .dues(3)
+                .type("creditcard")
+                .number("4545656598987878")
+                .build();
+    }
+
+    public static FlightReservationResDto getFlightReservationWrongPeople(){
+        return FlightReservationResDto.builder()
+                .flightNumber("BAPI-1235")
+                .seats(1)
+                .dateFrom(LocalDate.of(2022, 02, 10))
+                .datoTo(LocalDate.of(2022,02,15))
+                .destination("Puerto Iguazú")
+                .origin("Buenos Aires")
+                .people(List.of())
+                .seatType("Economy")
+                .build();
+    }
+
+    public static FlightReservationReqDto getReservationWrong() {
+        return FlightReservationReqDto.builder()
+                .userName("lucianoefesta@hotmail.com")
+                .flightReservation(getFlightReservationWrongPeople())
+                .paymentMethodDto(getPaymentMethod())
+                .build();
+    }
+
+    public static FlightReservationReqDto getFlightReservationDtoWrong(){
+        return FlightReservationReqDto.builder()
+                .userName("lucianoefesta@hotmail.com")
+                .flightReservation(getFlightReservationWrong())
+                .paymentMethodDto(getPaymentMethod())
+                .build();
+    }
+
+    public static FlightReservationResDto getFlightReservationWrong(){
+        return FlightReservationResDto.builder()
+                .flightNumber("BAPI-1235")
+                .seats(0)
+                .dateFrom(LocalDate.of(2022, 02, 10))
+                .datoTo(LocalDate.of(2022,02,15))
+                .destination("Puerto Iguazú")
+                .origin("Buenos Aires")
+                .people(List.of(getPeople()))
+                .seatType("Economy")
+                .build();
+    }
 }

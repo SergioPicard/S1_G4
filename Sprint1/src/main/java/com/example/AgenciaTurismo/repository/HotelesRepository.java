@@ -1,4 +1,4 @@
-package com.example.AgenciaTurismo.repository;
+/*package com.example.AgenciaTurismo.repository;
 import com.example.AgenciaTurismo.dto.response.FlightsAvailableDto;
 import com.example.AgenciaTurismo.exceptions.SinHotelesException;
 import com.example.AgenciaTurismo.models.FlightModel;
@@ -20,6 +20,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Repository
@@ -70,9 +71,10 @@ public class HotelesRepository implements IHotelesRepository{
     }
 
     public HotelAvailableDto findHotel(String code){
+
         return hotelsAvailable.stream().filter(hotel -> hotel.getCodigoHotel().equalsIgnoreCase(code))
                 .findFirst().orElse(null);
 
     }
 
-}
+}*/

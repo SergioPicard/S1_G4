@@ -1,6 +1,9 @@
+/*
 package com.example.AgenciaTurismo.repository;
 
 import com.example.AgenciaTurismo.dto.response.FlightsAvailableDto;
+import com.example.AgenciaTurismo.dto.response.HotelAvailableDto;
+import com.example.AgenciaTurismo.exceptions.SinHotelesException;
 import com.example.AgenciaTurismo.models.FlightModel;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,6 +17,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Repository
@@ -57,14 +61,16 @@ public class FlightsRepository implements IFlightsRepository{
     public List<FlightsAvailableDto> filterFlightRep(LocalDate fechaIda, LocalDate fechaVuelta, String origen, String destino){
 
         return flightsAvailable.stream().filter(flight -> flight.getDestino().equalsIgnoreCase(destino) &&
-                !flight.getFechaIda().isAfter(fechaIda) &&
-                !flight.getFechaVuelta().isBefore(fechaVuelta) &&
+                flight.getFechaIda().isEqual(fechaIda) &&
+                flight.getFechaVuelta().isEqual(fechaVuelta) &&
                 flight.getOrigen().equalsIgnoreCase(origen)).collect(Collectors.toList());
     }
 
     public FlightsAvailableDto findFlight(String flightNumber, String seatType){
+
         return flightsAvailable.stream().filter(flight -> flight.getNroVuelo().equalsIgnoreCase(flightNumber) &&
                 flight.getTipoAsiento().equalsIgnoreCase(seatType)).findFirst().orElse(null);
 
     }
 }
+*/
