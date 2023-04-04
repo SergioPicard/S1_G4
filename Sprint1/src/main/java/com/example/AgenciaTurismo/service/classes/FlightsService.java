@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -37,12 +38,16 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
     ModelMapper mapper = new ModelMapper();
 
     @Override
-    public FlightsAvailableDto saveEntity(FlightsAvailableDto flightsAvailableDto) {
+    public MessageDTO saveEntity(FlightsAvailableDto flightsAvailableDto) {
         var entity = mapper.map(flightsAvailableDto, FlightModel.class);
         // guardar
         flightsRepository.save(entity);
         // mappear de entity a dto para llevar al controller
-        return mapper.map(entity, FlightsAvailableDto.class);
+
+        return MessageDTO.builder()
+                .message("Vuelo dado de alta correctamente." )
+                .name("CREACIÓN")
+                .build();
     }
 
     @Override
@@ -292,7 +297,11 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
 
     public List<FlightResponseDto> getAllBookings() {
         var list = flightsBookingRepository.findAll();
-        System.out.println();
+
+        if(list.isEmpty()){
+            throw new CustomException("CONSULTA", "No existen reservas.");
+        }
+
         return list.stream().map(
                         booking -> mapper.map(booking, FlightResponseDto.class)
                 )
@@ -324,7 +333,6 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
             for (int i = 0; i < newBookingData.getPeople().size(); i++) {
 
                 var personId = dataBookingDB.getPeople().get(i).getId();
-                System.out.println(personId);
 
                 newBookingData.getPeople().get(i).setId(personId);
             }
@@ -334,14 +342,11 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
 
             flightsBookingRepository.save(newBooking);
             return MessageDTO.builder()
-                    .name("MODIFICACION")
+                    .name("MODIFICACIÓN")
                     .message("Reserva de booking de vuelo modificada correctamente")
                     .build();
         } else {
-            return MessageDTO.builder()
-                    .name("MODIFICACION")
-                    .message("No se pudo encontrar la reserva especificada")
-                    .build();
+            throw new CustomException("MODIFICACIÓN", "Reserva de booking de vuelo no fue modificada");
         }
 
         }
@@ -382,6 +387,11 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
     private Double newTotal(FlightResponseModel booking) {
         var flight = flightsRepository.findByNroVueloAndTipoAsientoEquals(booking.getFlightReservationResModel().getFlightNumber(), booking.getFlightReservationResModel().getSeatType());
         var cardType = booking.getPaymentMethod().getType();
+
+        if (flight == null){
+            throw new CustomException("EDICIÓN", "No existe este tipo de asiento en el vuelo: " + booking.getFlightReservationResModel().getFlightNumber());
+        }
+
         var total = flight.getPrecioPersona() * booking.getFlightReservationResModel().getSeats();
 
         if (cardType.equalsIgnoreCase("debitcard")) {

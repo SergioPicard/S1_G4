@@ -37,13 +37,22 @@ public class HotelesService implements ICrudService<HotelAvailableDto,Integer,St
     ModelMapper mapper = new ModelMapper();
 
     @Override
-    public HotelAvailableDto saveEntity(HotelAvailableDto hotelDTO) {
+    public MessageDTO saveEntity(HotelAvailableDto hotelDTO) {
         // mappear de dto a entity para llevar al repo
         var entity = mapper.map(hotelDTO, HotelModel.class);
+
+        if(!hotelesRepository.findByCodigoHotel(hotelDTO.getCodigoHotel()).isEmpty()){
+            throw new CustomException("CREACIÓN", "Ya existe un hotel con el mismo código. No se pudo crear.");
+        }
+
         // guardar
         hotelesRepository.save(entity);
         // mappear de entity a dto para llevar al controller
-        return mapper.map(entity, HotelAvailableDto.class);
+
+        return MessageDTO.builder()
+                .message("Hotel dado de alta correctamente." )
+                .name("CREACIÓN")
+                .build();
     }
 
     @Override
@@ -278,6 +287,11 @@ public class HotelesService implements ICrudService<HotelAvailableDto,Integer,St
 
     public List<BookingResDto> getAllBookings() {
         var list = bookingModelRepository.findAll();
+
+        if(list.isEmpty()){
+            throw new CustomException("CONSULTA", "No existen reservas.");
+        }
+
         return list.stream().map(
                         booking -> mapper.map(booking, BookingResDto.class)
                 )

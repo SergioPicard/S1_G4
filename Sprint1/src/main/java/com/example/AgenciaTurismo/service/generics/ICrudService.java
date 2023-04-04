@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface ICrudService<T, ID,String> {
 
-    T saveEntity(T objectDTO);
+    MessageDTO saveEntity(T objectDTO);
 
     List<T> getAllEntities();
 
