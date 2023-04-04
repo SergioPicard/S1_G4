@@ -149,10 +149,6 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
         boolean dateFromEqual = bookedFlight.getFechaIda().isEqual(flightReservationReqDto.getFlightReservation().getDateFrom());
         boolean dateToEqual = bookedFlight.getFechaVuelta().isEqual(flightReservationReqDto.getFlightReservation().getDatoTo());
 
-        // TIPO DE ASIENTO
-        String seatTypeAvailable = bookedFlight.getTipoAsiento().toUpperCase();
-        String seatTypeSelect = flightReservationReqDto.getFlightReservation().getSeatType().toUpperCase();
-
         //FECHAS
         LocalDate dateFrom = flightReservationReqDto.getFlightReservation().getDateFrom();
         LocalDate dateTo = flightReservationReqDto.getFlightReservation().getDatoTo();
@@ -186,12 +182,14 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
                                     }
                                     //MAPEO RESERVA DE VUELO DE DTO A ENTIDAD.
                                     FlightReservationResModel booking = mapper.map(flightReservationReqDto.getFlightReservation(), FlightReservationResModel.class);
+                                    PaymentMethodModel paymentMethod = mapper.map(flightReservationReqDto.getPaymentMethodDto(), PaymentMethodModel.class);
                                     booking.setFlightModel(bookedFlight);
 
                                     //SET DEL FLIGTHRESERVATION
                                     reservationFligth.setUserName(flightReservationReqDto.getUserName());
                                     reservationFligth.setTotal(total);
                                     reservationFligth.setFlightReservationResModel(booking);
+                                    reservationFligth.setPaymentMethod(paymentMethod);
 
 
                                 } else {
