@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -36,7 +37,7 @@ public class FlightsController {
     }
 
     @PostMapping("/flights/new")
-    public ResponseEntity<FlightsAvailableDto> newHotel(@RequestBody FlightsAvailableDto flightsAvailableDto){
+    public ResponseEntity<MessageDTO> newHotel(@RequestBody FlightsAvailableDto flightsAvailableDto){
         return ResponseEntity.ok(
                 flightsService.saveEntity(flightsAvailableDto)
         );
@@ -88,6 +89,4 @@ public class FlightsController {
                 flightsService.updateBookingByID(id, bookingDto)
         );
     }
-
-
 }

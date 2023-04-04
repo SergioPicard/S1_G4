@@ -31,7 +31,7 @@ public class HotelesController {
     }
 
     @PostMapping("/hotels/new")
-    public ResponseEntity<HotelAvailableDto> newHotel(@RequestBody HotelAvailableDto hotelAvailableDto){
+    public ResponseEntity<MessageDTO> newHotel(@RequestBody HotelAvailableDto hotelAvailableDto){
         return ResponseEntity.ok(
                 hotelesService.saveEntity(hotelAvailableDto)
         );

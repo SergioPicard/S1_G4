@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -37,12 +38,16 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
     ModelMapper mapper = new ModelMapper();
 
     @Override
-    public FlightsAvailableDto saveEntity(FlightsAvailableDto flightsAvailableDto) {
+    public MessageDTO saveEntity(FlightsAvailableDto flightsAvailableDto) {
         var entity = mapper.map(flightsAvailableDto, FlightModel.class);
         // guardar
         flightsRepository.save(entity);
         // mappear de entity a dto para llevar al controller
-        return mapper.map(entity, FlightsAvailableDto.class);
+
+        return MessageDTO.builder()
+                .message("Vuelo dado de alta correctamente.")
+                .name("CREACIÓN")
+                .build();
     }
 
     @Override
@@ -57,7 +62,9 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
     @Override
     public FlightsAvailableDto getEntityById(Integer integer) {
         var entity = flightsRepository.findById(integer).orElseThrow(
-                () -> {throw  new VuelosException("No se encontró el vuelo con el id: " + integer);}
+                () -> {
+                    throw new VuelosException("No se encontró el vuelo con el id: " + integer);
+                }
         );
 
         return mapper.map(entity, FlightsAvailableDto.class);
@@ -68,10 +75,10 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
         // buscar el dato en la base de datos y asegurarnos que exista
         List<FlightModel> exists = flightsRepository.findByNroVuelo(code);
         // eliminar efectivamente
-        if(!exists.isEmpty())
-            if(!flightReservationResRepository.findByFlightNumber(code).isEmpty()){
+        if (!exists.isEmpty())
+            if (!flightReservationResRepository.findByFlightNumber(code).isEmpty()) {
                 throw new CustomException("ELIMINACIÓN", "Existe una reserva con dicho vuelo. Cancelar la reserva antes de eliminar el vuelo.");
-            }else{
+            } else {
                 for (FlightModel flight : exists) {
                     flightsRepository.delete(flight);
                 }
@@ -89,19 +96,19 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
     @SneakyThrows
     public List<FlightsAvailableDto> filterEntity(LocalDate dateFrom, LocalDate dateTo, String origin, String destination) {
         // buscar el dato en la base de datos y asegurarnos que exista
-        List<FlightModel> list = flightsRepository.findByFechaIdaAndFechaVueltaAndAndOrigenAndDestino(dateFrom, dateTo,origin,destination);
+        List<FlightModel> list = flightsRepository.findByFechaIdaAndFechaVueltaAndAndOrigenAndDestino(dateFrom, dateTo, origin, destination);
 
         System.out.println(dateTo);
-        if (origin == null && destination == null && destination.equals(" ") && origin.equals(" ")){
-            throw new CustomException("FILTRAR","Debe ingresar un destino y un origen");
+        if (origin == null && destination == null && destination.equals(" ") && origin.equals(" ")) {
+            throw new CustomException("FILTRAR", "Debe ingresar un destino y un origen");
         }
 
-        if (dateFrom.isAfter(dateTo) || dateFrom.equals(dateTo)){
-            throw new CustomException("FILTRAR","La fecha de ida debe ser menor a la de salida.");
+        if (dateFrom.isAfter(dateTo) || dateFrom.equals(dateTo)) {
+            throw new CustomException("FILTRAR", "La fecha de ida debe ser menor a la de salida.");
         }
 
-        if (list.isEmpty()){
-            throw new CustomException("FILTRAR","No se encontraron vuelos en estas fechas y destino.");
+        if (list.isEmpty()) {
+            throw new CustomException("FILTRAR", "No se encontraron vuelos en estas fechas y destino.");
         }
 
         return list.stream().map(
@@ -111,13 +118,13 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
     }
 
 
-    public MessageDTO flightReservationResponse(FlightReservationReqDto flightReservationReqDto){
+    public MessageDTO flightReservationResponse(FlightReservationReqDto flightReservationReqDto) {
 
         FlightResponseModel reservationFligth = new FlightResponseModel();
 
         //BÚSQUEDA DE VUELO POR CÓDIGO
         List<FlightModel> vuelos = flightsRepository.findByNroVuelo(flightReservationReqDto.getFlightReservation().getFlightNumber());
-        if(vuelos.isEmpty()){
+        if (vuelos.isEmpty()) {
             throw new VuelosException("El vuelo que desea reservar no existe.");
         }
 
@@ -125,7 +132,7 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
         var bookedFlight = flightsRepository.findByNroVueloAndTipoAsientoEquals(flightReservationReqDto.getFlightReservation().getFlightNumber(),
                 flightReservationReqDto.getFlightReservation().getSeatType());
 
-        if(bookedFlight == null){
+        if (bookedFlight == null) {
             List<String> asientos = new ArrayList<>();
             for (FlightModel vuelo : vuelos) {
                 asientos.add(vuelo.getTipoAsiento());
@@ -148,10 +155,6 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
         // IGUAL A LA FECHA DISPONIBLE
         boolean dateFromEqual = bookedFlight.getFechaIda().isEqual(flightReservationReqDto.getFlightReservation().getDateFrom());
         boolean dateToEqual = bookedFlight.getFechaVuelta().isEqual(flightReservationReqDto.getFlightReservation().getDatoTo());
-
-        // TIPO DE ASIENTO
-        String seatTypeAvailable = bookedFlight.getTipoAsiento().toUpperCase();
-        String seatTypeSelect = flightReservationReqDto.getFlightReservation().getSeatType().toUpperCase();
 
         //FECHAS
         LocalDate dateFrom = flightReservationReqDto.getFlightReservation().getDateFrom();
@@ -186,12 +189,14 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
                                     }
                                     //MAPEO RESERVA DE VUELO DE DTO A ENTIDAD.
                                     FlightReservationResModel booking = mapper.map(flightReservationReqDto.getFlightReservation(), FlightReservationResModel.class);
+                                    PaymentMethodModel paymentMethod = mapper.map(flightReservationReqDto.getPaymentMethodDto(), PaymentMethodModel.class);
                                     booking.setFlightModel(bookedFlight);
 
                                     //SET DEL FLIGTHRESERVATION
                                     reservationFligth.setUserName(flightReservationReqDto.getUserName());
                                     reservationFligth.setTotal(total);
                                     reservationFligth.setFlightReservationResModel(booking);
+                                    reservationFligth.setPaymentMethod(paymentMethod);
 
 
                                 } else {
@@ -222,27 +227,27 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
         flightsBookingRepository.save(reservationFligth);
 
         return MessageDTO.builder()
-                .message("Reserva de vuelo dada de alta correctamente." )
+                .message("Reserva de vuelo dada de alta correctamente.")
                 .name("CREACIÓN")
                 .build();
     }
 
-    public MessageDTO deleteFlightReservation(Integer id){
-        if(flightsBookingRepository.existsById(id)){
+    public MessageDTO deleteFlightReservation(Integer id) {
+        if (flightsBookingRepository.existsById(id)) {
             flightsBookingRepository.deleteById(id);
 
             return MessageDTO.builder()
-                    .message("Reserva de vuelo dada de baja correctamente." )
+                    .message("Reserva de vuelo dada de baja correctamente.")
                     .name("ELIMINACIÓN")
                     .build();
 
-        }else{
+        } else {
             throw new CustomException("ELIMINACIÓN", "Reserva de vuelo con id: " + id + " no ha sido encontrada.");
         }
     }
 
 
-    public MessageDTO editEntity(String flightNumber, FlightModel vueloEdit){
+    public MessageDTO editEntity(String flightNumber, FlightModel vueloEdit) {
 
 
         // filtramos por el código que nos envía
@@ -256,7 +261,6 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
                 .orElse(null);
 
 
-
         //si existe el vuelo, empezamos
         if (!listaFiltrada.isEmpty() && vueloSeleccionado != null) {
 
@@ -265,28 +269,28 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
 
             // verificamos que se cambie alguna información
             if (vueloSeleccionado.equals(vueloEdit)) {
-                throw new CustomException("MODIFICACIÓN","Debe modificar algún dato.");
+                throw new CustomException("MODIFICACIÓN", "Debe modificar algún dato.");
             }
 
             //VALIDACION FECHA ENTRADA MENOR A SALIDA
-            if(vueloEdit.getFechaIda().isAfter(vueloEdit.getFechaVuelta())){
-                throw new CustomException("MODIFICACIÓN","La fecha de ida debe ser menor a la de vuelta.");
+            if (vueloEdit.getFechaIda().isAfter(vueloEdit.getFechaVuelta())) {
+                throw new CustomException("MODIFICACIÓN", "La fecha de ida debe ser menor a la de vuelta.");
             }
 
             //VALIDACION FECHA SALIDA MAYOR A ENTRADA
-            if(vueloEdit.getFechaIda().isEqual(vueloEdit.getFechaVuelta())){
-                throw new CustomException("MODIFICACIÓN","La fecha de vuelta debe ser mayor a la de ida");
+            if (vueloEdit.getFechaIda().isEqual(vueloEdit.getFechaVuelta())) {
+                throw new CustomException("MODIFICACIÓN", "La fecha de vuelta debe ser mayor a la de ida");
             }
 
             //si sale bien, reemplazamos el vuelo a la db y enviamos un msj de informe
 
-                flightsRepository.save(vueloEdit);
-                return MessageDTO.builder()
-                        .message("El vuelo ha sido modificado exitosamente.")
-                        .name("MODIFICACIÓN")
-                        .build();
+            flightsRepository.save(vueloEdit);
+            return MessageDTO.builder()
+                    .message("El vuelo ha sido modificado exitosamente.")
+                    .name("MODIFICACIÓN")
+                    .build();
 
-        }else {
+        } else {
             throw new CustomException("MODIFICACIÓN", "No se ha encontrado un vuelo con el código enviado.");
         }
 
@@ -294,95 +298,117 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
 
     public List<FlightResponseDto> getAllBookings() {
         var list = flightsBookingRepository.findAll();
-        System.out.println();
+
+        if (list.isEmpty()) {
+            throw new CustomException("CONSULTA", "No existen reservas.");
+        }
+
         return list.stream().map(
                         booking -> mapper.map(booking, FlightResponseDto.class)
                 )
                 .collect(Collectors.toList());
     }
 
-    public MessageDTO updateBookingByID(Integer id, FlightResponseDto bookingDto){
+    public MessageDTO updateBookingByID(Integer id, FlightResponseDto bookingDto) {
 
-        if (flightsBookingRepository.existsById(id)){
-            var model = flightsBookingRepository.getById(id);
-            var entity = mapper.map(bookingDto, FlightResponseModel.class);
-            var flight = flightsRepository.findByNroVuelo(model.getFlightReservationResModel().getFlightNumber());
+        // BUSCAMOS EL BOOKING EN LA BASE DE DATOS
+        if (flightsBookingRepository.existsById(id)) {
+            var bookingDB = flightsBookingRepository.getById(id);
+            // OBTENEMOS EL ID DEL BOOKING EN LA BASE DE DATOS
+            var bookingId = bookingDB.getId();
+            // OBTEBEMOS LOS DATOS DENTRO DEL BOOKING(EL FLIGHTRESERVATIONRES
+            var dataBookingDB = bookingDB.getFlightReservationResModel();
+            // TRANSFORMAMOS EL DTO EN MODELO
+            var newBooking = mapper.map(bookingDto, FlightResponseModel.class);
+            var newBookingData = mapper.map(bookingDto.getFlightReservation(), FlightReservationResModel.class);
 
-            entity.setId(id);
-            entity.setFlightReservationResModel(model.getFlightReservationResModel());
-            System.out.println("---------------------------------------------");
-            System.out.println(entity.toString());
-            System.out.println("---------------------------------------------");
-            entity.setTotal(model.getTotal());
+            // ASIGNAMOS EL ID DE LA BASE DE DATOS AL NUEVO BOOKING
+            newBooking.setId(bookingId);
+            // REALIZAMOS CHEQUEOS MEDIANTE METODO PRIVADO
+            setBooking(dataBookingDB, newBookingData);
 
-            var paymentId = model.getPaymentMethod().getId();
-            entity.getPaymentMethod().setId(paymentId);
-            //probar no crear nuevas personas si ya existen en la base de datos
-            // crear un Irepository de personas, y buscarlas por id? o crear metodo nombrado para buscar?
-            //que pasa si cambio el numero de personas?
+            newBooking.setFlightReservationResModel(newBookingData);
+            // RECALCULAMOS EL TOTAL CON UN METODO PRIVADO
+            newBooking.setTotal(newTotal(newBooking));
+            // ASIGNAMOS LAS ID DE LAS PERSONAS DE LA BASE DE DATOS A LAS PERSONAS EN EL NUEVO BOOKING
+            for (int i = 0; i < newBookingData.getPeople().size(); i++) {
 
-            flightsBookingRepository.save(entity);
+                var personId = dataBookingDB.getPeople().get(i).getId();
+
+                newBookingData.getPeople().get(i).setId(personId);
+            }
+
+            var paymentMethodId = bookingDB.getPaymentMethod().getId();
+            newBooking.getPaymentMethod().setId(paymentMethodId);
+
+            flightsBookingRepository.save(newBooking);
             return MessageDTO.builder()
-                    .name("MODIFICACION")
+                    .name("MODIFICACIÓN")
                     .message("Reserva de booking de vuelo modificada correctamente")
                     .build();
         } else {
-            return MessageDTO.builder()
-                    .name("MODIFICACION")
-                    .message("No se pudo encontrar la reserva especificada")
-                    .build();
+            throw new CustomException("MODIFICACIÓN", "Reserva de booking de vuelo no fue modificada");
         }
 
+    }
+
+    private boolean setBooking(FlightReservationResModel bookingDB, FlightReservationResModel newBooking) {
+
+        newBooking.setId(bookingDB.getId());
+        newBooking.setFlightModel(bookingDB.getFlightModel());
+
+        if (!newBooking.getDateFrom().isEqual(bookingDB.getDateFrom())) {
+            throw new CustomException("EDICIÓN", "La fecha de salida de este vuelo es única y no puede ser cambiada. Fecha: " + bookingDB.getDateFrom() + ".");
         }
-/*
-        if (flightsBookingRepository.existsById(id)) {
 
-            var model = flightsBookingRepository.getById(id);
-            var entity = mapper.map(bookingDto, BookingModel.class);
-            var hotel = flightsRepository.findByNroVuelo(model.getFlightReservationResModel().getFlightNumber()).get(0);
-
-            //validationsBooking(entity, hotel);
-
-            if(!entity.getPeopleAmount().equals(model.getPeopleAmount())){
-
-                if(peopleAmountFitInRoom(entity)){
-                    throw new CustomException("EDICIÓN", "La cantidad de personas no puede ser mayor a: "+maxPersonsPerRoom(entity)+ ".");
-                }
-            }
-
-            if(entity.getPeopleAmount() != entity.getPeople().size() || !entity.getPeopleAmount().equals(model.getPeopleAmount())){
-                throw new CustomException("EDICIÓN", "La cantidad de personas ingresadas no coincide con la estipulada");
-
-            }
-            for (int i = 0; i < model.getPeople().size(); i++) {
-                var personId = model.getPeople().get(i).getId();
-                entity.getPeople().get(i).setId(personId);
-            }
-
-
-            entity.setId(id);
-            entity.setTotal(model.getTotal());
-            entity.setHotelModel(model.getHotelModel());
-
-            var paymentId = model.getPaymentMethod().getId();
-            entity.getPaymentMethod().setId(paymentId);
-            //probar no crear nuevas personas si ya existen en la base de datos
-            // crear un Irepository de personas, y buscarlas por id? o crear metodo nombrado para buscar?
-            //que pasa si cambio el numero de personas?
-
-            bookingModelRepository.save(entity);
-            return MessageDTO.builder()
-                    .name("MODIFICACION")
-                    .message("Reserva de hotel modificada correctamente")
-                    .build();
-        } else {
-            return MessageDTO.builder()
-                    .name("MODIFICACION")
-                    .message("No se pudo encontrar la reserva especificada")
-                    .build();
+        if (!newBooking.getDatoTo().isEqual(bookingDB.getDatoTo())) {
+            throw new CustomException("EDICIÓN", "La fecha de vuelta de este vuelo es única y no puede ser cambiada. Fecha: " + bookingDB.getDatoTo() + ".");
         }
-    }*/
 
+        if (!newBooking.getDestination().equalsIgnoreCase(bookingDB.getDestination())) {
+            throw new CustomException("EDICIÓN", "El destino(destination) no coincide con el del vuelo: " + bookingDB.getDestination() + ".");
+        }
 
+        if (!newBooking.getOrigin().equalsIgnoreCase(bookingDB.getOrigin())) {
+            throw new CustomException("EDICIÓN", "El origen(origin) no coincide con el del vuelo: " + bookingDB.getOrigin() + ".");
+        }
+
+        if (!newBooking.getFlightNumber().equalsIgnoreCase(bookingDB.getFlightNumber())) {
+            throw new CustomException("EDICIÓN", "El código de vuelo no puede ser cambiado, debe ser: " + bookingDB.getOrigin() + ".");
+        }
+
+        if (!newBooking.getSeats().equals(bookingDB.getSeats())) {
+            throw new CustomException("EDICIÓN", "No se puede agregar personas a esta reserva, solo modificar las existentes.");
+        }
+
+        return true;
+
+    }
+
+    private Double newTotal(FlightResponseModel booking) {
+        var flight = flightsRepository.findByNroVueloAndTipoAsientoEquals(booking.getFlightReservationResModel().getFlightNumber(), booking.getFlightReservationResModel().getSeatType());
+        var cardType = booking.getPaymentMethod().getType();
+
+        if (flight == null) {
+            throw new CustomException("EDICIÓN", "No existe este tipo de asiento en el vuelo: " + booking.getFlightReservationResModel().getFlightNumber());
+        }
+
+        var total = flight.getPrecioPersona() * booking.getFlightReservationResModel().getSeats();
+
+        if (cardType.equalsIgnoreCase("debitcard")) {
+            if (!booking.getPaymentMethod().getDues().equals(1)) {
+                throw new CustomException("EDICIÓN", "Solo se puede realizar el pago en una(1) cuota con tarjeta de debito.");
+            }
+        }
+
+        if (cardType.equalsIgnoreCase("creditcard")) {
+            if (booking.getPaymentMethod().getDues() <= 3) {
+                total *= 1.05;
+            } else {
+                total *= 1.10;
+            }
+        }
+        return total;
+    }
 
 }
