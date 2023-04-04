@@ -309,7 +309,7 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
             var flight = flightsRepository.findByNroVuelo(model.getFlightReservationResModel().getFlightNumber());
 
             entity.setId(id);
-            entity.setFlightReservationResModel(model.getFlightReservationResModel());
+            //entity.setFlightReservationResModel(model.getFlightReservationResModel());
             System.out.println("---------------------------------------------");
             System.out.println(entity.toString());
             System.out.println("---------------------------------------------");
