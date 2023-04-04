@@ -9,4 +9,7 @@ import java.util.List;
 public interface IFlightReservationResRepository extends JpaRepository<FlightReservationResModel,Integer> {
     List<FlightReservationResModel> findByFlightNumber(String codigo);
 
+    //BÚSQUEDA DE RESERVAS A UN DESTINO EN PARTICULAR
+    List<FlightReservationResModel> findByDestination(String destino);
+
 }

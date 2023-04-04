@@ -90,5 +90,10 @@ public class FlightsController {
         );
     }
 
+    @GetMapping("/flightReservation/{destino}")
+    public ResponseEntity<List<FlightReservationResDto>> findByDestination(@PathVariable String destino){
+        return ResponseEntity.ok(flightsService.findByDestination(destino));
+    }
+
 
 }
