@@ -66,6 +66,14 @@ public class GlobalHandler {
         messageDTO.setMessage(e.getMessage());
         return new ResponseEntity<>(messageDTO, HttpStatus.BAD_REQUEST);
     }
+    @ExceptionHandler(CarsException.class)
+    //Spring sabe que si sale una exception de este tipo, se ejecuta el metodo abajo.
+    public ResponseEntity<MessageDTO> parametrosError(CarsException e) {
+        MessageDTO messageDTO = new MessageDTO();
+        messageDTO.setName("Validación en autos.");
+        messageDTO.setMessage(e.getMessage());
+        return new ResponseEntity<>(messageDTO, HttpStatus.BAD_REQUEST);
+    }
 
     // AMBOS METODOS SIRVEN PARA CONVERTIR LOS MENSAJES DE LAS VALIDACIONES EN UN ARRAY DE MENSAJES ENTENDIBLES.
 

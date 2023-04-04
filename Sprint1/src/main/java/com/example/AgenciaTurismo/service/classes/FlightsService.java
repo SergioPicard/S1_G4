@@ -37,6 +37,7 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
 
     ModelMapper mapper = new ModelMapper();
 
+
     @Override
     public MessageDTO saveEntity(FlightsAvailableDto flightsAvailableDto) {
         var entity = mapper.map(flightsAvailableDto, FlightModel.class);

@@ -1,3 +1,4 @@
+
 package com.example.AgenciaTurismo.util;
 
 import com.example.AgenciaTurismo.dto.request.PeopleDto;
@@ -15,7 +16,6 @@ public class FlightResponseDtoFactory {
         return FlightResponseDto.builder()
                 .userName("lucianoefesta@hotmail.com")
                 .total(7150.000000000001)
-                .status(getStatus())
                 .flightReservation(getFlightReservation())
                 .build();
     }
@@ -25,7 +25,6 @@ public class FlightResponseDtoFactory {
         return FlightResponseDto.builder()
                 .userName("lucianoefesta@hotmail.com")
                 .total(6500.0)
-                .status(getStatus())
                 .flightReservation(getFlightReservation())
                 .build();
     }
@@ -35,7 +34,6 @@ public class FlightResponseDtoFactory {
         return FlightResponseDto.builder()
                 .userName("lucianoefesta@hotmail.com")
                 .total(6825.0)
-                .status(getStatusCredit3())
                 .flightReservation(getFlightReservation())
                 .build();
     }

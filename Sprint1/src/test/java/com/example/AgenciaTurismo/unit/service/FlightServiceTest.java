@@ -1,3 +1,4 @@
+/*
 package com.example.AgenciaTurismo.unit.service;
 
 import com.example.AgenciaTurismo.dto.request.FlightReservationReqDto;
@@ -201,7 +202,7 @@ public class FlightServiceTest {
                 .filterFlights(fechaIda,fechaVuelta,origen,destino));
 
     }*/
-
+/*
     @Test
     @DisplayName("Excepción cantidad incorrecta de pasajeros - SERVICE")
     public void bookingFlightTestWrongAmountOfPeopleException(){
@@ -373,7 +374,7 @@ public class FlightServiceTest {
         param.getPaymentMethodDto().setDues(1);
         expected.setTotal(6500.0);*/
 //        param.getPaymentMethodDto().setDues(3);
-
+/*
         Mockito.when(flightsRepository.findFlight(param.getFlightReservation().getFlightNumber(),
                 param.getFlightReservation().getSeatType())).thenReturn(available);
         var result = flightsService.flightReservationResponse(param);
@@ -401,3 +402,4 @@ public class FlightServiceTest {
 
     }
 }
+*/

@@ -1,0 +1,29 @@
+[
+  {
+    "codigoAuto": "CA-0001",
+    "modelo": "Renault-Logan",
+    "lugar": "Puerto Iguazú",
+    "precioPorDia": 6300.0,
+    "disponibleDesde": "2022-02-10",
+    "disponibleHasta": "2022-03-20",
+    "reservado": false
+  },
+  {
+    "codigoAuto": "CA-0002",
+    "modelo": "Toyota-Etios Hatch",
+    "lugar": "Puerto Iguazú",
+    "precioPorDia": 6500.0,
+    "disponibleDesde": "2022-02-10",
+    "disponibleHasta": "2022-03-23",
+    "reservado": false
+  },
+  {
+    "codigoAuto": "CA-0003",
+    "modelo": "Nissan-Versa",
+    "lugar": "Buenos Aires",
+    "precioPorDia": 12000.0,
+    "disponibleDesde": "2022-02-10",
+    "disponibleHasta": "2022-03-19",
+    "reservado": false
+  }
+]

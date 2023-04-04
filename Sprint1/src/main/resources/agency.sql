@@ -130,3 +130,39 @@ VALUES (6,"1234567891234123","creditCard");
 
 --INSERT INTO reserva_vuelo(total, user_name, flight_reservation_res_model_id, payment_method_id)
 --VALUES (5000, "amccathie0@gnu.org", 1, 6);
+
+INSERT INTO autos(codigo_auto,modelo,lugar,precio_por_dia,disponible_desde,disponible_hasta,reservado)
+VALUES( "CA-0001","Renault-Logan","Puerto Iguazú",6500.0,"2022/02/10","2022/03/20",false);
+
+INSERT INTO autos(codigo_auto,modelo,lugar,precio_por_dia,disponible_desde,disponible_hasta,reservado)
+VALUES( "CA-0002","Toyota-Etios Hatch","Puerto Iguazú",6500.0,"2022/02/10","2022/03/23",false);
+
+INSERT INTO autos(codigo_auto,modelo,lugar,precio_por_dia,disponible_desde,disponible_hasta,reservado)
+VALUES( "CA-0003","Nissan-Versa","Buenos Aires",12000.0,"2022/02/10","2022/03/19",false);
+
+INSERT INTO autos(codigo_auto,modelo,lugar,precio_por_dia,disponible_desde,disponible_hasta,reservado)
+VALUES( "CA-0004","Chevrolet-Onix","Buenos Aires",12000.0,"2022/02/12","2022/04/17",false);
+
+INSERT INTO autos(codigo_auto,modelo,lugar,precio_por_dia,disponible_desde,disponible_hasta,reservado)
+VALUES( "CA-0005","Nissan-March","Tucumán", 5700.0,"2022/04/17","2022/05/23",false);
+
+INSERT INTO autos(codigo_auto,modelo,lugar,precio_por_dia,disponible_desde,disponible_hasta,reservado)
+VALUES( "CA-0006","Fiat-Cronos","Tucumán",5700.0,"2022/01/02","2022/02/19",false);
+
+INSERT INTO autos(codigo_auto,modelo,lugar,precio_por_dia,disponible_desde,disponible_hasta,reservado)
+VALUES( "CA-0007","Chevrolet-Spin","Bogotá",8900.0,"2022/01/23","2022/11/23",false);
+
+INSERT INTO autos(codigo_auto,modelo,lugar,precio_por_dia,disponible_desde,disponible_hasta,reservado)
+VALUES( "CA-0008","Nissan-Kicks","Bogotá",8900.0,"2022/01/23","2022/10/15",false);
+
+INSERT INTO autos(codigo_auto,modelo,lugar,precio_por_dia,disponible_desde,disponible_hasta,reservado)
+VALUES( "CA-0009","Chevrolet-Tracker Ltz","Bogotá",17000.0,"2022/02/15","2022/03/27",false);
+
+INSERT INTO autos(codigo_auto,modelo,lugar,precio_por_dia,disponible_desde,disponible_hasta,reservado)
+VALUES( "CA-0010","Renault-Logan","Medellín",10600.0,"2022/03/01","2022/04/17",false);
+
+INSERT INTO autos(codigo_auto,modelo,lugar,precio_por_dia,disponible_desde,disponible_hasta,reservado)
+VALUES( "CA-0011","Nissan-Versa","Medellín",10600.0,"2022/02/10","2022/03/20",false);
+
+INSERT INTO autos(codigo_auto,modelo,lugar,precio_por_dia,disponible_desde,disponible_hasta,reservado)
+VALUES( "CA-0012","Chevrolet-Onix","Cartagena",9500.0,"2022/04/17","2022/06/22",false);
