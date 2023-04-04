@@ -1,7 +1,6 @@
 package com.example.AgenciaTurismo.util;
 
-import com.example.AgenciaTurismo.dto.response.HotelAvailableDto;
-import com.example.AgenciaTurismo.models.FlightModel;
+
 import com.example.AgenciaTurismo.models.HotelModel;
 
 import java.time.LocalDate;
@@ -67,6 +66,8 @@ public class HotelModelFactory {
         list.add(cataratasHotel2());
         list.add(BristolHotel());
         list.add(centralPlaza());
+
+
 
         return list;
     }

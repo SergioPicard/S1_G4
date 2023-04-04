@@ -4,10 +4,8 @@ import com.example.AgenciaTurismo.dto.request.BookingRequestDto;
 import com.example.AgenciaTurismo.dto.response.BookingResponseDto;
 import com.example.AgenciaTurismo.dto.response.FlightsAvailableDto;
 import com.example.AgenciaTurismo.dto.response.HotelAvailableDto;
-import com.example.AgenciaTurismo.util.FlightAvailableDtoFactory;
-import com.example.AgenciaTurismo.util.HotelAvailableDtoFactory;
-import com.example.AgenciaTurismo.util.HotelReservationReqFactory;
-import com.example.AgenciaTurismo.util.HotelResponseDtoFactory;
+import com.example.AgenciaTurismo.models.HotelModel;
+import com.example.AgenciaTurismo.util.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -141,34 +139,27 @@ public class HotelsControllerIntegrationTest {
 
     //CONTROLADOR Filtro por Precio.
 
-    /*@Test
+  /*  @Test
     @DisplayName("Filtro de hoteles por precio")
     public void filterHotelsPrice() throws Exception {
-        // arrange
-        List<HotelAvailableDto> expected = HotelAvailableDtoFactory.listHotels();
 
-        //REQUEST CON MockHttpServletRequestBuilder & MockMvcRequestBuilders (librerias)
-        //Declaramos la request que vamos a llamar o hacer
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get("/api/v1/hotels");
+        Double precioNoche = 10000.0;
+        //response
+        List<HotelAvailableDto> responseBody = HotelAvailableDtoFactory.listHotels();
+        // request
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .get("/api/v1/hotel/precio")
+                .param("precio",precioNoche.toString());
 
-        //Los 3 EXPECTED con ResultMatcher & MockMvcResultMatchers
-        //StatusExpected
+        // resultMatcher 3 expected bodyExpected - statusExpected - contentTypeExpected
+        ResultMatcher bodyExpected = MockMvcResultMatchers.content().json(writer.writeValueAsString(responseBody));
         ResultMatcher statusExpected = MockMvcResultMatchers.status().isOk();
-
-        //BodyExpected
-        ResultMatcher bodyExpected = MockMvcResultMatchers.content().json(
-                writer.writeValueAsString(expected)
-        );
-
-        //ContentTypeExpected
         ResultMatcher contentTypeExpected = MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON);
 
-        // act & assert con mockmvc
+        // act & assert whit mockMvc
         mockMvc.perform(request)
-                .andDo(MockMvcResultHandlers.print()) //Devuelve el request de manera gráfica
-                .andExpect(statusExpected)
-                .andExpect(bodyExpected)
-                .andExpect(contentTypeExpected);
+                .andDo(MockMvcResultHandlers.print())
+                .andExpectAll(bodyExpected, statusExpected, contentTypeExpected);
     }*/
 
 
