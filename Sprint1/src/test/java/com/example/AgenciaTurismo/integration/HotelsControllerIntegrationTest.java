@@ -42,6 +42,30 @@ public class HotelsControllerIntegrationTest {
                 .writer();
     }
 
+    //CONTROLADOR Filtro por Precio.
+
+    @Test
+    @DisplayName("Filtro de hoteles por precio")
+    public void filterHotelsPrice() throws Exception {
+
+        Double precioNoche = 10000.0;
+        //response
+        List<HotelAvailableDto> responseBody = HotelAvailableDtoFactory.listHotels();
+        // request
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .get("/api/v1/hotel/precio")
+                .param("precio",precioNoche.toString());
+
+        // resultMatcher 3 expected bodyExpected - statusExpected - contentTypeExpected
+        ResultMatcher bodyExpected = MockMvcResultMatchers.content().json(writer.writeValueAsString(responseBody));
+        ResultMatcher statusExpected = MockMvcResultMatchers.status().isOk();
+        ResultMatcher contentTypeExpected = MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON);
+
+        // act & assert whit mockMvc
+        mockMvc.perform(request)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpectAll(bodyExpected, statusExpected, contentTypeExpected);
+    }
 
 
    /* @Test
@@ -138,30 +162,7 @@ public class HotelsControllerIntegrationTest {
 
     }*/
 
-    //CONTROLADOR Filtro por Precio.
 
-   @Test
-    @DisplayName("Filtro de hoteles por precio")
-    public void filterHotelsPrice() throws Exception {
-
-        Double precioNoche = 10000.0;
-        //response
-        List<HotelAvailableDto> responseBody = HotelAvailableDtoFactory.listHotels();
-        // request
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-                .get("/api/v1/hotel/precio")
-                .param("precio",precioNoche.toString());
-
-        // resultMatcher 3 expected bodyExpected - statusExpected - contentTypeExpected
-        ResultMatcher bodyExpected = MockMvcResultMatchers.content().json(writer.writeValueAsString(responseBody));
-        ResultMatcher statusExpected = MockMvcResultMatchers.status().isOk();
-        ResultMatcher contentTypeExpected = MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON);
-
-        // act & assert whit mockMvc
-        mockMvc.perform(request)
-                .andDo(MockMvcResultHandlers.print())
-                .andExpectAll(bodyExpected, statusExpected, contentTypeExpected);
-    }
 
 
 
