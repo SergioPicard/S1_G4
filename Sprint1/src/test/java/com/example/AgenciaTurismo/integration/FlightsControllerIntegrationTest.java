@@ -3,6 +3,7 @@ package com.example.AgenciaTurismo.integration;
 import com.example.AgenciaTurismo.dto.request.BookingRequestDto;
 import com.example.AgenciaTurismo.dto.request.FlightReservationReqDto;
 import com.example.AgenciaTurismo.dto.response.BookingResponseDto;
+import com.example.AgenciaTurismo.dto.response.FlightReservationResDto;
 import com.example.AgenciaTurismo.dto.response.FlightResponseDto;
 import com.example.AgenciaTurismo.dto.response.FlightsAvailableDto;
 import com.example.AgenciaTurismo.util.*;
@@ -27,10 +28,12 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 public class FlightsControllerIntegrationTest {
+
 
     @Autowired
     MockMvc mockMvc; // Es como la persona que manda el request.
@@ -39,8 +42,117 @@ public class FlightsControllerIntegrationTest {
             .registerModule(new JavaTimeModule())
             .writer();
 
+
     @Test
-    @DisplayName("Busqueda de todos los vuelos")
+    @DisplayName("Búsqueda de vuelos por destino")
+    public void findByDestination() throws Exception {
+
+        // arrange
+        List<FlightReservationResDto> expected = List.of(FlightResponseDtoFactory.flightReservationRes1());
+        String destino = "Puerto Iguazú";
+
+        //REQUEST CON MockHttpServletRequestBuilder & MockMvcRequestBuilders (librerias)
+        //Declaramos la request que vamos a llamar o hacer
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get("/api/v1/flightReservation/"+destino);
+
+        //Los 3 EXPECTED con ResultMatcher & MockMvcResultMatchers
+        //StatusExpected
+        ResultMatcher statusExpected = MockMvcResultMatchers.status().isOk();
+
+        //BodyExpected
+        ResultMatcher bodyExpected = MockMvcResultMatchers.content().json(
+                writer.writeValueAsString(expected)
+        );
+
+        //ContentTypeExpected
+        ResultMatcher contentTypeExpected = MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON);
+
+        // act & assert con mockmvc
+        mockMvc.perform(request)
+                .andDo(MockMvcResultHandlers.print()) //Devuelve el request de manera gráfica
+                .andExpect(statusExpected)
+                .andExpect(bodyExpected)
+                .andExpect(contentTypeExpected);
+    }
+
+    @Test
+    @DisplayName("Mostrar total recaudación por nro de vuelo.")
+    public void getTotalForFlight() throws Exception {
+
+        // arrange
+        List<Map<String,Object>> expected = ConsultasNuevasFuncionalidades.listSoldIntegration();
+
+        //REQUEST CON MockHttpServletRequestBuilder & MockMvcRequestBuilders (librerias)
+        //Declaramos la request que vamos a llamar o hacer
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get("/api/v1/flightsTotal");
+
+        //Los 3 EXPECTED con ResultMatcher & MockMvcResultMatchers
+        //StatusExpected
+        ResultMatcher statusExpected = MockMvcResultMatchers.status().isOk();
+
+        //BodyExpected
+        ResultMatcher bodyExpected = MockMvcResultMatchers.content().json(
+                writer.writeValueAsString(expected)
+        );
+
+        //ContentTypeExpected
+        ResultMatcher contentTypeExpected = MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON);
+
+        // act & assert con mockmvc
+        mockMvc.perform(request)
+                .andDo(MockMvcResultHandlers.print()) //Devuelve el request de manera gráfica
+                .andExpect(statusExpected)
+                .andExpect(bodyExpected)
+                .andExpect(contentTypeExpected);
+    }
+
+    @Test
+    @DisplayName("Búsqueda de reservas en un rango de fechas")
+    public void filterFlights() throws Exception {
+
+        // arrange
+        List<FlightReservationResDto> expected = List.of(FlightResponseDtoFactory.flightReservationRes1());
+
+        String fecha1 = "10/02/2022";
+        String fecha2 = "15/02/2022";
+
+        //REQUEST CON MockHttpServletRequestBuilder & MockMvcRequestBuilders (librerias)
+        //Declaramos la request que vamos a llamar o hacer
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get("/api/v1/flightsReservationsBetweenDate")
+                .param("fecha1", fecha1)
+                .param("fecha2", fecha2);
+
+
+        //Los 3 EXPECTED con ResultMatcher & MockMvcResultMatchers
+        //StatusExpected
+
+        ResultMatcher statusExpected = MockMvcResultMatchers.status().isOk();
+
+        //BodyExpected
+
+        ResultMatcher bodyExpected = MockMvcResultMatchers.content().json(
+                writer.writeValueAsString(expected)
+        );
+
+        //ContentTypeExpected
+
+        ResultMatcher contentTypeExpected = MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON);
+
+        // act & assert con mockmvc
+        mockMvc.perform(request)
+                .andDo(MockMvcResultHandlers.print()) //Devuelve el request de manera gráfica
+                .andExpect(statusExpected)
+                .andExpect(bodyExpected)
+                .andExpect(contentTypeExpected);
+    }
+
+
+
+    /*
+
+    @Test
+    @DisplayName("Búsqueda de todos los vuelos")
     public void searchAllFlights() throws Exception {
 
         // arrange
@@ -148,6 +260,6 @@ public class FlightsControllerIntegrationTest {
                 .andExpect(contentTypeExpected);
 
     }
-
+    */
 
 }

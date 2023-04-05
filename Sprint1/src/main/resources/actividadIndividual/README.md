@@ -1,8 +1,11 @@
 # Para la resolución de la actividad individual se crearon los endpoint:
 
-- /api/v1/flightReservation/{destino}
-- /api/v1/flightsTotal
-- /api/v1/flightsTotalflightsReservationsBetweenDate?fecha1&fecha2
+- /api/v1/flightReservation/{destino}. Utilizado para buscar reservas que tiene la
+agencia para los diferentes destinos.
+- /api/v1/flightsTotal. Utilizado para ver el total de ventas de cada vuelo a fin de
+poder visualizar el alcance con respecto a los objetivos de venta.
+- /api/v1/flightsTotalflightsReservationsBetweenDate?fecha1&fecha2. Utilizado para poder visualizar
+las reservas que tiene la agencia en un determinado rango de fechas.
 
 Para los cuales los métodos del service y los endpoint del controlador se encuentran al final de los mismos
 y con un comentario indicando que corresonden a dicha actividad y los test unitarios estan en testService

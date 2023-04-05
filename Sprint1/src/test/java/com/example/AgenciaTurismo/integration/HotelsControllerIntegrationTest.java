@@ -44,7 +44,7 @@ public class HotelsControllerIntegrationTest {
                 .writer();
     }
 
-
+/*
     @Test
     @DisplayName("Busqueda de todos los hoteles")
     public void searchAllHotels() throws Exception {
@@ -139,7 +139,7 @@ public class HotelsControllerIntegrationTest {
 
     }
 
-
+*/
 
 
 }

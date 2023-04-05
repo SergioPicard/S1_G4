@@ -74,6 +74,8 @@ INSERT INTO hotel(codigo_hotel,nombre,lugar,tipo_habitacion,precio_noche,disponi
 VALUES( "BG-0004","Bocagrande","Cartagena","Múltiple",9370.0,"2022/04/17","2022/06/22",false);
 
 insert into persona (name, last_name, email, dni, birth_date)
+values ('Luciano', 'Festa', 'luchofesta@gmail.com', 37491218, '1992/01/24');
+insert into persona (name, last_name, email, dni, birth_date)
 values ('Abramo', 'McCathie', 'amccathie0@gnu.org', 92171282, '2023/01/13');
 insert into persona (name, last_name, email, dni, birth_date)
 values('Hoebart', 'Heardman', 'hheardman1@cocolog-nifty.com', 55317993, '2022/12/05');
@@ -119,14 +121,14 @@ VALUES (6,"1234567891234123","creditCard");
 --INSERT INTO reserva_hotel (user_name, booking_id)
 --VALUES ("amccathie0@gnu.org", 1);
 
---INSERT INTO datos_reserva_vuelo(date_from, dato_to, destination, flight_number, origin, seat_type, seats, flight_model_id)
---VALUES("2022/02/10","2022/02/15","Puerto Iguazú","BAPI-1235","Buenos Aires","Economy", 1, 1);
+INSERT INTO datos_reserva_vuelo(date_from, dato_to, destination, flight_number, origin, seat_type, seats, flight_model_id)
+VALUES("2022/02/10","2022/02/15","Puerto Iguazú","BAPI-1235","Buenos Aires","Economy", 1, 1);
 
---INSERT INTO req_reserva_vuelo(user_name, flight_reservation_id, payment_method_dto_id)
---VALUES ("amccathie0@gnu.org", 1, 6);
+INSERT INTO reserva_vuelo(user_name, total, flight_reservation_res_model_id, payment_method_id)
+VALUES ("amccathie0@gnu.org", 6500.0, 1, 6);
 
---INSERT INTO datos_reserva_vuelo_people(flight_reservation_res_model_id, people_id)
---VALUES (1, 1);
+INSERT INTO datos_reserva_vuelo_people(flight_reservation_res_model_id, people_id)
+VALUES (1, 1);
 
 --INSERT INTO reserva_vuelo(total, user_name, flight_reservation_res_model_id, payment_method_id)
 --VALUES (5000, "amccathie0@gnu.org", 1, 6);

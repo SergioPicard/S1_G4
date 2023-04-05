@@ -17,5 +17,16 @@ public class ConsultasNuevasFuncionalidades {
 
     }
 
+    public static List<Map<String, Object>> listSoldIntegration(){
+
+        Map<String, Object> resultado = new HashMap<>();
+
+        resultado.put("Vuelo", "BAPI-1235");
+        resultado.put("TotalRecaudación", 6500.0);
+
+        return List.of(resultado);
+
+    }
+
 
 }

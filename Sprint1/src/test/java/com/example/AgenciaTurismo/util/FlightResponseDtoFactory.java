@@ -36,6 +36,19 @@ public class FlightResponseDtoFactory {
                 .build();
     }
 
+    public static FlightReservationResDto flightReservationRes1(){
+        return FlightReservationResDto.builder()
+                .dateFrom(LocalDate.of(2022,02,10))
+                .datoTo(LocalDate.of(2022,02,15))
+                .destination("Puerto Iguazú")
+                .flightNumber("BAPI-1235")
+                .origin("Buenos Aires")
+                .seatType("Economy")
+                .seats(1)
+                .people(List.of(people1()))
+                .build();
+    }
+
     public static FlightReservationResDto flightReservationRes2(){
         return FlightReservationResDto.builder()
                 .dateFrom(LocalDate.of(2022,02,10))
