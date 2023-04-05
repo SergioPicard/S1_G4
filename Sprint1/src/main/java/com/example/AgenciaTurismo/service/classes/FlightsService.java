@@ -38,6 +38,46 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
 
     ModelMapper mapper = new ModelMapper();
 
+    //********************* MÉTODOS ACTIVIDAD INDIVIDUAL SPRINT 3 ********************************
+
+    public List<FlightReservationResDto> findByDestination(String destino){
+        List<FlightReservationResModel> list = flightReservationResRepository.findByDestination(destino);
+
+        if(list.isEmpty()){
+            throw new CustomException("CONSULTA", "No existen reservas para " + destino + ".");
+        }
+
+        return list.stream().map(
+                vuelo -> mapper.map(vuelo, FlightReservationResDto.class)
+        ).collect(Collectors.toList());
+    }
+
+
+    public List<Map<String,Object>> getTotalForFlight(){
+        var list = flightsBookingRepository.getTotalForFlight();
+
+        if(list.isEmpty()){
+            throw new CustomException("CONSULTA", "No existen ventas.");
+        }
+
+        return list;
+    }
+
+    public List<FlightReservationResDto> findByDateFromAndDateTo(LocalDate fecha1,LocalDate fecha2){
+        var list = flightReservationResRepository.findByDateFromAndDateTo(fecha1,fecha2);
+
+        if(list.isEmpty()){
+            throw new CustomException("CONSULTA", "No existen ventas en las fechas indicadas..");
+        }
+
+        return list.stream().map(
+                reserva -> mapper.map(reserva, FlightReservationResDto.class)
+        ).collect(Collectors.toList());
+    }
+
+
+    //******************************** MÉTODOS GRUPALES ************************************
+
     @Override
     public MessageDTO saveEntity(FlightsAvailableDto flightsAvailableDto) {
         var entity = mapper.map(flightsAvailableDto, FlightModel.class);
@@ -412,30 +452,4 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
         return total;
     }
 
-
-
-    //MÉTODOS ACTIVIDAD INDIVIDUAL SPRINT 3
-
-    public List<FlightReservationResDto> findByDestination(String destino){
-        List<FlightReservationResModel> list = flightReservationResRepository.findByDestination(destino);
-
-        if(list.isEmpty()){
-            throw new CustomException("CONSULTA", "No existen reservas para " + destino + ".");
-        }
-
-        return list.stream().map(
-                vuelo -> mapper.map(vuelo, FlightReservationResDto.class)
-        ).collect(Collectors.toList());
-    }
-
-
-  public List<Map<String,Object>> getTotalForFlight(){
-        var list = flightsBookingRepository.getTotalForFlight();
-
-        if(list.isEmpty()){
-            throw new CustomException("CONSULTA", "No existen ventas.");
-        }
-
-        return list;
-    }
 }

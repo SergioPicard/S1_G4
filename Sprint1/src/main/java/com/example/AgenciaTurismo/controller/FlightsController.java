@@ -13,6 +13,7 @@ import com.example.AgenciaTurismo.models.FlightReservationResModel;
 import com.example.AgenciaTurismo.models.HotelModel;
 import com.example.AgenciaTurismo.service.classes.FlightsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -30,6 +31,27 @@ import java.util.Map;
 public class FlightsController {
     @Autowired
     FlightsService flightsService;
+
+    //*********************** ENDPOINTS ACTIVIDAD INDIVIDUAL SPRINT3 ****************************
+
+    @GetMapping("/flightReservation/{destino}")
+    public ResponseEntity<List<FlightReservationResDto>> findByDestination(@PathVariable String destino){
+        return ResponseEntity.ok(flightsService.findByDestination(destino));
+    }
+
+    @GetMapping("/flightsTotal")
+    public ResponseEntity<List<Map<String,Object>>> getTotalForFlight(){
+        return ResponseEntity.ok(flightsService.getTotalForFlight());
+    }
+
+    @GetMapping("/flightsReservationsBetweenDate")
+    public ResponseEntity<List<FlightReservationResDto>> findByDateFromAndDateTo(@RequestParam("fecha1") @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate fecha1,
+                                                                                 @RequestParam("fecha2") @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate fecha2){
+        return ResponseEntity.ok(flightsService.findByDateFromAndDateTo(fecha1,fecha2));
+    }
+
+
+    //******************************** ENDPOINTS GRUPALES ************************************
 
     @GetMapping("/flights")
     public ResponseEntity<List<FlightsAvailableDto>> findAllFlights(){
@@ -90,15 +112,4 @@ public class FlightsController {
         );
     }
 
-    //ENDPOINTS ACTIVIDAD INDIVIDUAL SPRINT3
-
-    @GetMapping("/flightReservation/{destino}")
-    public ResponseEntity<List<FlightReservationResDto>> findByDestination(@PathVariable String destino){
-        return ResponseEntity.ok(flightsService.findByDestination(destino));
-    }
-
-    @GetMapping("/flightsTotal")
-    public ResponseEntity<List<Map<String,Object>>> getTotalForFlight(){
-        return ResponseEntity.ok(flightsService.getTotalForFlight());
-    }
 }

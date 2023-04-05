@@ -19,6 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.xmlunit.util.Mapper;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -37,7 +38,7 @@ public class FlightServiceTest {
 
     ModelMapper mapper = new ModelMapper();
 
-    //TEST NUEVAS FUNCIONALIDADES SPRINT 3 INDIVIDUAL
+    //****************** TEST NUEVAS FUNCIONALIDADES SPRINT 3 INDIVIDUAL ****************************
 
     @Test
     @DisplayName("Buscar reservas por destino")
@@ -97,6 +98,44 @@ public class FlightServiceTest {
 
         Assertions.assertThrows(RuntimeException.class,
                 () -> flightsService.getTotalForFlight());
+    }
+
+    @Test
+    @DisplayName("Búsqueda de reservas entre 2 fechas")
+    public void flightsReservationsBetweenDateTest(){
+        //arrange
+        List<FlightReservationResDto> expected = List.of(FlightResponseDtoFactory.flightReservationRes2());
+
+        var model = expected.stream().map(
+                reserva -> mapper.map(reserva,FlightReservationResModel.class)
+        ).collect(Collectors.toList());
+
+        var fecha1 = LocalDate.of(2022,02,01);
+        var fecha2 = LocalDate.of(2022,02,28);
+
+        //act
+        Mockito.when(flightReservationResRepository.findByDateFromAndDateTo(fecha1,fecha2)).thenReturn(model);
+        var result = flightsService.findByDateFromAndDateTo(fecha1,fecha2);
+
+
+        //assert
+        Assertions.assertEquals(result,expected);
+    }
+
+    @Test
+    @DisplayName("Exception búsqueda entre 2 fechas")
+    public void flightsReservationsBetweenDateTestException(){
+        //arrange
+        List<FlightReservationResModel> list = List.of();
+
+        var fecha1 = LocalDate.of(2022,02,01);
+        var fecha2 = LocalDate.of(2022,02,28);
+
+        Mockito.when(flightReservationResRepository.findByDateFromAndDateTo(fecha1,fecha2)).thenReturn(list);
+
+        //act && assert
+        Assertions.assertThrows(RuntimeException.class,
+                () -> flightsService.findByDateFromAndDateTo(fecha1,fecha2));
     }
 
     /*

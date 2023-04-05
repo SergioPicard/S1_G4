@@ -35,6 +35,20 @@ public class FlightResponseDtoFactory {
                 .people(List.of(people1()))
                 .build();
     }
+
+    public static FlightReservationResDto flightReservationRes2(){
+        return FlightReservationResDto.builder()
+                .dateFrom(LocalDate.of(2022,02,10))
+                .datoTo(LocalDate.of(2022,02,15))
+                .destination("Puerto Iguazú")
+                .flightNumber("LUCHO-1992")
+                .origin("Buenos Aires")
+                .seatType("Business")
+                .seats(2)
+                .people(List.of(people1(),people2()))
+                .build();
+    }
+
     public static PeopleDto people1(){
         return PeopleDto.builder()
                 .birthDate(LocalDate.of(1992,01,24))
@@ -42,6 +56,16 @@ public class FlightResponseDtoFactory {
                 .email("luchofesta@gmail.com")
                 .lastName("Festa")
                 .name("Luciano")
+                .build();
+    }
+
+    public static PeopleDto people2(){
+        return PeopleDto.builder()
+                .birthDate(LocalDate.of(1993,06,05))
+                .dni("36365939")
+                .email("lucasfesta@gmail.com")
+                .lastName("Festa")
+                .name("Lucas")
                 .build();
     }
 
