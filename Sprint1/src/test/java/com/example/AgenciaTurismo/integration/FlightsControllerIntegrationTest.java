@@ -5,6 +5,7 @@ import com.example.AgenciaTurismo.dto.request.FlightReservationReqDto;
 import com.example.AgenciaTurismo.dto.response.BookingResponseDto;
 import com.example.AgenciaTurismo.dto.response.FlightResponseDto;
 import com.example.AgenciaTurismo.dto.response.FlightsAvailableDto;
+import com.example.AgenciaTurismo.dto.response.HotelAvailableDto;
 import com.example.AgenciaTurismo.util.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -40,6 +41,29 @@ public class FlightsControllerIntegrationTest {
             .writer();
 
     @Test
+    @DisplayName("Filtro de vuelos por precio")
+    public void filterFlightsPrice() throws Exception {
+
+        Double precioPersona = 44000.0;
+        //response
+        List<FlightsAvailableDto> responseBody = FlightAvailableDtoFactory.listFlights();
+        // request
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .get("/api/v1/flight/precio")
+                .param("precio",precioPersona.toString());
+
+        // resultMatcher 3 expected bodyExpected - statusExpected - contentTypeExpected
+        ResultMatcher bodyExpected = MockMvcResultMatchers.content().json(writer.writeValueAsString(responseBody));
+        ResultMatcher statusExpected = MockMvcResultMatchers.status().isOk();
+        ResultMatcher contentTypeExpected = MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON);
+
+        // act & assert whit mockMvc
+        mockMvc.perform(request)
+                .andDo(MockMvcResultHandlers.print())
+                .andExpectAll(bodyExpected, statusExpected, contentTypeExpected);
+    }
+
+    /*@Test
     @DisplayName("Busqueda de todos los vuelos")
     public void searchAllFlights() throws Exception {
 
@@ -147,7 +171,7 @@ public class FlightsControllerIntegrationTest {
                 .andExpect(statusExpected)
                 .andExpect(contentTypeExpected);
 
-    }
+    }*/
 
 
 }

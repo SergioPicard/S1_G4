@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "5116d6a9-4f24-43ea-ba98-717fe981ba2f",
-		"name": "agencia",
+		"_postman_id": "d00c3c53-b76a-403d-ae95-381d00acdb08",
+		"name": "agenciaFINAL",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "23937392"
+		"_exporter_id": "23969834"
 	},
 	"item": [
 		{
@@ -285,6 +285,33 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "porPrecioVuelo",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/v1/hotel/precio?precio=10000",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"hotel",
+								"precio"
+							],
+							"query": [
+								{
+									"key": "precio",
+									"value": "10000"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -542,6 +569,33 @@
 								{
 									"key": "hotelCode",
 									"value": "CH-0002"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "porPrecioHotel",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/v1/hotel/precio?precio=10000",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"hotel",
+								"precio"
+							],
+							"query": [
+								{
+									"key": "precio",
+									"value": "10000"
 								}
 							]
 						}

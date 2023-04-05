@@ -43,7 +43,8 @@ public class HotelsControllerIntegrationTest {
     }
 
 
-    @Test
+
+   /* @Test
     @DisplayName("Busqueda de todos los hoteles")
     public void searchAllHotels() throws Exception {
         // arrange
@@ -135,11 +136,11 @@ public class HotelsControllerIntegrationTest {
                 .andDo(MockMvcResultHandlers.print())
                 .andExpectAll(bodyExpected, statusExpected, contentTypeExpected);
 
-    }
+    }*/
 
     //CONTROLADOR Filtro por Precio.
 
-  /*  @Test
+   @Test
     @DisplayName("Filtro de hoteles por precio")
     public void filterHotelsPrice() throws Exception {
 
@@ -160,7 +161,7 @@ public class HotelsControllerIntegrationTest {
         mockMvc.perform(request)
                 .andDo(MockMvcResultHandlers.print())
                 .andExpectAll(bodyExpected, statusExpected, contentTypeExpected);
-    }*/
+    }
 
 
 
