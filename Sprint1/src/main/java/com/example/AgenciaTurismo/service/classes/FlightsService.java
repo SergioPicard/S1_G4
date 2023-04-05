@@ -43,9 +43,6 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
         var entity = mapper.map(flightsAvailableDto, FlightModel.class);
         // guardar
         flightsRepository.save(entity);
-        /*System.out.println("-------------------------------------------------------------");
-        System.out.println(res);
-        System.out.println("-------------------------------------------------------------");*/
         // mappear de entity a dto para llevar al controller
 
         return MessageDTO.builder()
@@ -167,6 +164,11 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
             if (!dateFrom.isAfter(dateTo)) {
                 if (!dateFrom.isEqual(dateTo)) {
                     if (dateFromEqual && dateToEqual) {
+
+                    /*    if (!availability(flightReservationReqDto)){
+                            throw new CustomException("EDICIÓN", "No hay disponibilidad para las fechas elegidas");
+                        }*/
+
                         if (destination && origin) {
                             if (peopleAmount != 0) {
                                 if (peopleAmount == people) {
@@ -312,7 +314,7 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
                 .collect(Collectors.toList());
     }
 
-    public MessageDTO updateBookingByID(Integer id, FlightResponseDto bookingDto) {
+    public MessageDTO updateBookingByID(Integer id, FlightReservationReqDto bookingDto) {
 
         // BUSCAMOS EL BOOKING EN LA BASE DE DATOS
         if (flightsBookingRepository.existsById(id)) {
@@ -324,6 +326,10 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
             // TRANSFORMAMOS EL DTO EN MODELO
             var newBooking = mapper.map(bookingDto, FlightResponseModel.class);
             var newBookingData = mapper.map(bookingDto.getFlightReservation(), FlightReservationResModel.class);
+
+            /*if (!availability(bookingDto)){
+                throw new CustomException("EDICIÓN", "No hay disponibilidad para las fechas elegidas");
+            }*/
 
             // ASIGNAMOS EL ID DE LA BASE DE DATOS AL NUEVO BOOKING
             newBooking.setId(bookingId);
@@ -418,6 +424,39 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
 
         return flightReservationResRepository.getIdFlightPeopleAmount();
     }
+
+    /*private Boolean availability(FlightReservationReqDto bookingRequest){
+        var flight = flightsRepository.findByNroVueloAndTipoAsientoEquals(bookingRequest.getFlightReservation().getFlightNumber(), bookingRequest.getFlightReservation().getSeatType()); //.findByCodigoHotel(bookingRequest.getHotelCode()).get(0);
+        var flightfrom = flight.getFechaIda(); //.getDisponibleDesde();
+        var flightTo = flight.getFechaVuelta(); //.getDisponibleHasta();
+        var dateFrom = bookingRequest.getFlightReservation().getDateFrom(); //.getDateFrom();
+        var dateTo = bookingRequest.getFlightReservation().getDatoTo();
+        var bookingsDB = flightsBookingRepository.findByNroVueloAndTipoAsientoEquals(bookingRequest.getFlightReservation().getFlightNumber(), bookingRequest.getFlightReservation().getSeatType());
+        var available = false;
+
+
+        if (!dateFrom.isBefore(flightfrom) && !dateTo.isAfter(flightTo)) {
+
+            if(bookingsDB == null){
+                return true;
+            }
+
+            for (FlightResponseModel bookingDB : bookingsDB) {
+                var bookingFrom = bookingDB.getFlightReservationResModel().getDateFrom(); //bookingDB.getDateFrom();
+                var bookingTo = bookingDB.getFlightReservationResModel().getDatoTo(); //bookingDB.getBooking().getDatoTo();
+
+                if (dateFrom.isBefore(bookingFrom) && dateTo.isBefore(bookingTo)
+                        || dateFrom.isAfter(bookingTo)) {
+                    available = true;
+                    break;
+                }
+            }
+        } else {
+            throw new CustomException("EDICIÓN", "El vuelo no esta disponible en las fechas solicitadas.");
+        }
+
+        return available;
+    }*/
 
     public List<FlightsAvailableDto> findByPrecioPersonaLessThanEqual(Double price){
 

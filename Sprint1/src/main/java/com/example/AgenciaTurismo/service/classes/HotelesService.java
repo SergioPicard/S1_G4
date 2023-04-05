@@ -520,10 +520,14 @@ public class HotelesService implements ICrudService<HotelAvailableDto,Integer,St
         return total;
     }
 
-    public List<Map<String, Integer>> getIdHotelPeopleAmount(){
+    public List<Map<String, Number>> getIdHotelPeopleAmount(){
 
-        return  bookingModelRepository.getIdHotelPeopleAmount();
+        var list =  bookingModelRepository.getIdHotelPeopleAmount();
+        if (list.isEmpty()){
+            throw new CustomException("EDICIÓN", "No existen reservas.");
+        }
 
+        return list;
     }
 
     private Boolean availability(BookingModel bookingRequest){

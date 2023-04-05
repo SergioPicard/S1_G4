@@ -84,7 +84,7 @@ public class FlightsController {
 
     @PutMapping("/flight-reservation/{id}")
     public ResponseEntity<MessageDTO> updateBookingById(@PathVariable Integer id,
-                                                        @RequestBody @Valid FlightResponseDto bookingDto){
+                                                        @RequestBody @Valid FlightReservationReqDto bookingDto){
         return ResponseEntity.ok(
                 flightsService.updateBookingByID(id, bookingDto)
         );

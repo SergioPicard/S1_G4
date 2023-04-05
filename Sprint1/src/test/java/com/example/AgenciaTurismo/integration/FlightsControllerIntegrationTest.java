@@ -1,5 +1,6 @@
 package com.example.AgenciaTurismo.integration;
 
+import com.example.AgenciaTurismo.dto.MessageDTO;
 import com.example.AgenciaTurismo.dto.request.BookingRequestDto;
 import com.example.AgenciaTurismo.dto.request.FlightReservationReqDto;
 import com.example.AgenciaTurismo.dto.response.BookingResponseDto;
@@ -125,12 +126,14 @@ public class FlightsControllerIntegrationTest {
         System.out.println(flightReservationReqDto);
 
         //response
-        FlightResponseDto expectedBody = FlightResponseDtoFactory.getResponse();
-        System.out.println(expectedBody);
+        var expectedBody = MessageDTO.builder()
+                .message("Reserva de vuelo dada de alta correctamente.")
+                .name("CREACIÓN")
+                .build();
 
         // request
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-                .post("/api/v1/flight-reservation/")
+                .post("/api/v1/flight-reservation/new")
                 .content(writer.writeValueAsString(flightReservationReqDto))
                 .contentType(MediaType.APPLICATION_JSON);
 

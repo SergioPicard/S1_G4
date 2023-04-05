@@ -85,7 +85,7 @@ public class HotelesController {
     }
 
     @GetMapping("/getHotelPeopleCant")
-    public ResponseEntity<List<Map<String, Integer>>> getIdHotelPeopleAmount(){
+    public ResponseEntity<List<Map<String, Number>>> getIdHotelPeopleAmount(){
        return ResponseEntity.ok(hotelesService.getIdHotelPeopleAmount());
     }
     @GetMapping("/findRoomType/{roomType}")

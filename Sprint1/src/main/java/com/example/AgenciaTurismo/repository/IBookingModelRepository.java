@@ -10,7 +10,7 @@ import java.util.Map;
 public interface IBookingModelRepository extends JpaRepository<BookingModel,Integer> {
     List<BookingModel> findByHotelCode(String codigo);
 
-    @Query("SELECT new map(b.hotelModel.id AS id_hotel, (SIZE(b.people)) AS cant_personas) FROM BookingModel AS b")
-    List<Map<String, Integer>> getIdHotelPeopleAmount();
+    @Query("SELECT new map(b.hotelModel.id AS id_hotel, SUM(SIZE(b.people)) AS cant_personas) FROM BookingModel AS b GROUP BY b.hotelModel.id")
+    List<Map<String, Number>> getIdHotelPeopleAmount();
 
 }
