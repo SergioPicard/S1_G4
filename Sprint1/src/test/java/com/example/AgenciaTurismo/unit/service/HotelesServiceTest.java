@@ -1,15 +1,10 @@
 package com.example.AgenciaTurismo.unit.service;
 
-import com.example.AgenciaTurismo.dto.request.BookingDto;
 import com.example.AgenciaTurismo.dto.request.BookingRequestDto;
-import com.example.AgenciaTurismo.dto.request.FlightReservationReqDto;
 import com.example.AgenciaTurismo.dto.response.*;
 import com.example.AgenciaTurismo.exceptions.SinHotelesException;
-import com.example.AgenciaTurismo.exceptions.VuelosException;
-import com.example.AgenciaTurismo.repository.IFlightsRepository;
 import com.example.AgenciaTurismo.repository.IHotelesRepository;
-import com.example.AgenciaTurismo.service.FlightsService;
-import com.example.AgenciaTurismo.service.HotelesService;
+import com.example.AgenciaTurismo.service.classes.HotelesService;
 import com.example.AgenciaTurismo.util.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -22,9 +17,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class HotelesServiceTest {

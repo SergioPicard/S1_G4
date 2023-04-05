@@ -1,5 +1,6 @@
 package com.example.AgenciaTurismo.dto.response;
 
+import com.example.AgenciaTurismo.dto.request.PaymentMethodDto;
 import com.example.AgenciaTurismo.dto.request.PeopleDto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.OptBoolean;
@@ -26,4 +27,5 @@ public class BookingResDto {
     private Integer peopleAmount;
     private String roomType;
     private List<PeopleDto> people;
+    private PaymentMethodDto paymentMethod;
 }
