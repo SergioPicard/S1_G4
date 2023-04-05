@@ -1,0 +1,313 @@
+{
+	"info": {
+		"_postman_id": "bd882327-a6c5-4b75-a420-1362aa2848d0",
+		"name": "agencia",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23970184"
+	},
+	"item": [
+		{
+			"name": "vuelos",
+			"item": [
+				{
+					"name": "ListaVuelos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/v1/flights",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"flights"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "VuelosDisponibles",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/v1/flight?dateFrom=10/02/2022&dateTo=15/02/2022&origin=Buenos Aires&destination=santa fe",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"flight"
+							],
+							"query": [
+								{
+									"key": "dateFrom",
+									"value": "10/02/2022"
+								},
+								{
+									"key": "dateTo",
+									"value": "15/02/2022"
+								},
+								{
+									"key": "origin",
+									"value": "Buenos Aires"
+								},
+								{
+									"key": "destination",
+									"value": "santa fe"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ReservaVuelos",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userName\" : \"luchofesta@gmail.com\",\r\n    \"flightReservation\" : {\r\n        \"dateFrom\" : \"10/02/2022\",\r\n        \"datoTo\" : \"20/02/2022\",\r\n        \"origin\" : \"Puerto Iguazú\",\r\n        \"destination\" : \"Bogotá\",\r\n        \"flightNumber\" : \"PIBA-1420\",\r\n        \"seats\" : 2,\r\n        \"seatType\" : \"Business\",\r\n        \"people\" : [\r\n            {\r\n                \"dni\" : \"36365939\",\r\n                \"name\" : \"Luciano\",\r\n                \"lastName\" : \"Festa\",\r\n                \"birthDate\" : \"1992-01-24\",\r\n                \"email\" : \"luchofesta@gmail.com\"\r\n            },\r\n            {\r\n                \"dni\" : \"38884160\",\r\n                \"name\" : \"Sofia\",\r\n                \"lastName\" : \"Ramos Dietmair\",\r\n                \"birthDate\" : \"1995-07-12\",\r\n                \"email\" : \"sofiramos@gmail.com\"\r\n            }\r\n        ]\r\n    },\r\n    \"paymentMethodDto\" : {\r\n            \"type\" : \"creditcard\",\r\n            \"number\" : \"4545858596966565\",\r\n            \"dues\" : 2\r\n        }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/v1/flight-reservation",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"flight-reservation"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "crearVuelo",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "    {\r\n        \"nroVuelo\": \"LUCHO-1992\",\r\n        \"origen\": \"Buenos Aires\",\r\n        \"destino\": \"Puerto Iguazú\",\r\n        \"tipoAsiento\": \"Economy\",\r\n        \"precioPersona\": 6500.0,\r\n        \"fechaIda\": \"2022-02-10\",\r\n        \"fechaVuelta\": \"2022-02-15\"\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/v1/flights/new",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"flights",
+								"new"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "eliminarVuelo",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/v1/flights/LUCHO-1992",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"flights",
+								"LUCHO-1992"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "hoteles",
+			"item": [
+				{
+					"name": "HotelesDisponibles",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:8080/api/v1/hotel?dateFrom=16/02/2022&dateTo=15/03/2022&destination=cordoba",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"hotel"
+							],
+							"query": [
+								{
+									"key": "dateFrom",
+									"value": "16/02/2022"
+								},
+								{
+									"key": "dateTo",
+									"value": "15/03/2022"
+								},
+								{
+									"key": "destination",
+									"value": "cordoba"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reserva",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userName\" : \"luchofesta@gmail.com\",\r\n    \"booking\" : {\r\n        \"dateFrom\" : \"15/02/2022\",\r\n        \"datoTo\" : \"14/02/2022\",\r\n        \"destination\" : \"buenos aires\",\r\n        \"hotelCode\" : \"BH-0002\",\r\n        \"peopleAmount\" : 2,\r\n        \"roomType\" : \"doble\",\r\n        \"people\" : [\r\n            {\r\n                \"dni\" : \"36365939\",\r\n                \"name\" : \"Luciano\",\r\n                \"lastName\" : \"Festa\",\r\n                \"birthDate\" : \"1992-01-24\",\r\n                \"email\" : \"luchofesta@gmail.com\"\r\n            },\r\n            {\r\n                \"dni\" : \"38884160\",\r\n                \"name\" : \"Sofia\",\r\n                \"lastName\" : \"Ramos Dietmair\",\r\n                \"birthDate\" : \"1995-07-12\",\r\n                \"email\" : \"sofiramos@gmail.com\"\r\n            }\r\n        ],\r\n        \"paymentMethod\" : {\r\n            \"type\" : \"creditcard\",\r\n            \"number\" : \"4545858596966565\",\r\n            \"dues\" : 4\r\n        }\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/v1/booking",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"booking"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ListaHoteles",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:8080/api/v1/hotels",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"hotels"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "crearHotel",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "    {\r\n        \"codigoHotel\": \"CAMI-HOTEL\",\r\n        \"nombre\": \"Cataratas Hotel\",\r\n        \"lugar\": \"Puerto Iguazú\",\r\n        \"tipoHabitacion\": \"Doble\",\r\n        \"precioNoche\": 6300.0,\r\n        \"disponibleDesde\": \"2022-02-10\",\r\n        \"disponibleHasta\": \"2022-03-20\",\r\n        \"reservado\": false\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/v1/hotels",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"hotels"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "eliminarHotel",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/v1/hotels/CAMI-HOTEL",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"hotels",
+								"CAMI-HOTEL"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
