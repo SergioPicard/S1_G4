@@ -334,55 +334,51 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
         }
 
         }
-/*
-        if (flightsBookingRepository.existsById(id)) {
 
-            var model = flightsBookingRepository.getById(id);
-            var entity = mapper.map(bookingDto, BookingModel.class);
-            var hotel = flightsRepository.findByNroVuelo(model.getFlightReservationResModel().getFlightNumber()).get(0);
+    public List<FlightsAvailableDto> findByLowerPrice()  {
 
-            //validationsBooking(entity, hotel);
+        // buscar el dato en la base de datos y asegurarnos que exista
+        var list = flightsRepository.findAllOrderByPrecioPersonaAsc();
 
-            if(!entity.getPeopleAmount().equals(model.getPeopleAmount())){
+        return list.stream().map(
+                        flight -> mapper.map(flight, FlightsAvailableDto.class)
+                )
+                .collect(Collectors.toList());
+    }
 
-                if(peopleAmountFitInRoom(entity)){
-                    throw new CustomException("EDICIÓN", "La cantidad de personas no puede ser mayor a: "+maxPersonsPerRoom(entity)+ ".");
-                }
-            }
+    public List<FlightsAvailableDto> findByDestinationAndSeat(String destination, String seat){
 
-            if(entity.getPeopleAmount() != entity.getPeople().size() || !entity.getPeopleAmount().equals(model.getPeopleAmount())){
-                throw new CustomException("EDICIÓN", "La cantidad de personas ingresadas no coincide con la estipulada");
-
-            }
-            for (int i = 0; i < model.getPeople().size(); i++) {
-                var personId = model.getPeople().get(i).getId();
-                entity.getPeople().get(i).setId(personId);
-            }
-
-
-            entity.setId(id);
-            entity.setTotal(model.getTotal());
-            entity.setHotelModel(model.getHotelModel());
-
-            var paymentId = model.getPaymentMethod().getId();
-            entity.getPaymentMethod().setId(paymentId);
-            //probar no crear nuevas personas si ya existen en la base de datos
-            // crear un Irepository de personas, y buscarlas por id? o crear metodo nombrado para buscar?
-            //que pasa si cambio el numero de personas?
-
-            bookingModelRepository.save(entity);
-            return MessageDTO.builder()
-                    .name("MODIFICACION")
-                    .message("Reserva de hotel modificada correctamente")
-                    .build();
-        } else {
-            return MessageDTO.builder()
-                    .name("MODIFICACION")
-                    .message("No se pudo encontrar la reserva especificada")
-                    .build();
+        if (seat.isEmpty()){
+            throw new CustomException("FILTRADO", "Debe envíar un tipo de asiento. Economy/Business");
         }
-    }*/
+
+        if (destination.isEmpty()){
+            throw new CustomException("FILTRADO", "Debe envíar un destino");
+        }
+
+        var allList = flightsRepository.findAll();
+
+        List<FlightModel> flightsDestino = allList.stream()
+                .filter(flight -> flight.getDestino().equalsIgnoreCase(destination))
+                .collect(Collectors.toList());
+
+            if (flightsDestino.isEmpty()) {
+                throw new CustomException("FILTRADO", "No hay vuelos hacía este destino.");
+            }
 
 
+        var list = flightsRepository.findByDestinoAndTipoAsiento(destination, seat);
+
+        if (list.isEmpty()){
+            throw new CustomException("FILTRADO", "No hay asientos de tipo: " + seat);
+
+        }
+
+        return list.stream().map(
+                        flight -> mapper.map(flight, FlightsAvailableDto.class)
+                )
+                .collect(Collectors.toList());
+
+    }
 
 }

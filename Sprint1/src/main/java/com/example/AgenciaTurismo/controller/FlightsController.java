@@ -89,5 +89,16 @@ public class FlightsController {
         );
     }
 
+    @GetMapping("/flight/findBySeat")
+    public List<FlightsAvailableDto> findBySeat(@RequestParam("destination") String destination,
+                                                @RequestParam("seat") String seat) {
+        return flightsService.findByDestinationAndSeat(destination, seat);
 
+    }
+
+
+    @GetMapping("/flight/findByLowerPrice")
+    public List<FlightsAvailableDto> filterByLowerPrice(){
+        return flightsService.findByLowerPrice();
+    }
 }

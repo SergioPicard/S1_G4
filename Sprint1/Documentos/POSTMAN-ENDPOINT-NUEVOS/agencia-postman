@@ -1,0 +1,180 @@
+{
+	"info": {
+		"_postman_id": "822b15cf-20a3-46c9-8794-f98cc47586cc",
+		"name": "agenciaSergio",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26127744"
+	},
+	"item": [
+		{
+			"name": "vuelos",
+			"item": [
+				{
+					"name": "FindBySeat",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/v1/flight/findBySeat?destination=Tucumán&seat=Economy",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"flight",
+								"findBySeat"
+							],
+							"query": [
+								{
+									"key": "destination",
+									"value": "Tucumán"
+								},
+								{
+									"key": "seat",
+									"value": "Economy"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "findByLowerPrice",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/v1/flight/findByLowerPrice",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"flight",
+								"findByLowerPrice"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "hoteles",
+			"item": [
+				{
+					"name": "FindByDestination",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/v1/hotels/findByDestination/Puerto Iguazú",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"hotels",
+								"findByDestination",
+								"Puerto Iguazú"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "findByLowerPrice",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/v1/hotels/findByLowerPrice",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"hotels",
+								"findByLowerPrice"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "staySimulation",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/v1/hotels/staySimulation?hotelCode=CH-0002&days=10&peopleAmount=2&pay=credit&seat=6",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"hotels",
+								"staySimulation"
+							],
+							"query": [
+								{
+									"key": "hotelCode",
+									"value": "CH-0002"
+								},
+								{
+									"key": "days",
+									"value": "10"
+								},
+								{
+									"key": "peopleAmount",
+									"value": "2"
+								},
+								{
+									"key": "pay",
+									"value": "credit"
+								},
+								{
+									"key": "seat",
+									"value": "6"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "findByName",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/v1/hotels/findByName/Cata",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"hotels",
+								"findByName",
+								"Cata"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

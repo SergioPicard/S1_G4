@@ -5,10 +5,13 @@ info:
   version: 1.0.0
 servers:
 - url: localhost:8080/api/v1/hotels/
+- url: localhost:8080/api/v1/flight/
+
 tags:
 - name: Hoteles
   description: Información de los hoteles disponibles ofrecidos por la empresa.
-
+- name: Vuelos
+  description: Información de los vuelos disponibles ofrecidos por la empresa.
 paths:
 
   /findByDestination/{destination}:
@@ -125,7 +128,59 @@ paths:
                 $ref: '#/components/schemas/HotelFindByName'
         400:
           $ref: '#/components/responses/BadRequest'
+          
+          
   
+  /findBySeat:
+     get:
+      tags:
+      - Vuelos
+      summary: Búsqueda de vuelos a un destino y por asientos.
+      parameters:
+        - in: query
+          name: destination
+          required: true
+          schema:
+            type: string
+          allowReserved: true
+        - in: query
+          name: seat
+          required: true
+          schema:
+            type: string
+          allowReserved: true
+       
+      responses:
+        200:
+          description: (OK) Consulta realizada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VuelosSeatGet'
+        400:
+          $ref: '#/components/responses/BadRequest'
+          
+  /findByLowerPriceFlight:
+    get:
+      tags:
+      - Vuelos
+      summary: Muestra todos los vuelos ofrecidos, ordenados de menor a mayor costo.
+      responses:
+        200:
+          description:  (OK) Consulta realizada.
+          content:
+            application/json:
+              schema:
+                properties:
+                  lista de vuelos:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/VuelosSeatGet'
+                  
+        400:
+          $ref: '#/components/responses/BadRequest'          
+          
+
 components:
   responses:
     
@@ -209,9 +264,6 @@ components:
               enum: [SIMULACIÓN]
               description: Nombre de la simulación
               
-              
-              
-              
     HotelFindByName:
         type: object
         properties:
@@ -243,3 +295,34 @@ components:
             reservado:
               type: boolean
               description: Si está reservado
+              
+    VuelosSeatGet:
+      type: object
+      properties:
+        destino:
+          type: string
+          description: Destino del vuelo
+        fechaIda:
+          type: string
+          format: date
+          description: Fecha de inicio de vuelo
+        fechaVuelta:
+          type: string
+          format: date
+          description: Fecha de fin de vuelo
+        nroVuelo:
+          type: string
+          description: Número de vuelo
+        origen:
+          type: string
+          description: Lugar de inicio de vuelo
+        precioPersona:
+          type: integer
+          description: Precio del pasaje
+        tipoAsiento:
+          type: string
+          description: Tipo de asiento
+
+        reservado:
+          type: boolean
+          description: Si está reservado              
