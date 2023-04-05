@@ -420,7 +420,7 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
         return total;
     }
 
-    public List<Map<String, Integer>> getIdFlightPeopleAmount(){
+    public List<Map<String, Number>> getIdFlightPeopleAmount(){
 
         return flightReservationResRepository.getIdFlightPeopleAmount();
     }

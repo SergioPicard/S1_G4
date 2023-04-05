@@ -91,7 +91,7 @@ public class FlightsController {
     }
 
     @GetMapping("/getFlightPeopleCant")
-    public ResponseEntity<List<Map<String, Integer>>> getIdFlightPeopleAmount(){
+    public ResponseEntity<List<Map<String, Number>>> getIdFlightPeopleAmount(){
         return ResponseEntity.ok(flightsService.getIdFlightPeopleAmount());
     }
 

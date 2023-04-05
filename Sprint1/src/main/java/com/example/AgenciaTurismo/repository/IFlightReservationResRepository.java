@@ -11,7 +11,7 @@ import java.util.Map;
 public interface IFlightReservationResRepository extends JpaRepository<FlightReservationResModel,Integer> {
     List<FlightReservationResModel> findByFlightNumber(String codigo);
 
-    @Query("SELECT new map(b.flightModel.id AS id_vuelo, SIZE(b.people) AS cant_personas) FROM FlightReservationResModel AS b")
-    List<Map<String, Integer>> getIdFlightPeopleAmount();
+    @Query("SELECT new map(b.flightModel.id AS id_vuelo, SUM(SIZE(b.people)) AS cant_personas) FROM FlightReservationResModel AS b GROUP BY b.flightModel.id")
+    List<Map<String, Number>> getIdFlightPeopleAmount();
 
 }

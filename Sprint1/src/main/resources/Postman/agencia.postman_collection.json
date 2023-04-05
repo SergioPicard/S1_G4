@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "5116d6a9-4f24-43ea-ba98-717fe981ba2f",
+		"_postman_id": "e4976998-4c24-49db-a57f-1c190deb8e61",
 		"name": "agencia",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "23937392"
+		"_exporter_id": "23969869"
 	},
 	"item": [
 		{
@@ -30,12 +30,32 @@
 					"response": []
 				},
 				{
+					"name": "ListaBookingVuelos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/v1/flight-reservations",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"flight-reservations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "VuelosDisponibles",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "localhost:8080/api/v1/flight?dateFrom=02/01/2022&dateTo=16/01/2022&origin=tucumán&destination=puerto iguazú",
+							"raw": "localhost:8080/api/v1/flight?dateFrom=10/02/2022&dateTo=15/02/2022&origin=Buenos Aires&destination=santa fe",
 							"host": [
 								"localhost"
 							],
@@ -48,20 +68,61 @@
 							"query": [
 								{
 									"key": "dateFrom",
-									"value": "02/01/2022"
+									"value": "10/02/2022"
 								},
 								{
 									"key": "dateTo",
-									"value": "16/01/2022"
+									"value": "15/02/2022"
 								},
 								{
 									"key": "origin",
-									"value": "tucumán"
+									"value": "Buenos Aires"
 								},
 								{
 									"key": "destination",
-									"value": "puerto iguazú"
+									"value": "santa fe"
 								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getVuelosPrecio",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/v1/findFlightByPrice/1000",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"findFlightByPrice",
+								"1000"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getCantPersonasVuelo",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/v1/getFlightPeopleCant",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"getFlightPeopleCant"
 							]
 						}
 					},
@@ -74,7 +135,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"userName\" : \"luchofesta@gmail.com\",\r\n    \"flightReservation\" : {\r\n            \"flightNumber\": \"LUCHO-1992\",\r\n            \"origin\": \"Buenos Aires\",\r\n            \"destination\": \"Morteros\",\r\n            \"seats\" : 2,\r\n            \"seatType\": \"Economy\",\r\n            \"dateFrom\": \"10/02/2022\",\r\n            \"datoTo\": \"15/02/2022\",\r\n             \"people\" : [\r\n            {\r\n                \"dni\" : \"37491218\",\r\n                \"name\" : \"Luciano\",\r\n                \"lastName\" : \"Festa\",\r\n                \"birthDate\" : \"1992-01-24\",\r\n                \"email\" : \"luchofesta@gmail.com\"\r\n            },\r\n                        {\r\n                \"dni\" : \"37491218\",\r\n                \"name\" : \"Luciano\",\r\n                \"lastName\" : \"Festa\",\r\n                \"birthDate\" : \"1992-01-24\",\r\n                \"email\" : \"luchofesta@gmail.com\"\r\n            }\r\n        ]\r\n        },\r\n    \"paymentMethodDto\" : {\r\n            \"type\" : \"debitCard\",\r\n            \"number\" : \"4545858596966565\",\r\n            \"dues\" : 1\r\n        }\r\n    }\r\n",
+							"raw": "{\r\n    \"userName\" : \"luchofesta@gmail.com\",\r\n    \"flightReservation\" : {\r\n            \"flightNumber\": \"LUCHO-1992\",\r\n            \"origin\": \"Buenos Aires\",\r\n            \"destination\": \"Puerto Iguazú\",\r\n            \"seats\" : 1,\r\n            \"seatType\": \"Business\",\r\n            \"dateFrom\": \"10/02/2022\",\r\n            \"datoTo\": \"15/02/2022\",\r\n             \"people\" : [\r\n            {\r\n                \"dni\" : \"36365939\",\r\n                \"name\" : \"Lucas\",\r\n                \"lastName\" : \"Festa\",\r\n                \"birthDate\" : \"1992-01-24\",\r\n                \"email\" : \"luchofesta@gmail.com\"\r\n            }\r\n        ]\r\n        },\r\n    \"paymentMethodDto\" : {\r\n            \"type\" : \"debitCard\",\r\n            \"number\" : \"4545858596966565\",\r\n            \"dues\" : 1\r\n        }\r\n    }\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -98,13 +159,13 @@
 					"response": []
 				},
 				{
-					"name": "crearReserva2",
+					"name": "crearReserva2SeatType",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"userName\" : \"luchofesta@gmail.com\",\r\n    \"flightReservation\" : {\r\n            \"flightNumber\": \"BOBA-6567\",\r\n            \"origin\": \"Bogotá\",\r\n            \"destination\": \"Buenos Aires\",\r\n            \"seats\" : 1,\r\n            \"seatType\": \"Economy\",\r\n            \"dateFrom\": \"01/03/2022\",\r\n            \"datoTo\": \"14/03/2022\",\r\n             \"people\" : [\r\n            {\r\n                \"dni\" : \"37491218\",\r\n                \"name\" : \"Luciano\",\r\n                \"lastName\" : \"Festa\",\r\n                \"birthDate\" : \"1992-01-24\",\r\n                \"email\" : \"luchofesta@gmail.com\"\r\n            }\r\n        ]\r\n        },\r\n    \"paymentMethodDto\" : {\r\n            \"type\" : \"debitCard\",\r\n            \"number\" : \"4545858596966565\",\r\n            \"dues\" : 1\r\n        }\r\n    }\r\n",
+							"raw": "{\r\n    \"userName\" : \"luchofesta@gmail.com\",\r\n    \"flightReservation\" : {\r\n            \"flightNumber\": \"PIBA-1420\",\r\n            \"origin\": \"Puerto Iguazú\",\r\n            \"destination\": \"Bogotá\",\r\n            \"seats\" : 1,\r\n            \"seatType\": \"Business\",\r\n            \"dateFrom\": \"10/02/2022\",\r\n            \"datoTo\": \"20/02/2022\",\r\n             \"people\" : [\r\n            {\r\n                \"dni\" : \"36365939\",\r\n                \"name\" : \"Lucas\",\r\n                \"lastName\" : \"Festa\",\r\n                \"birthDate\" : \"1992-01-24\",\r\n                \"email\" : \"luchofesta@gmail.com\"\r\n            }\r\n        ]\r\n        },\r\n    \"paymentMethodDto\" : {\r\n            \"type\" : \"debitCard\",\r\n            \"number\" : \"4545858596966565\",\r\n            \"dues\" : 1\r\n        }\r\n    }\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -134,7 +195,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "    {\r\n        \"nroVuelo\": \"LUCHO-1992\",\r\n        \"origen\": \"Buenos Aires\",\r\n        \"destino\": \"Morteros\",\r\n        \"tipoAsiento\": \"Business\",\r\n        \"precioPersona\": 10000.0,\r\n        \"fechaIda\": \"2022-02-10\",\r\n        \"fechaVuelta\": \"2022-02-15\"\r\n    }",
+							"raw": "    {\r\n        \"nroVuelo\": \"LUCHO-1992\",\r\n        \"origen\": \"Buenos Aires\",\r\n        \"destino\": \"Puerto Iguazú\",\r\n        \"tipoAsiento\": \"Business\",\r\n        \"precioPersona\": 6500.0,\r\n        \"fechaIda\": \"2022-02-10\",\r\n        \"fechaVuelta\": \"2022-02-15\"\r\n    }",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -152,6 +213,102 @@
 								"v1",
 								"flights",
 								"new"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "modificarVuelo",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "   {\r\n        \"nroVuelo\": \"SALVA\",\r\n        \"origen\": \"Puerto Iguazú\",\r\n        \"destino\": \"Bogotá\",\r\n        \"tipoAsiento\": \"Business\",\r\n        \"precioPersona\": 43200.0,\r\n        \"fechaIda\": \"2022-02-10\",\r\n        \"fechaVuelta\": \"2022-02-20\"\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/v1/flights/edit?flightNumber=PIBA-1420",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"flights",
+								"edit"
+							],
+							"query": [
+								{
+									"key": "flightNumber",
+									"value": "PIBA-1420"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "modificarBookingVuelo",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"userName\": \"luchofesta@gmail.com\",\r\n        \"flightReservation\": {\r\n            \"dateFrom\": \"10/02/2022\",\r\n            \"datoTo\": \"15/02/2022\",\r\n            \"origin\": \"Buenos Aires\",\r\n            \"destination\": \"Puerto Iguazú\",\r\n            \"flightNumber\": \"LUCHO-1992\",\r\n            \"seats\": 1,\r\n            \"seatType\": \"Business\",\r\n            \"people\": [\r\n                {\r\n                    \"dni\": \"36365939\",\r\n                    \"name\": \"Lucas\",\r\n                    \"lastName\": \"Festa\",\r\n                    \"birthDate\": \"1992-01-24\",\r\n                    \"email\": \"luchofesta@gmail.com\"\r\n                }\r\n            ]\r\n        },\r\n        \"paymentMethod\": {\r\n            \"type\": \"debitCard\",\r\n            \"number\": \"4545858596966565\",\r\n            \"dues\": 1\r\n        }\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/v1/flight-reservation/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"flight-reservation",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "modificarBookingVuelo2SeatType",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"userName\": \"luchofestmail.com\",\r\n        \"flightReservation\": {\r\n            \"dateFrom\": \"10/02/2022\",\r\n            \"datoTo\": \"20/02/2022\",\r\n            \"origin\": \"Puerto Iguazú\",\r\n            \"destination\": \"Bogotá\",\r\n            \"flightNumber\": \"PIBA-1420\",\r\n            \"seats\": 1,\r\n            \"seatType\": \"Business\",\r\n            \"people\": [\r\n                {\r\n                    \"dni\": \"36365939\",\r\n                    \"name\": \"Lucas\",\r\n                    \"lastName\": \"Festa\",\r\n                    \"birthDate\": \"1992-01-24\",\r\n                    \"email\": \"luchofesta@gmail.com\"\r\n                }\r\n            ]\r\n        },\r\n        \"paymentMethod\": {\r\n            \"type\": \"debitCard\",\r\n            \"number\": \"4545858596966565\",\r\n            \"dues\": 1\r\n        }\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/v1/flight-reservation/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"flight-reservation",
+								"1"
 							]
 						}
 					},
@@ -184,7 +341,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "localhost:8080/api/v1/flight-reservation/delete/2",
+							"raw": "localhost:8080/api/v1/flight-reservation/delete/1",
 							"host": [
 								"localhost"
 							],
@@ -194,92 +351,6 @@
 								"v1",
 								"flight-reservation",
 								"delete",
-								"2"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "modificarVuelo",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "    {\r\n        \"nroVuelo\": \"LUCHO-1992\",\r\n        \"origen\": \"SAnta Fe\",\r\n        \"destino\": \"Morteros\",\r\n        \"tipoAsiento\": \"Economy\",\r\n        \"precioPersona\": 10000.0,\r\n        \"fechaIda\": \"2022-02-10\",\r\n        \"fechaVuelta\": \"2022-02-15\"\r\n    }",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "localhost:8080/api/v1/flights/edit?flightNumber=LUCHO-1992",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"api",
-								"v1",
-								"flights",
-								"edit"
-							],
-							"query": [
-								{
-									"key": "flightNumber",
-									"value": "LUCHO-1992"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "ListaReservas",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "localhost:8080/api/v1/flight-reservations",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"api",
-								"v1",
-								"flight-reservations"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "modificarReserva",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "    {\r\n        \"userName\": \"luchofesta@gmail.com\",\r\n        \"flightReservation\": {\r\n            \"dateFrom\": \"10/02/2022\",\r\n            \"datoTo\": \"15/02/2022\",\r\n            \"origin\": \"Buenos Aires\",\r\n            \"destination\": \"Morteros\",\r\n            \"flightNumber\": \"LUCHO-1992\",\r\n            \"seats\": 2,\r\n            \"seatType\": \"Business\",\r\n            \"people\": [\r\n                {\r\n                    \"dni\": \"36365939\",\r\n                    \"name\": \"Luciano\",\r\n                    \"lastName\": \"Festa\",\r\n                    \"birthDate\": \"1992-01-24\",\r\n                    \"email\": \"luchofesta@gmail.com\"\r\n                },\r\n                {\r\n                    \"dni\": \"37491218\",\r\n                    \"name\": \"Lucas\",\r\n                    \"lastName\": \"Festa\",\r\n                    \"birthDate\": \"1993-06-05\",\r\n                    \"email\": \"lucasfesta@gmail.com\"\r\n                }\r\n            ]\r\n        },\r\n        \"paymentMethod\": {\r\n            \"type\": \"creditCard\",\r\n            \"number\": \"4545858596965445\",\r\n            \"dues\": 3\r\n        }\r\n    }",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "localhost:8080/api/v1/flight-reservation/1",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"api",
-								"v1",
-								"flight-reservation",
 								"1"
 							]
 						}
@@ -333,21 +404,19 @@
 					"response": []
 				},
 				{
-					"name": "crearReserva",
+					"name": "HotelesDisponibles Copy",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
-						"method": "POST",
+						"method": "GET",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"userName\" : \"luchofesta@gmail.com\",\r\n    \"booking\" : {\r\n        \"dateFrom\" : \"13/02/2022\",\r\n        \"datoTo\" : \"27/02/2022\",\r\n        \"destination\" : \"Puerto Iguazú\",\r\n        \"hotelCode\" : \"CAMI-HOTEL\",\r\n        \"peopleAmount\" : 2,\r\n        \"roomType\" : \"DOBLE\",\r\n        \"people\" : [\r\n            {\r\n                \"dni\" : \"36365939\",\r\n                \"name\" : \"Luciano\",\r\n                \"lastName\" : \"Festa\",\r\n                \"birthDate\" : \"1992-01-24\",\r\n                \"email\" : \"luchofesta@gmail.com\"\r\n            },\r\n            {\r\n                \"dni\" : \"38884160\",\r\n                \"name\" : \"Sofia\",\r\n                \"lastName\" : \"Ramos Dietmair\",\r\n                \"birthDate\" : \"1995-07-12\",\r\n                \"email\" : \"sofiramos@gmail.com\"\r\n            }\r\n        ],\r\n        \"paymentMethod\" : {\r\n            \"type\" : \"creditcard\",\r\n            \"number\" : \"4545858596966565\",\r\n            \"dues\" : 2\r\n        }\r\n    }\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
+							"raw": ""
 						},
 						"url": {
-							"raw": "localhost:8080/api/v1/hotel-booking/new",
+							"raw": "localhost:8080/api/v1/findRoomType/doble",
 							"host": [
 								"localhost"
 							],
@@ -355,8 +424,8 @@
 							"path": [
 								"api",
 								"v1",
-								"hotel-booking",
-								"new"
+								"findRoomType",
+								"doble"
 							]
 						}
 					},
@@ -390,6 +459,117 @@
 					"response": []
 				},
 				{
+					"name": "listarReservas",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/v1/hotel-bookings",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"hotel-bookings"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getCantPersonasHotel",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/v1/getHotelPeopleCant",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"getHotelPeopleCant"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getHotelesPrecio",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/v1/findHotelByPrice/1000",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"findHotelByPrice",
+								"1000"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "buscarHotelPorTipoHabitacion",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/v1/getHotelPeopleCant",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"getHotelPeopleCant"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "crearReserva",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userName\" : \"luchofesta@gmail.com\",\r\n    \"booking\" : {\r\n        \"dateFrom\" : \"13/02/2022\",\r\n        \"datoTo\" : \"27/02/2022\",\r\n        \"destination\" : \"Puerto Iguazú\",\r\n        \"hotelCode\" : \"CAMI-HOTEL\",\r\n        \"peopleAmount\" : 2,\r\n        \"roomType\" : \"DOBLE\",\r\n        \"people\" : [\r\n            {\r\n                \"dni\" : \"36365939\",\r\n                \"name\" : \"Luciano\",\r\n                \"lastName\" : \"Festa\",\r\n                \"birthDate\" : \"1992-01-24\",\r\n                \"email\" : \"luchofesta@gmail.com\"\r\n            },\r\n            {\r\n                \"dni\" : \"38884160\",\r\n                \"name\" : \"Sofia\",\r\n                \"lastName\" : \"Ramos Dietmair\",\r\n                \"birthDate\" : \"1995-07-12\",\r\n                \"email\" : \"sofiramos@gmail.com\"\r\n            }\r\n        ],\r\n        \"paymentMethod\" : {\r\n            \"type\" : \"creditcard\",\r\n            \"number\" : \"4545858596966565\",\r\n            \"dues\" : 2\r\n        }\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/v1/hotel-booking/new",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"hotel-booking",
+								"new"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "crearHotel",
 					"request": {
 						"method": "POST",
@@ -414,6 +594,72 @@
 								"v1",
 								"hotels",
 								"new"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "editarReserva",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "    {\r\n        \"dateFrom\": \"13/02/2022\",\r\n        \"datoTo\": \"27/02/2022\",\r\n        \"destination\": \"Puerto Iguazú\",\r\n        \"hotelCode\": \"CAMI-HOTEL\",\r\n        \"peopleAmount\": 2,\r\n        \"roomType\": \"Doble\",\r\n        \"people\": [\r\n            {\r\n                \"dni\": \"36365939\",\r\n                \"name\": \"Manu\",\r\n                \"lastName\": \"Festa\",\r\n                \"birthDate\": \"1992-01-24\",\r\n                \"email\": \"luchofesta@gmail.com\"\r\n            },\r\n            {\r\n                \"dni\": \"38884160\",\r\n                \"name\": \"Jean\",\r\n                \"lastName\": \"Ramos Dietmair\",\r\n                \"birthDate\": \"1995-07-12\",\r\n                \"email\": \"sofiramos@gmail.com\"\r\n            }\r\n        ],\r\n        \"paymentMethod\": {\r\n            \"type\": \"creditcard\",\r\n            \"number\": \"4545858596966565\",\r\n            \"dues\": 3\r\n        }\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/v1/hotel-booking/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"hotel-booking",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "modificarHotel",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "\r\n    {\r\n        \"codigoHotel\": \"CH-0003\",\r\n        \"nombre\": \"Cataratas Hotel 5\",\r\n        \"lugar\": \"Puerto Iguazú\",\r\n        \"tipoHabitacion\": \"Triple\",\r\n        \"precioNoche\": 8200.0,\r\n        \"disponibleDesde\": \"2022-02-10\",\r\n        \"disponibleHasta\": \"2022-03-23\",\r\n        \"reservado\": false\r\n    }\r\n    ",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/v1/hotels/edit?hotelCode=CH-0003",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"hotels",
+								"edit"
+							],
+							"query": [
+								{
+									"key": "hotelCode",
+									"value": "CH-0003"
+								}
 							]
 						}
 					},
@@ -457,92 +703,6 @@
 								"hotel-booking",
 								"delete",
 								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "editarReserva",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "    {\r\n        \"dateFrom\": \"20/02/2022\",\r\n        \"datoTo\": \"27/02/2022\",\r\n        \"destination\": \"Puerto Iguazú\",\r\n        \"hotelCode\": \"CAMI-HOTEL\",\r\n        \"peopleAmount\": 2,\r\n        \"roomType\": \"Doble\",\r\n        \"people\": [\r\n            {\r\n                \"dni\": \"36365939\",\r\n                \"name\": \"Manu\",\r\n                \"lastName\": \"Festa\",\r\n                \"birthDate\": \"1992-01-24\",\r\n                \"email\": \"luchofesta@gmail.com\"\r\n            },\r\n            {\r\n                \"dni\": \"38884160\",\r\n                \"name\": \"Jean\",\r\n                \"lastName\": \"Ramos Dietmair\",\r\n                \"birthDate\": \"1995-07-12\",\r\n                \"email\": \"sofiramos@gmail.com\"\r\n            }\r\n        ],\r\n        \"paymentMethod\": {\r\n            \"type\": \"creditcard\",\r\n            \"number\": \"4545858596966565\",\r\n            \"dues\": 6\r\n        }\r\n    }",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "localhost:8080/api/v1/hotel-booking/1",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"api",
-								"v1",
-								"hotel-booking",
-								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "listarReservas",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "localhost:8080/api/v1/hotel-bookings",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"api",
-								"v1",
-								"hotel-bookings"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "modificarHotel",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "\r\n    {\r\n        \"codigoHotel\": \"CH-0002\",\r\n        \"nombre\": \"Cataratas Hotel\",\r\n        \"lugar\": \"Morteros\",\r\n        \"tipoHabitacion\": \"Triple\",\r\n        \"precioNoche\": 6300.0,\r\n        \"disponibleDesde\": \"2022-02-10\",\r\n        \"disponibleHasta\": \"2022-03-20\",\r\n        \"reservado\": false\r\n    }\r\n    ",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "localhost:8080/api/v1/hotels/edit?hotelCode=CH-0002",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"api",
-								"v1",
-								"hotels",
-								"edit"
-							],
-							"query": [
-								{
-									"key": "hotelCode",
-									"value": "CH-0002"
-								}
 							]
 						}
 					},
