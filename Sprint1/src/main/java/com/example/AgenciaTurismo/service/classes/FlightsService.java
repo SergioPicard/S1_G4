@@ -411,4 +411,15 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
         return total;
     }
 
+    public List<FlightsAvailableDto> findByLowerPrice()  {
+
+        // buscar el dato en la base de datos y asegurarnos que exista
+        var list = flightsRepository.findAllOrderByPrecioPersonaAsc();
+
+        return list.stream().map(
+                        flight -> mapper.map(flight, FlightsAvailableDto.class)
+                )
+                .collect(Collectors.toList());
+    }
+
 }

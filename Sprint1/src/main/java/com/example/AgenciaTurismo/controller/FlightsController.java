@@ -89,4 +89,9 @@ public class FlightsController {
                 flightsService.updateBookingByID(id, bookingDto)
         );
     }
+
+    @GetMapping("/flight/findByLowerPrice")
+    public List<FlightsAvailableDto> filterByLowerPrice(){
+        return flightsService.findByLowerPrice();
+    }
 }
