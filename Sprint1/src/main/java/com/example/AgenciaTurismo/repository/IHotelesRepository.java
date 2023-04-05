@@ -15,4 +15,8 @@ public interface IHotelesRepository extends JpaRepository<HotelModel,Integer> {
 
     HotelModel findBycodigoHotelAndTipoHabitacionEquals(String code, String habitacion);
 
+    List<HotelModel> findByTipoHabitacionEquals(String roomType);
+
+    List<HotelModel> findByPrecioNocheLessThanEqual(Double price);
+
 }

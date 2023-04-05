@@ -1,8 +1,8 @@
+
 package com.example.AgenciaTurismo.unit.service;
 
-import com.example.AgenciaTurismo.dto.request.BookingRequestDto;
 import com.example.AgenciaTurismo.dto.response.*;
-import com.example.AgenciaTurismo.exceptions.SinHotelesException;
+import com.example.AgenciaTurismo.exceptions.CustomException;
 import com.example.AgenciaTurismo.repository.IHotelesRepository;
 import com.example.AgenciaTurismo.service.classes.HotelesService;
 import com.example.AgenciaTurismo.util.*;
@@ -15,7 +15,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
@@ -29,18 +28,51 @@ class HotelesServiceTest {
 
     @Test
     @DisplayName("Se buscan todos los hoteles - SERVICE")
-    void searchAll() {
+    void searchAllTest() {
         // arrange
         List<HotelAvailableDto> expected = HotelAvailableDtoFactory.listHotels();
 
         // act
-        Mockito.when(hotelesRepository.findAll()).thenReturn(HotelAvailableDtoFactory.listHotels());
-        var result = hotelesService.searchAll();
+        Mockito.when(hotelesRepository.findAll()).thenReturn(HotelModelFactory.listHotels());
+        var result = hotelesService.getAllEntities();
 
         // assert
         Assertions.assertEquals(expected,result);
     }
 
+    @Test
+    @DisplayName("Se buscan todas los Hoteles de un tipo de habitacion")
+    void findRoomTypeTest(){
+        // arrange
+        String param = "doble";
+        var expected = List.of(HotelAvailableDtoFactory.cataratasHotel());
+        var model = HotelModelFactory.cataratasHotel();
+        model.setId(1);
+
+        // act
+        Mockito.when(hotelesRepository.findByTipoHabitacionEquals(param)).thenReturn(List.of(model));
+
+        var result = hotelesService.findRoomType(param);
+
+        // assert
+        Assertions.assertEquals(expected, result);
+    }
+    @Test
+    @DisplayName("Se buscan todas los Hoteles de un tipo de habitacion")
+    void findRoomTypeExeptionTest(){
+        // arrange
+        String param = "ee";
+
+        // act
+        Mockito.when(hotelesRepository.findByTipoHabitacionEquals(param)).thenReturn(List.of());
+
+//        var result = hotelesService.findRoomType(param);
+
+        // assert
+        Assertions.assertThrows(CustomException.class, ()-> hotelesService
+                .findRoomType(param));
+    }
+/*
     @Test
     @DisplayName("Se filtran los hoteles, con fechas y destino como parámetros - SERVICE")
     public void filterHotels() {
@@ -406,6 +438,5 @@ class HotelesServiceTest {
 
 
 
-
-
+*/
 }

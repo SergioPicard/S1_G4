@@ -18,9 +18,11 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -97,7 +99,7 @@ public class HotelesService implements ICrudService<HotelAvailableDto,Integer,St
             throw new CustomException("FILTRAR","La fecha de ingreso debe ser menor a la de salida.");
         }
 
-        if (!destination.equalsIgnoreCase(list.stream().map(HotelModel::getLugar).toString())){
+        if (destination.equalsIgnoreCase(list.stream().map(HotelModel::getLugar).toString())){
         throw new CustomException("FILTRAR","No hay hoteles en el destino elegido.");
         }
 
@@ -145,6 +147,9 @@ public class HotelesService implements ICrudService<HotelAvailableDto,Integer,St
 
                     //VERIFICAMOS DISPONIBILIDAD EN ESAS FECHAS
                     if (compareDate(bookedHotel,bookingRequest)) {
+                        if(!availability(mapper.map(bookingRequest.getBooking(), BookingModel.class))){
+                            throw new CustomException("EDICIÓN", "No hay disponibilidad para las fechas elegidas");
+                        }
 
                         //VERIFICAMOS DE QUE EL DESTINO SOLICITADO ESTÉ EN EL MISMO LUGAR QUE EL HOTEL
                         if (bookedHotel.getLugar().equalsIgnoreCase(bookingRequest.getBooking().getDestination())) {
@@ -306,6 +311,9 @@ public class HotelesService implements ICrudService<HotelAvailableDto,Integer,St
             var entity = mapper.map(bookingDto, BookingModel.class);
             var hotel = hotelesRepository.findByCodigoHotel(model.getHotelCode()).get(0);
 
+            if(!availability(entity)){
+                throw new CustomException("EDICIÓN", "No hay disponibilidad para las fechas elegidas");
+            }
             validationsBooking(entity, hotel);
 
             if(!entity.getPeopleAmount().equals(model.getPeopleAmount())){
@@ -330,6 +338,8 @@ public class HotelesService implements ICrudService<HotelAvailableDto,Integer,St
 
             if(!entity.getPaymentMethod().getType().equalsIgnoreCase(model.getPaymentMethod().getType()) || !entity.getPaymentMethod().getDues().equals(model.getPaymentMethod().getDues())){
                 entity.setTotal(newTotal(entity));
+            } else {
+                entity.setTotal(model.getTotal());
             }
 
             var paymentId = model.getPaymentMethod().getId();
@@ -346,6 +356,18 @@ public class HotelesService implements ICrudService<HotelAvailableDto,Integer,St
         } else {
             throw new CustomException("MODIFICACIÓN", "No se pudo encontrar la reserva especificada");
         }
+    }
+
+    public List<HotelAvailableDto> findRoomType(String roomType){
+        List<HotelModel> list = hotelesRepository.findByTipoHabitacionEquals(roomType);
+
+        if (list.isEmpty()){
+            throw new CustomException("MODIFICACIÓN", "No existen hoteles con este tipo de habitacion: "+roomType);
+        }
+
+        return list.stream().map(
+                hotelModel -> mapper.map(hotelModel, HotelAvailableDto.class)
+        ).collect(Collectors.toList());
     }
 
     private Boolean compareDate(HotelModel hotel, BookingRequestDto request){
@@ -388,6 +410,8 @@ public class HotelesService implements ICrudService<HotelAvailableDto,Integer,St
                 }
                 break;
             }
+            default:
+                throw new CustomException("MODIFICACIÓN", "No existe el tipo de habitaicion requerida");
         }
     }
 
@@ -415,7 +439,7 @@ public class HotelesService implements ICrudService<HotelAvailableDto,Integer,St
 
     private Integer maxPersonsPerRoom(BookingModel booking){
 
-        Integer maxAmout = 0;
+        int maxAmout = 0;
 
         switch (booking.getRoomType()) {
             //INICIAMOS SWITCH PARA LOS 4 TIPO DE HABITACIONES EXISTENTES ENTRE TODOS LOS HOTELES
@@ -480,10 +504,9 @@ public class HotelesService implements ICrudService<HotelAvailableDto,Integer,St
         var cardType = booking.getPaymentMethod().getType();
         var total = bookingDays * hotel.getPrecioNoche();
 
-        if (cardType.equalsIgnoreCase("debitcard")){
-            if (!booking.getPaymentMethod().getDues().equals(1)){
+        if (cardType.equalsIgnoreCase("debitcard") && (!booking.getPaymentMethod().getDues().equals(1))){
                 throw new CustomException("EDICIÓN", "Solo se puede realizar el pago en una(1) cuota con tarjeta de debito.");
-            }
+
         }
 
         if (cardType.equalsIgnoreCase("creditcard")){
@@ -497,44 +520,59 @@ public class HotelesService implements ICrudService<HotelAvailableDto,Integer,St
         return total;
     }
 
+    public List<Map<String, Integer>> getIdHotelPeopleAmount(){
+
+        return  bookingModelRepository.getIdHotelPeopleAmount();
+
+    }
+
+    private Boolean availability(BookingModel bookingRequest){
+        var hotel = hotelesRepository.findByCodigoHotel(bookingRequest.getHotelCode()).get(0);
+        var hotelfrom = hotel.getDisponibleDesde();
+        var hotelTo = hotel.getDisponibleHasta();
+        var dateFrom = bookingRequest.getDateFrom();
+        var dateTo = bookingRequest.getDatoTo();
+        var bookingsDB = hotelBookingRepository.findAll();
+        var available = false;
+
+
+        if (!dateFrom.isBefore(hotelfrom) && !dateTo.isAfter(hotelTo)) {
+
+            if(bookingsDB.isEmpty()){
+                return true;
+            }
+
+            for (BookingRequestModel bookingDB : bookingsDB) {
+                var bookingFrom = bookingDB.getBooking().getDateFrom();
+                var bookingTo = bookingDB.getBooking().getDatoTo();
+
+                if (dateFrom.isBefore(bookingFrom) && dateTo.isBefore(bookingTo)
+                        || dateFrom.isAfter(bookingTo)) {
+                    available = true;
+                    break;
+                }
+            }
+        } else {
+            throw new CustomException("EDICIÓN", "El hotel no esta disponible en las fechas solicitadas.");
+        }
+
+        return available;
+    }
+
+    public List<HotelAvailableDto> findByPrecioNocheLessThanEqual(Double price){
+
+        var list = hotelesRepository.findByPrecioNocheLessThanEqual(price);
+
+        if(list.isEmpty()){
+            throw new CustomException("BUSQUEDA", "No existen hoteles con precio igual o menos a: $"+price);
+        }
+
+        return list.stream().map(
+                hotel -> mapper.map(hotel, HotelAvailableDto.class)
+        ).collect(Collectors.toList());
+    }
+
 }
 
-    /*
-    public List<HotelAvailableDto> filterHotels(LocalDate dateFrom, LocalDate dateTo, String destination) {
-
-        List<HotelAvailableDto> allHotels = hotelesRepository.findAll();
-
-        List<HotelAvailableDto> destinationStatus = allHotels.stream().filter(hotel -> Objects.equals(hotel.getLugar(), destination)).collect(Collectors.toList());
-        List<HotelAvailableDto> dateFromStatus = destinationStatus.stream().filter(hotel -> hotel.getDisponibleDesde().isAfter(dateFrom)).collect(Collectors.toList());
-        List<HotelAvailableDto> dateToStatus = destinationStatus.stream().filter(hotel -> hotel.getDisponibleHasta().isBefore(dateTo)).collect(Collectors.toList());
-        List<HotelAvailableDto> dateEqualFromStatus = destinationStatus.stream().filter(hotel -> hotel.getDisponibleDesde().equals(dateFrom)).collect(Collectors.toList());
-        List<HotelAvailableDto> dateEqualToStatus = destinationStatus.stream().filter(hotel -> hotel.getDisponibleHasta().equals(dateTo)).collect(Collectors.toList());
-
-
-
-        // VALIDACION POR DESTINO
-        if (destinationStatus.isEmpty()){
-            throw new SinHotelesException("El destino elegido no existe.");
-        }
-
-        //VALIDACION FECHA ENTRADA MENOR A SALIDA
-        if(dateFrom.isAfter(dateTo)){
-            throw new SinHotelesException("La fecha de ida debe ser menor a la de vuelta.");
-        }
-
-        //VALIDACION FECHA SALIDA MAYOR A ENTRADA
-        if(dateFrom.isEqual(dateTo)){
-            throw new SinHotelesException("La fecha de vuelta debe ser mayor a la de ida");
-        }
-
-        List<HotelAvailableDto> hotelAvailable = hotelesRepository.filterHotelsRep(dateFrom, dateTo, destination);
-
-        if(hotelAvailable.isEmpty()){
-            throw new SinHotelesException("No se encontraron hoteles disponibles en esta fecha.");
-        }
-
-        return hotelAvailable;
-    }
-*/
 
 

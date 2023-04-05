@@ -89,4 +89,15 @@ public class FlightsController {
                 flightsService.updateBookingByID(id, bookingDto)
         );
     }
+
+    @GetMapping("/getFlightPeopleCant")
+    public ResponseEntity<List<Map<String, Integer>>> getIdFlightPeopleAmount(){
+        return ResponseEntity.ok(flightsService.getIdFlightPeopleAmount());
+    }
+
+    @GetMapping("/findFlightByPrice/{price}")
+    public ResponseEntity<List<FlightsAvailableDto>> findByPrice(@PathVariable Double price){
+        return ResponseEntity.ok(flightsService.findByPrecioPersonaLessThanEqual(price));
+    }
+
 }

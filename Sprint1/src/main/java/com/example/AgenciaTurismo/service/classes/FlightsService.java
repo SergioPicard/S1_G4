@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -42,6 +43,9 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
         var entity = mapper.map(flightsAvailableDto, FlightModel.class);
         // guardar
         flightsRepository.save(entity);
+        /*System.out.println("-------------------------------------------------------------");
+        System.out.println(res);
+        System.out.println("-------------------------------------------------------------");*/
         // mappear de entity a dto para llevar al controller
 
         return MessageDTO.builder()
@@ -98,7 +102,6 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
         // buscar el dato en la base de datos y asegurarnos que exista
         List<FlightModel> list = flightsRepository.findByFechaIdaAndFechaVueltaAndAndOrigenAndDestino(dateFrom, dateTo, origin, destination);
 
-        System.out.println(dateTo);
         if (origin == null && destination == null && destination.equals(" ") && origin.equals(" ")) {
             throw new CustomException("FILTRAR", "Debe ingresar un destino y un origen");
         }
@@ -409,6 +412,24 @@ public class FlightsService implements ICrudService<FlightsAvailableDto,Integer,
             }
         }
         return total;
+    }
+
+    public List<Map<String, Integer>> getIdFlightPeopleAmount(){
+
+        return flightReservationResRepository.getIdFlightPeopleAmount();
+    }
+
+    public List<FlightsAvailableDto> findByPrecioPersonaLessThanEqual(Double price){
+
+        var list = flightsRepository.findByPrecioPersonaLessThanEqual(price);
+
+        if(list.isEmpty()){
+            throw new CustomException("BUSQUEDA", "No existen vuelos con precio igual o menos a: $"+price);
+        }
+
+        return list.stream().map(
+                flight -> mapper.map(flight, FlightsAvailableDto.class)
+        ).collect(Collectors.toList());
     }
 
 }

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @Validated
@@ -83,6 +84,20 @@ public class HotelesController {
         );
     }
 
-   }
+    @GetMapping("/getHotelPeopleCant")
+    public ResponseEntity<List<Map<String, Integer>>> getIdHotelPeopleAmount(){
+       return ResponseEntity.ok(hotelesService.getIdHotelPeopleAmount());
+    }
+    @GetMapping("/findRoomType/{roomType}")
+    public ResponseEntity<List<HotelAvailableDto>> findRoomType(@PathVariable String roomType){
+       return ResponseEntity.ok(hotelesService.findRoomType(roomType));
+    }
+
+    @GetMapping("/findHotelByPrice/{price}")
+    public ResponseEntity<List<HotelAvailableDto>> findByPrice(@PathVariable Double price){
+       return ResponseEntity.ok(hotelesService.findByPrecioNocheLessThanEqual(price));
+    }
+
+}
 
 

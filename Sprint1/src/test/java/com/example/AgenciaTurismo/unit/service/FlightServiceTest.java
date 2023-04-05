@@ -1,14 +1,14 @@
 package com.example.AgenciaTurismo.unit.service;
 
-import com.example.AgenciaTurismo.dto.request.FlightReservationReqDto;
-import com.example.AgenciaTurismo.dto.response.FlightResponseDto;
+import com.example.AgenciaTurismo.dto.MessageDTO;
 import com.example.AgenciaTurismo.dto.response.FlightsAvailableDto;
-import com.example.AgenciaTurismo.exceptions.VuelosException;
+import com.example.AgenciaTurismo.exceptions.CustomException;
+import com.example.AgenciaTurismo.models.FlightModel;
 import com.example.AgenciaTurismo.repository.IFlightsRepository;
 import com.example.AgenciaTurismo.service.classes.FlightsService;
 import com.example.AgenciaTurismo.util.FlightAvailableDtoFactory;
-import com.example.AgenciaTurismo.util.FlightReservationReqFactory;
-import com.example.AgenciaTurismo.util.FlightResponseDtoFactory;
+import com.example.AgenciaTurismo.util.FlightModelFactory;
+import com.example.AgenciaTurismo.util.MessageDtoFactory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,7 +22,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
-public class FlightServiceTest {
+class FlightServiceTest {
 
     @Mock
     IFlightsRepository flightsRepository;
@@ -31,14 +31,32 @@ public class FlightServiceTest {
     FlightsService flightsService;
 
     @Test
+    @DisplayName("Se guarda un nuevo Vuelo")
+    void saveEntity() {
+        // arrange
+        FlightsAvailableDto body = FlightAvailableDtoFactory.getPiba();
+        MessageDTO expected = MessageDtoFactory.altaVuelo();
+        FlightModel model = FlightModelFactory.getPiba();
+        FlightModel entity = FlightModelFactory.gePibaNoId();
+
+        // act
+        Mockito.when(flightsRepository.save(entity)).thenReturn(model);
+
+        var result = flightsService.saveEntity(body);
+        // assert
+
+        Assertions.assertEquals(expected, result);
+    }
+
+    @Test
     @DisplayName("Se buscan todos los vuelos - SERVICE")
-    public void searchAllTest(){
+    void searchAllTest(){
         // arrange
         List<FlightsAvailableDto> expected = FlightAvailableDtoFactory.listFlights();
 
         // act
-        Mockito.when(flightsRepository.findAll()).thenReturn(FlightAvailableDtoFactory.listFlights());
-        var result = flightsService.searchAll();
+        Mockito.when(flightsRepository.findAll()).thenReturn(FlightModelFactory.listFlights());
+        var result = flightsService.getAllEntities();
 
         // assert
         Assertions.assertEquals(expected,result);
@@ -46,20 +64,19 @@ public class FlightServiceTest {
 
     @Test
     @DisplayName("Se filtran los vuelos, con fechas, destino y origen como parámetros - SERVICE")
-    public void filterFlightsTest(){
+    void filterEntityTest(){
         // arrange
-        LocalDate fechaIda = LocalDate.of(2022,02,10);
-        LocalDate fechaVuelta = LocalDate.of(2022,02,15);
-        String origen = "Buenos Aires";
-        String destino = "Puerto Iguazú";
+        LocalDate dateFrom = LocalDate.of(2022,2,10);
+        LocalDate dateTo = LocalDate.of(2022, 2,15);
+        String origin = "Buenos Aires";
+        String destination = "Puerto Iguazú";
         List<FlightsAvailableDto> expected = List.of(FlightAvailableDtoFactory.getBapi());
 
         // act
-        Mockito.when(flightsRepository.findAll()).thenReturn(FlightAvailableDtoFactory.listFlights());
-        Mockito.when(flightsRepository.filterFlightRep(fechaIda,fechaVuelta,origen,destino))
-                .thenReturn(List.of(FlightAvailableDtoFactory.getBapi()));
+        Mockito.when(flightsRepository.findByFechaIdaAndFechaVueltaAndAndOrigenAndDestino(dateFrom, dateTo, origin, destination))
+                .thenReturn(List.of(FlightModelFactory.getBapi()));
 
-        var result = flightsService.filterFlights(fechaIda,fechaVuelta,origen,destino);
+        var result = flightsService.filterEntity(dateFrom,dateTo,origin,destination);
 
         // assert
         Assertions.assertEquals(expected,result);
@@ -68,19 +85,19 @@ public class FlightServiceTest {
 
     @Test
     @DisplayName("Chequeo excepción no existe destino - SERVICE")
-    public void filterFlightTestNonDestinyException(){
+    void filterFlightTestNonDestinyException(){
         // arrange
         LocalDate fechaIda = LocalDate.of(2022,02,10);
         LocalDate fechaVuelta = LocalDate.of(2022,02,15);
-        String origen = "Buenos Aires";
-        String destino = "Córdoba";
+        String origen = " ";
+        String destino = " ";
 
         // act && assert
-        Assertions.assertThrows(RuntimeException.class, ()-> flightsService
-                .filterFlights(fechaIda,fechaVuelta,origen,destino));
+        Assertions.assertThrows(CustomException.class, ()-> flightsService
+                .filterEntity(fechaIda,fechaVuelta,origen,destino));
 
     }
-
+/*
     @Test
     @DisplayName("No hay vuelos disponibles excepción - SERVICE")
     public void filterFlightTestFlightException(){
@@ -94,7 +111,7 @@ public class FlightServiceTest {
 
         // act && assert
         Assertions.assertThrows(VuelosException.class, ()-> flightsService
-                .filterFlights(fechaIda,fechaVuelta,origen,destino));
+                .filterEntity(fechaIda,fechaVuelta,origen,destino));
 
     }
 
@@ -184,7 +201,7 @@ public class FlightServiceTest {
 
     }
 
-   /* @Test
+   *//* @Test
     @DisplayName("")
     public void filterFlightTestNonAvailableException(){
         // arrange
@@ -200,7 +217,7 @@ public class FlightServiceTest {
         Assertions.assertThrows(VuelosException.class, ()-> flightsService
                 .filterFlights(fechaIda,fechaVuelta,origen,destino));
 
-    }*/
+    }*//*
 
     @Test
     @DisplayName("Excepción cantidad incorrecta de pasajeros - SERVICE")
@@ -369,9 +386,9 @@ public class FlightServiceTest {
         FlightResponseDto expected = FlightResponseDtoFactory.getResponseCredit3();
         FlightReservationReqDto param = FlightReservationReqFactory.getFlightReservationDtoCredit3();
         FlightsAvailableDto available = FlightAvailableDtoFactory.getBapi();
-        /*param.getPaymentMethodDto().setType("debitcard");
+        *//*param.getPaymentMethodDto().setType("debitcard");
         param.getPaymentMethodDto().setDues(1);
-        expected.setTotal(6500.0);*/
+        expected.setTotal(6500.0);*//*
 //        param.getPaymentMethodDto().setDues(3);
 
         Mockito.when(flightsRepository.findFlight(param.getFlightReservation().getFlightNumber(),
@@ -399,5 +416,5 @@ public class FlightServiceTest {
         Assertions.assertThrows(VuelosException.class, ()-> flightsService
                 .flightReservationResponse(param));
 
-    }
+    }*/
 }

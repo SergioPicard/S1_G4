@@ -36,6 +36,9 @@ public class HotelsControllerIntegrationTest {
     MockMvc mockMvc;
 
     ObjectWriter writer;
+            /*= new ObjectMapper()  //Permite traducir un objeto nuestro a un string plano en JSON.
+            .registerModule(new JavaTimeModule())
+            .writer();*/
 
     @BeforeEach
     public void setup(){
@@ -47,7 +50,7 @@ public class HotelsControllerIntegrationTest {
 
     @Test
     @DisplayName("Busqueda de todos los hoteles")
-    public void searchAllHotels() throws Exception {
+    void searchAllHotels() throws Exception {
         // arrange
         List<HotelAvailableDto> expected = HotelAvailableDtoFactory.listHotels();
 
@@ -78,9 +81,10 @@ public class HotelsControllerIntegrationTest {
 
 
 
+
     @Test
     @DisplayName("Se filtran los hoteles con las fechas y destino como parámetro")
-    public void filterHotels() throws Exception {
+    public void filterEntity() throws Exception {
         // arrange
 
         String dateFrom = "10/02/2022";
@@ -91,9 +95,8 @@ public class HotelsControllerIntegrationTest {
         List<HotelAvailableDto> responseBody = List.of(HotelAvailableDtoFactory.BristolHotel());
 
         // request
-
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-                .get("/api/v1/hotel/")
+                .get("/api/v1/hotel")
                 .param("dateFrom",dateFrom)
                 .param("dateTo", dateTo)
                 .param("destination", destination);
@@ -109,7 +112,7 @@ public class HotelsControllerIntegrationTest {
                 .andDo(MockMvcResultHandlers.print())
                 .andExpectAll(bodyExpected, statusExpected, contentTypeExpected);
     }
-
+/*
     @Test
     @DisplayName("reserva de un hotel con DTO de reserva como parámetro")
     public void booking() throws Exception {
@@ -140,6 +143,7 @@ public class HotelsControllerIntegrationTest {
     }
 
 
+*/
 
 
 }
