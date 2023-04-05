@@ -91,24 +91,39 @@ public class HotelesService implements ICrudService<HotelAvailableDto,Integer,St
 
     public List<HotelAvailableDto> filterEntity(LocalDate dateFrom, LocalDate dateTo, String destination) {
         // buscar el dato en la base de datos y asegurarnos que exista
-        List<HotelModel> list = hotelesRepository.findByDisponibleDesdeLessThanEqualAndDisponibleHastaGreaterThanEqualAndLugar(dateFrom, dateTo, destination);
 
+        if (destination.isEmpty()){
+            throw new CustomException("FILTRAR","Debe enviar un destino.");
+        }
         if (dateFrom.isAfter(dateTo) || dateFrom.equals(dateTo)){
             throw new CustomException("FILTRAR","La fecha de ingreso debe ser menor a la de salida.");
         }
 
-        if (!destination.equalsIgnoreCase(list.stream().map(HotelModel::getLugar).toString())){
-        throw new CustomException("FILTRAR","No hay hoteles en el destino elegido.");
+        List<HotelModel> hoteles = hotelesRepository.findAll();
+
+        var destinosFiltrados = hoteles.stream().map(HotelModel::getLugar).collect(Collectors.toList());
+
+
+        // que exista algún hotel con el destino enviado
+
+        if (destinosFiltrados.stream().noneMatch(lugar -> lugar.equalsIgnoreCase(destination))) {
+            throw new CustomException("FILTRAR", "No hay hoteles en el destino elegido.");
         }
 
-        if (!list.isEmpty()){
+        List<HotelModel> list = hotelesRepository.findByDisponibleDesdeLessThanEqualAndDisponibleHastaGreaterThanEqualAndLugar(dateFrom, dateTo, destination);
+
+        // el filtro ya busca por fechas y destino, al comprobarlo en segundo lugar, solo usamos fechas
+        // por lo que en este caso, devuelve la lista vacia, y envíamos excepcion de fechas
+
+        if (list.isEmpty()){
+            throw new CustomException("FILTRAR","Existen hoteles en este lugar, " +
+                    "pero no en las fechas seleccionadas");
+        }
+
         return list.stream().map(
                         hotel -> mapper.map(hotel, HotelAvailableDto.class)
                 )
                 .collect(Collectors.toList());
-        } else{
-            throw new CustomException("FILTRAR","No hay hoteles en estas fechas.");
-        }
     }
 
 
